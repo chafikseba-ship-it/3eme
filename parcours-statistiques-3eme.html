@@ -325,15 +325,6 @@ button,input{touch-action:manipulation}
 
 </div>
 
-<div id="idov" class="idov" hidden>
-  <div class="idbox">
-    <h3>Avant de commencer 👋</h3>
-    <p>Indique ton prénom et ta classe pour enregistrer ta progression.</p>
-    <input id="idPrenom" placeholder="Ton prénom" autocomplete="off">
-    <input id="idClasse" placeholder="Ta classe (ex : 3eA)" autocomplete="off">
-    <button class="btn vert" onclick="suiviSave()">C’est parti ➜</button>
-  </div>
-</div>
 <button id="kcFab" class="kc-fab" onclick="kcToggle()" aria-label="Ouvrir la calculatrice">🧮</button>
 <div id="kcPanel" class="kc-panel" hidden role="dialog" aria-label="Calculatrice">
   <div class="kc-head"><span>Calculatrice</span><button class="kc-x" onclick="kcToggle()" aria-label="Fermer">✕</button></div>
@@ -531,7 +522,7 @@ document.addEventListener('keydown',e=>{if(gid('kcPanel').hidden)return;
 gid('expFreq').innerHTML=gid('expFreq').innerHTML.replace('__TBL_T__', stab('Couleur',['Rouge','Bleu','Vert','Jaune'],'Effectif',[6,5,7,2]));
 gid('expClasses').innerHTML=gid('expClasses').innerHTML.replace('__TBL_C__', stab('Classe',['[0 ; 10[','[10 ; 20[','[20 ; 30['],'Effectif',[4,9,5]));
 updateMap();
-suiviInitIdentite();
+
 </script>
 </body>
 </html>

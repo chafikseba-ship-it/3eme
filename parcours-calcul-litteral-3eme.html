@@ -320,15 +320,6 @@ button,input{touch-action:manipulation}
   </div>
 </section>
 </div>
-<div id="idov" class="idov" hidden>
-  <div class="idbox">
-    <h3>Avant de commencer 👋</h3>
-    <p>Indique ton prénom et ta classe pour enregistrer ta progression.</p>
-    <input id="idPrenom" placeholder="Ton prénom" autocomplete="off">
-    <input id="idClasse" placeholder="Ta classe (ex : 3eA)" autocomplete="off">
-    <button class="btn vert" onclick="suiviSave()">C’est parti ➜</button>
-  </div>
-</div>
 <button id="kcFab" class="kc-fab" onclick="kcToggle()" aria-label="Ouvrir la calculatrice">🧮</button>
 <div id="kcPanel" class="kc-panel" hidden role="dialog" aria-label="Calculatrice">
   <div class="kc-head"><span>Calculatrice</span><button class="kc-x" onclick="kcToggle()" aria-label="Fermer">✕</button></div>
@@ -536,7 +527,7 @@ document.addEventListener('keydown',e=>{if(gid('kcPanel').hidden)return;
 
 
 updateMap();
-suiviInitIdentite();
+
 </script>
 </body>
 </html>

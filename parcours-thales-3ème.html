@@ -351,15 +351,6 @@ button,input{touch-action:manipulation}
 
 </div>
 
-<div id="idov" class="idov" hidden>
-  <div class="idbox">
-    <h3>Avant de commencer 👋</h3>
-    <p>Indique ton prénom et ta classe pour enregistrer ta progression.</p>
-    <input id="idPrenom" placeholder="Ton prénom" autocomplete="off">
-    <input id="idClasse" placeholder="Ta classe (ex : 3eA)" autocomplete="off">
-    <button class="btn vert" onclick="suiviSave()">C’est parti ➜</button>
-  </div>
-</div>
 <button id="kcFab" class="kc-fab" onclick="kcToggle()" aria-label="Ouvrir la calculatrice">🧮</button>
 <div id="kcPanel" class="kc-panel" hidden role="dialog" aria-label="Calculatrice">
   <div class="kc-head"><span>Calculatrice</span><button class="kc-x" onclick="kcToggle()" aria-label="Fermer">✕</button></div>
@@ -619,7 +610,7 @@ gid('figCa').innerHTML=figThales({config:'triangle',L:{O:'A',M:'M',N:'N',B:'B',C
 gid('figRe').innerHTML=figThales({config:'triangle',L:{O:'A',M:'M',N:'N',B:'B',C:'C'},e:{OM:'3',OB:'5',ON:'6',OC:'10'}});
 gid('figRd').innerHTML=figThales({config:'triangle',L:{O:'A',M:'M',N:'N',B:'B',C:'C'},e:{OM:'6',OB:'9',MN:'4',BC:'?'}});
 updateMap();
-suiviInitIdentite();
+
 </script>
 </body>
 </html>
