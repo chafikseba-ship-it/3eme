@@ -259,20 +259,67 @@ button,input{touch-action:manipulation}
 
 <section id="expSubstituer" class="screen">
   <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Substituer</h2></div>
+
   <div class="card">
-    <span class="tag" style="background:var(--violet)">La leçon</span>
-    <p class="lead">Une lettre comme <b>x</b>, c'est une <b>case où l'on range un nombre</b>. <b>Substituer</b>, c'est remplacer cette lettre par le nombre donné, puis calculer en respectant les priorités (puissances, ×, ÷, puis + et −).</p>
+    <span class="tag" style="background:var(--violet)">1. C'est quoi, une lettre ?</span>
+    <p class="lead">La lettre <b>x</b> est une <b>case où se cache un nombre</b>. Une expression comme 3x + 5 est une <b>recette</b> : elle dit quoi faire avec ce nombre.</p>
+    <p class="note">Substituer = ranger le nombre dans la case, puis suivre la recette.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">2. Bien lire « 3x »</span>
+    <p class="lead">3x ne veut pas dire « 3 collé à x ». 3x veut dire <b>3 × x</b>.</p>
     <div class="demo">
-      <div class="lab">Exemple : calculer 3x + 5 pour x = 4</div>
-      <span class="step">On remplace x par 4 : 3<b>×</b>4 + 5</span>
-      <span class="step">= 12 + 5</span>
+      <div class="lab">Si x = 2</div>
+      <span class="step">3x = 3 <b>×</b> 2 = <b>6</b></span>
+    </div>
+    <div class="piege"><span class="t">⚠️ Le piège classique</span>Pour x = 3 : 3x = 3×3 = <b>9</b>. Surtout pas 33 ! On refait toujours apparaître le signe ×.</div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">3. La méthode, en 2 temps</span>
+    <div class="demo">
+      <div class="lab">Calculer 3x + 5 pour x = 4</div>
+      <span class="step"><b>Temps 1</b> — je remplace (et je remets le ×) : 3×4 + 5</span>
+      <span class="step"><b>Temps 2</b> — je calcule (× avant +) : 12 + 5</span>
       <span class="step">= <b>17</b></span>
     </div>
-    <div class="piege"><span class="t">⚠️ Le piège du signe ×</span>3x veut dire 3 <b>×</b> x, ce n'est pas « 3 collé à x ». Pour x = 3, on écrit 3×3 = 9… et surtout pas 33 ! Quand tu remplaces, <b>refais toujours apparaître le signe ×</b>.</div>
-    <div class="piege"><span class="t">⚠️ Les nombres négatifs</span>Si x = −3, on range le nombre négatif <b>entre parenthèses</b> : 2x devient 2×(−3) = −6.</div>
-    <div class="piege"><span class="t">⚠️ Le carré d'un négatif</span>(−3)² = (−3)×(−3) = <b>9</b> (positif !). Sans les parenthèses, −3² vaudrait −9. La parenthèse change tout.</div>
-    <div class="astuce"><span class="t">🧮 Astuce calculatrice</span>Tape l'expression avec les parenthèses, puis appuie sur « Résultat ➔ réponse » pour la recopier sans erreur.</div>
   </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">4. Quand le nombre est négatif</span>
+    <p class="lead">Un nombre négatif se range <b>toujours entre parenthèses</b>.</p>
+    <div class="demo">
+      <div class="lab">Calculer 2x pour x = −3</div>
+      <span class="step">2x = 2 × <b>(−3)</b> = <b>−6</b></span>
+    </div>
+    <div class="piege"><span class="t">⚠️ Pourquoi les parenthèses</span>Sans elles, on écrirait « 2×−3 » : on s'emmêle vite dans les signes. Les parenthèses gardent le nombre négatif d'un seul bloc.</div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">5. Le carré</span>
+    <p class="lead">x² veut dire <b>x × x</b>.</p>
+    <div class="demo">
+      <div class="lab">Calculer x² pour x = −3</div>
+      <span class="step">x² = (−3)² = (−3) × (−3) = <b>9</b></span>
+      <span class="step">(deux nombres négatifs multipliés → résultat positif)</span>
+    </div>
+    <div class="piege"><span class="t">⚠️ (−3)² n'est pas −3²</span>(−3)² = 9, mais −3² = −9. La parenthèse change tout : sans elle, le carré ne porte que sur le 3.</div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">6. On assemble tout</span>
+    <div class="demo">
+      <div class="lab">Calculer 2x² − x + 1 pour x = −3</div>
+      <span class="step">Le carré : 2x² = 2 × (−3)² = 2 × 9 = <b>18</b></span>
+      <span class="step">Le terme en x : − x = − (−3) = <b>+ 3</b></span>
+      <span class="step">Le nombre seul : <b>+ 1</b></span>
+      <span class="step">On additionne : 18 + 3 + 1 = <b>22</b></span>
+    </div>
+  </div>
+
+  <div class="astuce"><span class="t">🧮 Avec la calculatrice</span>Tape l'expression avec les parenthèses, par exemple 2×(−3)²−(−3)+1, lis le résultat, puis appuie sur « Résultat ➔ réponse » pour le recopier sans erreur.</div>
+
   <div class="mid"><button class="btn vert" onclick="startTrain('substituer')">Je m'entraîne ➜</button></div>
 </section>
 
