@@ -166,6 +166,32 @@ button,input{touch-action:manipulation}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
+/* ===================== RÉDACTION GUIDÉE (cascade) ===================== */
+.cascade{margin:6px 0 2px;text-align:left}
+.cstep{display:none;background:var(--creme);border-radius:16px;padding:14px 16px;margin:10px 0;animation:pop .3s ease}
+.cstep.on{display:block}
+.cprompt{font-family:'Fredoka';font-weight:700;color:var(--bois);font-size:1.05rem;margin-bottom:10px;line-height:1.35}
+.cbody{display:flex;flex-direction:column;gap:8px}
+.copt{font-family:'Fredoka';font-weight:700;font-size:1.05rem;border:3px solid #e7d3a8;background:var(--blanc);color:var(--bois);
+  border-radius:14px;padding:11px 14px;cursor:pointer;box-shadow:0 4px 0 #e7d3a8;text-align:center;line-height:1.3}
+.copt:active{transform:translateY(2px);box-shadow:0 1px 0 #e7d3a8}
+.copt.cgood{background:var(--vert);color:#fff;border-color:var(--vert-bas);box-shadow:0 4px 0 var(--vert-bas)}
+.copt.cbad{background:var(--orange);color:#fff;border-color:var(--orange-bas);box-shadow:0 4px 0 var(--orange-bas);opacity:.85}
+.copt:disabled{cursor:default}
+.cinput{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cinput input{font-family:'Fredoka';font-weight:700;font-size:1.25rem;text-align:center;border:3px solid #f0dca8;
+  border-radius:14px;padding:10px;width:130px;color:var(--bois)}
+.cinput input:focus{outline:none;border-color:var(--or-bas)}
+.chint{font-family:'Fredoka';font-weight:700;color:var(--bois-clair);font-size:.98rem;margin-bottom:4px;background:#fff;border-radius:10px;padding:8px 10px;line-height:1.35}
+.cfeed{font-family:'Nunito';font-weight:800;font-size:.92rem;margin-top:8px;min-height:1em;line-height:1.35}
+.cfeed.ok{color:var(--vert-bas)} .cfeed.no{color:var(--orange-bas)}
+.cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
+.cblank:focus{outline:none;border-bottom-color:var(--teal-bas);background:#fffdf3}
+.cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
+.cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
+.cverify{margin-top:10px}
+
 /* ===================== CALCULATRICE COLLÈGE ===================== */
 .kc-fab{position:fixed;right:18px;bottom:18px;z-index:60;width:58px;height:58px;border:none;border-radius:50%;
   background:var(--teal);color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 6px 0 var(--teal-bas),0 10px 18px rgba(92,61,46,.2);transition:transform .1s}
@@ -257,13 +283,13 @@ button,input{touch-action:manipulation}
 
 <section id="expLongueur" class="screen">
   <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Calculer une longueur</h2></div>
-  <div class="card"><span class="tag" style="background:var(--orange)">La leçon</span><p class='lead'>On écrit la relation, puis on isole la longueur cherchée. Exemple : si on connaît l’hypoténuse et qu’on cherche le côté opposé à l’angle, alors opposé = hypoténuse × sin(angle).</p><p class='note'>Calculatrice en <b>degrés</b>. Les touches cos, sin, tan sont dans la calculatrice 🧮.</p></div>
+  <div class="card"><span class="tag" style="background:var(--orange)">La leçon</span><p class='lead'>On écrit la relation, puis on isole la longueur cherchée. Exemple : si on connaît l’hypoténuse et qu’on cherche le côté opposé à l’angle, alors opposé = hypoténuse × sin(angle).</p><p class='note'>Ici tu rédiges <b>étape par étape</b>, comme au brevet : relation → remplacement → transformation → calcul → conclusion. Calculatrice en <b>degrés</b> (cos, sin, tan dans 🧮).</p></div>
   <div class="mid"><button class="btn vert" onclick="startTrain('longueur')">Je m’entraîne ➜</button></div>
 </section>
 
 <section id="expAngle" class="screen">
   <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Calculer un angle</h2></div>
-  <div class="card"><span class="tag" style="background:var(--vert)">La leçon</span><p class='lead'>Quand on connaît deux côtés, on calcule leur rapport puis on utilise la touche <b>inverse</b> : cos⁻¹, sin⁻¹ ou tan⁻¹. Exemple : cos(angle) = adjacent ÷ hypoténuse, donc angle = cos⁻¹(adjacent ÷ hypoténuse).</p><p class='note'>Calculatrice en <b>degrés</b>. Les touches cos⁻¹, sin⁻¹, tan⁻¹ sont dans la calculatrice 🧮.</p></div>
+  <div class="card"><span class="tag" style="background:var(--vert)">La leçon</span><p class='lead'>Quand on connaît deux côtés, on calcule leur rapport puis on utilise la touche <b>inverse</b> : cos⁻¹, sin⁻¹ ou tan⁻¹. Exemple : cos(angle) = adjacent ÷ hypoténuse, donc angle = cos⁻¹(adjacent ÷ hypoténuse).</p><p class='note'>Ici tu rédiges <b>étape par étape</b>, comme au brevet. Touches cos⁻¹, sin⁻¹, tan⁻¹ dans la calculatrice 🧮 (en degrés).</p></div>
   <div class="mid"><button class="btn vert" onclick="startTrain('angle')">Je m’entraîne ➜</button></div>
 </section>
 <section id="ecranTrain" class="screen">
@@ -280,6 +306,7 @@ button,input{touch-action:manipulation}
         <input id="tq_input" inputmode="decimal" placeholder="ta réponse" autocomplete="off">
         <button class="btn vert" id="tq_valid" onclick="quizValidate()">Valider</button>
       </div>
+      <div class="cascade" id="tq_casc" style="display:none"></div>
       <div class="feedback" id="tq_feed"></div>
       <div class="stars" id="tq_stars"></div>
       <div class="mid" style="margin-top:14px"><button class="btn orange" id="tq_next" style="display:none" onclick="quizNext()">Suivant ➜</button></div>
@@ -315,6 +342,7 @@ button,input{touch-action:manipulation}
         <input id="aq_input" inputmode="decimal" placeholder="ta réponse" autocomplete="off">
         <button class="btn vert" id="aq_valid" onclick="quizValidate()">Valider</button>
       </div>
+      <div class="cascade" id="aq_casc" style="display:none"></div>
       <div class="feedback" id="aq_feed"></div>
       <div class="stars" id="aq_stars"></div>
       <div class="mid" style="margin-top:14px"><button class="btn orange" id="aq_next" style="display:none" onclick="quizNext()">Suivant ➜</button> <button class="btn fant" onclick="finArene()">Changer</button></div>
@@ -345,6 +373,9 @@ const unlocked={cotes:true,formule:false,longueur:false,angle:false,arene:false}
 const themeDone={cotes:false,formule:false,longueur:false,angle:false};
 let currentTheme='cotes';const REQUIRED=6;
 const SERIE=10, SEUIL=8;
+const CASCADE_THEMES={longueur:true,angle:true};
+function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
+function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
 const CATNOM={cotes:'Les côtés',formule:'La relation',longueur:'Longueur',angle:'Angle'};
 const THEME_CATS={cotes:['cotes'],formule:['formule'],longueur:['longueur'],angle:['angle']};
 const HELP={
@@ -412,27 +443,88 @@ function genFormule(){
   var ex={cosinus:'Adjacent et hypoténuse sont en jeu → cosinus.',sinus:'Opposé et hypoténuse sont en jeu → sinus.',tangente:'Opposé et adjacent sont en jeu → tangente.'}[p.a];
   return qcm('formule','Quelle relation permet de calculer la longueur notée « ? » ?',['cosinus','sinus','tangente'],['cosinus','sinus','tangente'].indexOf(p.a),ex,rtSVG(fig));
 }
+function sideNameFr(s){return s==='adj'?'le côté adjacent':s==='opp'?'le côté opposé':'l’hypoténuse';}
 function genLongueur(){
   var th=rint(20,70);
   var combos=[
-   {k:'adj',w:'opp',calc:function(a){return a*Math.tan(rad(th));},ex:function(a,r){return 'tan('+th+'°) = opposé ÷ adjacent, donc opposé = '+a+' × tan('+th+'°) ≈ '+r+' cm.';}},
-   {k:'adj',w:'hyp',calc:function(a){return a/Math.cos(rad(th));},ex:function(a,r){return 'cos('+th+'°) = adjacent ÷ hypoténuse, donc hypoténuse = '+a+' ÷ cos('+th+'°) ≈ '+r+' cm.';}},
-   {k:'opp',w:'adj',calc:function(a){return a/Math.tan(rad(th));},ex:function(a,r){return 'tan('+th+'°) = opposé ÷ adjacent, donc adjacent = '+a+' ÷ tan('+th+'°) ≈ '+r+' cm.';}},
-   {k:'opp',w:'hyp',calc:function(a){return a/Math.sin(rad(th));},ex:function(a,r){return 'sin('+th+'°) = opposé ÷ hypoténuse, donc hypoténuse = '+a+' ÷ sin('+th+'°) ≈ '+r+' cm.';}},
-   {k:'hyp',w:'opp',calc:function(a){return a*Math.sin(rad(th));},ex:function(a,r){return 'sin('+th+'°) = opposé ÷ hypoténuse, donc opposé = '+a+' × sin('+th+'°) ≈ '+r+' cm.';}},
-   {k:'hyp',w:'adj',calc:function(a){return a*Math.cos(rad(th));},ex:function(a,r){return 'cos('+th+'°) = adjacent ÷ hypoténuse, donc adjacent = '+a+' × cos('+th+'°) ≈ '+r+' cm.';}}
+    {rel:'cos',known:'adj',unk:'hyp'},
+    {rel:'cos',known:'hyp',unk:'adj'},
+    {rel:'sin',known:'opp',unk:'hyp'},
+    {rel:'sin',known:'hyp',unk:'opp'},
+    {rel:'tan',known:'opp',unk:'adj'},
+    {rel:'tan',known:'adj',unk:'opp'}
   ];
-  var c=pick(combos),known=rint(5,20),ans=Math.round(c.calc(known)*10)/10;
-  var fig={ang:th+'°'};fig[c.k]=known+' cm';fig[c.w]='?';
-  return {type:'num',cat:'longueur',text:'Calcule la longueur notée « ? » (arrondis au dixième de cm).',answer:ans,disp:(''+ans).replace('.',',')+' cm',tol:0.2,viz:rtSVG(fig),explain:c.ex(known,(''+ans).replace('.',','))};
+  var c=pick(combos),rel=c.rel,denSide={cos:'hyp',sin:'hyp',tan:'adj'}[rel];
+  var div=(c.unk===denSide);
+  var a=rint(5,20),fn={cos:Math.cos,sin:Math.sin,tan:Math.tan}[rel];
+  var x=div?a/fn(rad(th)):a*fn(rad(th));
+  var ans=Math.round(x*10)/10, disp=(''+ans).replace('.',',');
+  var fig={ang:th+'°'};fig[c.known]=a+' cm';fig[c.unk]='?';
+  var relShort=rel+'('+th+'°)';
+  var numWord={cos:['adjac'],sin:['oppos'],tan:['oppos']}[rel];
+  var denWord={cos:['hypoten'],sin:['hypoten'],tan:['adjac']}[rel];
+  var numShow={cos:'adjacent',sin:'opposé',tan:'opposé'}[rel];
+  var denShow={cos:'hypoténuse',sin:'hypoténuse',tan:'adjacent'}[rel];
+  var sideRoot={adj:['adjac'],opp:['oppos'],hyp:['hypoten']}[c.unk];
+  var opAcc=div?['÷','/',':']:['×','x','*'];
+  return {type:'cascade',cat:'longueur',sig:'L'+rel+th+a+c.unk,viz:rtSVG(fig),
+    text:'Calcule la longueur notée « ? », en rédigeant comme au brevet.',
+    steps:[
+      {prompt:'Étape 1 — Écris la relation qui relie '+sideNameFr(c.known)+' (connu) et '+sideNameFr(c.unk)+' (cherché).',
+       hint:'SOH-CAH-TOA : cos = adjacent÷hypoténuse · sin = opposé÷hypoténuse · tan = opposé÷adjacent.',
+       parts:[{b:1,kind:'text',accept:[rel],mode:'contains',show:rel,w:78,ph:'cos/sin/tan'},'('+th+'°) = ',
+              {b:1,kind:'text',accept:numWord,mode:'contains',show:numShow,w:120,ph:'côté…'},' ÷ ',
+              {b:1,kind:'text',accept:denWord,mode:'contains',show:denShow,w:130,ph:'côté…'}]},
+      {prompt:'Étape 2 — Remplace par les nombres (x = la longueur cherchée).',
+       parts: div
+         ? [relShort+' = ',{b:1,kind:'num',ans:a,show:''+a,w:64},' ÷ ',{b:1,kind:'text',accept:['x'],show:'x',w:54,ph:'x'}]
+         : [relShort+' = ',{b:1,kind:'text',accept:['x'],show:'x',w:54,ph:'x'},' ÷ ',{b:1,kind:'num',ans:a,show:''+a,w:64}]},
+      {prompt:'Étape 3 — Isole x : complète le calcul qui donne x.',
+       hint: div?'x est au dénominateur : on divise.':'x est seul d’un côté : on multiplie.',
+       parts:['x = ',{b:1,kind:'num',ans:a,show:''+a,w:64},' ',
+              {b:1,kind:'text',accept:opAcc,show:div?'÷':'×',w:54,ph:'÷ ou ×'},' '+relShort]},
+      {prompt:'Étape 4 — Calcule (arrondis au dixième de cm).',
+       hint:'x = '+a+(div?' ÷ ':' × ')+relShort+' ≈ ?   (ouvre la calculatrice 🧮)',
+       parts:['x ≈ ',{b:1,kind:'num',ans:ans,tol:0.25,show:disp,w:90,ph:'…'},' cm']},
+      {prompt:'Étape 5 — Rédige la phrase de conclusion.',
+       parts:[{b:1,kind:'text',accept:sideRoot,mode:'contains',show:sideNameFr(c.unk),w:150,ph:'le côté…'},
+              ' mesure environ ',{b:1,kind:'num',ans:ans,tol:0.25,show:disp,w:90,ph:'…'},' cm.']}
+    ]};
 }
 function genAngle(){
-  var R=180/Math.PI,type=pick(['cos','sin','tan']),fig={ang:'?'},th,ex,a3,b3;
-  if(type==='cos'){a3=rint(3,12);b3=a3+rint(2,8);th=Math.acos(a3/b3)*R;fig.adj=a3+' cm';fig.hyp=b3+' cm';ex='cos(angle) = adjacent ÷ hypoténuse = '+a3+' ÷ '+b3+'. Donc angle = cos⁻¹('+a3+' ÷ '+b3+') ≈ ';}
-  else if(type==='sin'){a3=rint(3,12);b3=a3+rint(2,8);th=Math.asin(a3/b3)*R;fig.opp=a3+' cm';fig.hyp=b3+' cm';ex='sin(angle) = opposé ÷ hypoténuse = '+a3+' ÷ '+b3+'. Donc angle = sin⁻¹('+a3+' ÷ '+b3+') ≈ ';}
-  else{a3=rint(3,14);b3=rint(3,14);th=Math.atan(a3/b3)*R;fig.opp=a3+' cm';fig.adj=b3+' cm';ex='tan(angle) = opposé ÷ adjacent = '+a3+' ÷ '+b3+'. Donc angle = tan⁻¹('+a3+' ÷ '+b3+') ≈ ';}
+  var R=180/Math.PI,type=pick(['cos','sin','tan']),fig={ang:'?'},th,a3,b3;
+  if(type==='cos'){a3=rint(3,12);b3=a3+rint(2,8);th=Math.acos(a3/b3)*R;fig.adj=a3+' cm';fig.hyp=b3+' cm';}
+  else if(type==='sin'){a3=rint(3,12);b3=a3+rint(2,8);th=Math.asin(a3/b3)*R;fig.opp=a3+' cm';fig.hyp=b3+' cm';}
+  else{a3=rint(3,14);b3=rint(3,14);th=Math.atan(a3/b3)*R;fig.opp=a3+' cm';fig.adj=b3+' cm';}
   var ans=Math.round(th);
-  return {type:'num',cat:'angle',text:'Calcule la mesure de l’angle « ? » (arrondis au degré).',answer:ans,disp:ans+'°',tol:1.5,viz:rtSVG(fig),explain:ex+ans+'°.'};
+  var invShow={cos:'cos\u207b\u00b9',sin:'sin\u207b\u00b9',tan:'tan\u207b\u00b9'}[type];
+  var invAcc={cos:['cos-1','acos','arccos'],sin:['sin-1','asin','arcsin'],tan:['tan-1','atan','arctan']}[type];
+  var numWord={cos:['adjac'],sin:['oppos'],tan:['oppos']}[type];
+  var denWord={cos:['hypoten'],sin:['hypoten'],tan:['adjac']}[type];
+  var numShow={cos:'adjacent',sin:'opposé',tan:'opposé'}[type];
+  var denShow={cos:'hypoténuse',sin:'hypoténuse',tan:'adjacent'}[type];
+  var known=type==='cos'?'l’adjacent et l’hypoténuse':type==='sin'?'le côté opposé et l’hypoténuse':'le côté opposé et l’adjacent';
+  return {type:'cascade',cat:'angle',sig:'A'+type+a3+b3,viz:rtSVG(fig),
+    text:'Calcule la mesure de l’angle « ? », en rédigeant comme au brevet.',
+    steps:[
+      {prompt:'Étape 1 — On connaît '+known+'. Écris la relation à utiliser.',
+       hint:'cos = adjacent÷hypoténuse · sin = opposé÷hypoténuse · tan = opposé÷adjacent.',
+       parts:[{b:1,kind:'text',accept:[type],mode:'contains',show:type,w:78,ph:'cos/sin/tan'},' = ',
+              {b:1,kind:'text',accept:numWord,mode:'contains',show:numShow,w:120,ph:'côté…'},' ÷ ',
+              {b:1,kind:'text',accept:denWord,mode:'contains',show:denShow,w:130,ph:'côté…'}]},
+      {prompt:'Étape 2 — Remplace par les nombres (x = l’angle cherché).',
+       parts:[type+'(x) = ',{b:1,kind:'num',ans:a3,show:''+a3,w:60},' ÷ ',{b:1,kind:'num',ans:b3,show:''+b3,w:60}]},
+      {prompt:'Étape 3 — Pour trouver l’angle, écris la fonction inverse.',
+       hint:'cos⁻¹, sin⁻¹ ou tan⁻¹ — tu peux écrire cos-1, sin-1 ou tan-1.',
+       parts:['x = ',{b:1,kind:'text',accept:invAcc,show:invShow,w:92,ph:'…-1'},'( ',
+              {b:1,kind:'num',ans:a3,show:''+a3,w:56},' ÷ ',{b:1,kind:'num',ans:b3,show:''+b3,w:56},' )']},
+      {prompt:'Étape 4 — Calcule (arrondis au degré).',
+       hint:'x = '+invShow+'('+a3+' ÷ '+b3+') ≈ ?   (touche '+invShow+' dans 🧮)',
+       parts:['x ≈ ',{b:1,kind:'num',ans:ans,tol:1.5,show:''+ans,w:80,ph:'…'},' °']},
+      {prompt:'Étape 5 — Rédige la phrase de conclusion.',
+       parts:['L’angle mesure environ ',{b:1,kind:'num',ans:ans,tol:1.5,show:''+ans,w:80,ph:'…'},' ',
+              {b:1,kind:'text',accept:['°','degre','degres','deg'],show:'°',w:96,ph:'° ou degrés'},'.']}
+    ]};
 }
 var GEN={cotes:genCotes,formule:genFormule,longueur:genLongueur,angle:genAngle};
 
@@ -440,20 +532,22 @@ var GEN={cotes:genCotes,formule:genFormule,longueur:genLongueur,angle:genAngle};
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});setTimeout((function(el){return function(){el.remove();};})(d),fall);}}
 function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;if(s.indexOf('/')>=0){var p=s.split('/');if(p.length!==2)return null;var a=parseFloat(p[0]),b=parseFloat(p[1]);if(!isFinite(a)||!isFinite(b)||b===0)return null;return a/b;}var v=parseFloat(s);return isFinite(v)?v:null;}
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,lastText:'',timer:0};
-function elsTrain(){return {prog:gid('tq_prog'),help:gid('tq_help'),cat:gid('tq_cat'),viz:gid('tq_viz'),text:gid('tq_text'),opts:gid('tq_opts'),ansrow:gid('tq_ansrow'),input:gid('tq_input'),valid:gid('tq_valid'),feed:gid('tq_feed'),stars:gid('tq_stars'),next:gid('tq_next'),card:gid('tq_card'),result:gid('tq_result'),rbig:gid('tq_rbig'),rmsg:gid('tq_rmsg'),rbtns:gid('tq_rbtns')};}
-function elsArene(){return {score:gid('aq_score'),streak:gid('aq_streak'),corr:gid('aq_corr'),tot:gid('aq_tot'),cat:gid('aq_cat'),viz:gid('aq_viz'),text:gid('aq_text'),opts:gid('aq_opts'),ansrow:gid('aq_ansrow'),input:gid('aq_input'),valid:gid('aq_valid'),feed:gid('aq_feed'),stars:gid('aq_stars'),next:gid('aq_next')};}
+function elsTrain(){return {prog:gid('tq_prog'),help:gid('tq_help'),cat:gid('tq_cat'),viz:gid('tq_viz'),text:gid('tq_text'),opts:gid('tq_opts'),ansrow:gid('tq_ansrow'),input:gid('tq_input'),valid:gid('tq_valid'),feed:gid('tq_feed'),stars:gid('tq_stars'),next:gid('tq_next'),casc:gid('tq_casc'),card:gid('tq_card'),result:gid('tq_result'),rbig:gid('tq_rbig'),rmsg:gid('tq_rmsg'),rbtns:gid('tq_rbtns')};}
+function elsArene(){return {score:gid('aq_score'),streak:gid('aq_streak'),corr:gid('aq_corr'),tot:gid('aq_tot'),cat:gid('aq_cat'),viz:gid('aq_viz'),text:gid('aq_text'),opts:gid('aq_opts'),ansrow:gid('aq_ansrow'),input:gid('aq_input'),valid:gid('aq_valid'),feed:gid('aq_feed'),stars:gid('aq_stars'),next:gid('aq_next'),casc:gid('aq_casc')};}
 function quizStart(cats,guided,els){Q.cats=cats;Q.guided=guided;Q.els=els;Q.score=0;Q.answered=0;Q.correct=0;Q.streak=0;Q.locked=false;Q.lastText='';
   if(els.result)els.result.style.display='none';if(els.card)els.card.style.display='block';
   quizScore();quizNext();}
 function quizScore(){var e=Q.els;if(e.score)e.score.textContent=Q.score;if(e.streak)e.streak.textContent=Q.streak;if(e.corr)e.corr.textContent=Q.correct;if(e.tot)e.tot.textContent=Q.answered;
-  if(Q.guided&&e.prog)e.prog.innerHTML='Question <b>'+Math.min(Q.answered+1,SERIE)+'</b> / '+SERIE+'  ·  ✅ '+Q.correct;}
+  if(Q.guided&&e.prog)e.prog.innerHTML='Question <b>'+Math.min(Q.answered+1,serieLen())+'</b> / '+serieLen()+'  ·  ✅ '+Q.correct;}
 function quizNext(){clearTimeout(Q.timer);
-  if(Q.guided&&Q.answered>=SERIE){return quizResult();}
+  if(Q.guided&&Q.answered>=serieLen()){return quizResult();}
   Q.locked=false;var e=Q.els;e.feed.textContent='';e.feed.className='feedback';if(e.stars)e.stars.textContent='';if(e.next)e.next.style.display='none';
-  var cat,cur,tries=0;do{cat=pick(Q.cats);cur=GEN[cat]();tries++;}while(cur.text===Q.lastText&&tries<8);
-  Q.cur=cur;Q.lastText=cur.text;e.cat.textContent=CATNOM[cat];e.text.textContent=cur.text;
+  if(e.casc){e.casc.style.display='none';e.casc.innerHTML='';}
+  var cat,cur,tries=0;do{cat=pick(Q.cats);cur=GEN[cat]();tries++;}while((cur.sig||cur.text)===Q.lastText&&tries<8);
+  Q.cur=cur;Q.lastText=(cur.sig||cur.text);e.cat.textContent=CATNOM[cat];e.text.textContent=cur.text;
   if(e.viz){if(cur.viz){e.viz.innerHTML=cur.viz;e.viz.style.display='block';}else{e.viz.innerHTML='';e.viz.style.display='none';}}
   if(cur.type==='qcm'){e.ansrow.style.display='none';e.opts.style.display='flex';e.opts.innerHTML='';cur.options.forEach(function(o,i){var b=document.createElement('button');b.className='opt';b.textContent=o;b.onclick=function(){quizPick(i);};e.opts.appendChild(b);});}
+  else if(cur.type==='cascade'){e.opts.style.display='none';e.ansrow.style.display='none';cascStart(cur,e);}
   else{e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
 function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
@@ -462,17 +556,85 @@ function quizResolve(ok,correctTxt){Q.locked=true;Q.answered++;var e=Q.els;
   if(ok){Q.correct++;Q.streak++;Q.score+=10+Math.min(Q.streak,5)*2;e.feed.className='feedback ok';e.feed.innerHTML='✅ Bravo !<div class="feedlab">'+Q.cur.explain+'</div>';if(e.stars)e.stars.textContent='⭐'.repeat(Math.min(Q.streak,5));confettis();}
   else{Q.streak=0;e.feed.className='feedback no';e.feed.innerHTML='❌ '+correctTxt+'<div class="feedlab">'+Q.cur.explain+'</div>';if(Q.cur.type==='num'){e.input.classList.add('shake');setTimeout(function(){e.input.classList.remove('shake');},400);}}
   quizScore();
-  var last=Q.guided&&Q.answered>=SERIE;
+  var last=Q.guided&&Q.answered>=serieLen();
   if(ok&&!last){Q.timer=setTimeout(quizNext,1500);}
   else{if(e.next){e.next.textContent=last?'Voir mon résultat ➜':'Suivant ➜';e.next.style.display='inline-flex';}}
 }
 function quizResult(){var e=Q.els;if(!e.result){return;}e.card.style.display='none';e.result.style.display='block';
-  var sc=Q.correct, ok=sc>=SEUIL;try{suiviEnvoi(ok?'Validé':'Échoué',sc,SERIE);}catch(_){}e.rbig.textContent=sc+' / '+SERIE;e.rbig.className='big '+(ok?'ok':'no');
-  e.rmsg.innerHTML= ok ? 'Parcours validé ! Tu as obtenu <b>'+sc+'/'+SERIE+'</b>. Bravo 👏' : 'Il faut <b>'+SEUIL+'/'+SERIE+'</b> pour valider, et tu as eu '+sc+'/'+SERIE+'. Tu peux recommencer avec une nouvelle série, ou passer à la suite si tu préfères.';
+  var SL=serieLen(),SE=seuilFor();
+  var sc=Q.correct, ok=sc>=SE;try{suiviEnvoi(ok?'Validé':'Échoué',sc,SL);}catch(_){}e.rbig.textContent=sc+' / '+SL;e.rbig.className='big '+(ok?'ok':'no');
+  e.rmsg.innerHTML= ok ? 'Parcours validé ! Tu as obtenu <b>'+sc+'/'+SL+'</b>. Bravo 👏' : 'Il faut <b>'+SE+'/'+SL+'</b> pour valider, et tu as eu '+sc+'/'+SL+'. Tu peux recommencer avec une nouvelle série, ou passer à la suite si tu préfères.';
   e.rbtns.innerHTML='';
   if(ok){var b=document.createElement('button');b.className='btn vert';b.textContent='Continuer ➜';b.onclick=trainDone;e.rbtns.appendChild(b);}
   else{var b1=document.createElement('button');b1.className='btn orange';b1.textContent='Nouvelle série 🔄';b1.onclick=function(){startTrain(currentTheme);};e.rbtns.appendChild(b1);
        var b2=document.createElement('button');b2.className='btn fant';b2.textContent='Passer à la suite ➜';b2.onclick=trainDone;e.rbtns.appendChild(b2);}
+}
+/* ===== rédaction guidée (cascade) ===== */
+function cscEl(sel){return Q.casc.box.querySelector(sel);}
+function cascStart(cur,e){
+  Q.casc={q:cur,clean:true,box:e.casc};
+  e.casc.style.display='block';
+  var html='';
+  cur.steps.forEach(function(st,idx){
+    html+='<div class="cstep'+(idx===0?' on':'')+'" id="cstep'+idx+'">'
+        +'<div class="cprompt">'+st.prompt+'</div>'
+        +'<div class="cbody" id="cbody'+idx+'"></div>'
+        +'<div class="cfeed" id="cfeed'+idx+'"></div></div>';
+  });
+  e.casc.innerHTML=html;
+  cascRender(e,0);
+}
+function cascRender(e,idx){
+  var st=Q.casc.q.steps[idx],body=cscEl('#cbody'+idx);body.innerHTML='';st._tries=0;st._done=false;st._blanks=[];
+  if(st.hint){var h=document.createElement('div');h.className='chint';h.textContent=st.hint;body.appendChild(h);}
+  var line=document.createElement('div');line.className='cline';
+  st.parts.forEach(function(p){
+    if(typeof p==='string'){var sp=document.createElement('span');sp.textContent=p;line.appendChild(sp);}
+    else{var inp=document.createElement('input');inp.className='cblank';
+      inp.setAttribute('inputmode',p.kind==='num'?'decimal':'text');inp.autocomplete='off';
+      if(p.ph)inp.placeholder=p.ph;inp.style.width=(p.w||90)+'px';
+      inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();cascVerify(e,idx);}});
+      st._blanks.push({bk:p,el:inp});line.appendChild(inp);}
+  });
+  body.appendChild(line);
+  var row=document.createElement('div');row.className='cverify';
+  var btn=document.createElement('button');btn.className='btn vert';btn.textContent='Vérifier';btn.onclick=function(){cascVerify(e,idx);};
+  row.appendChild(btn);body.appendChild(row);
+  var f=st._blanks[0];if(f)setTimeout(function(){try{f.el.focus();}catch(_){}}, 60);
+}
+function normTxt(s){return String(s).toLowerCase().trim().replace(/\s+/g,'').replace(/[éèê]/g,'e').replace(/[àâ]/g,'a').replace(/[ïî]/g,'i').replace(/[ôö]/g,'o').replace(/[ûü]/g,'u').replace(/[’']/g,'').replace(/\u207b\u00b9/g,'-1');}
+function blankOK(bk,raw){
+  if(bk.kind==='num'){var v=parseNum(raw);return v!==null&&Math.abs(v-bk.ans)<(bk.tol||0.001);}
+  var n=normTxt(raw);if(n==='')return false;
+  if(bk.mode==='contains')return bk.accept.some(function(a){return n.indexOf(a)>=0;});
+  return bk.accept.indexOf(n)>=0;
+}
+function cascVerify(e,idx){
+  var st=Q.casc.q.steps[idx];if(st._done)return;var fb=cscEl('#cfeed'+idx);
+  if(st._blanks.some(function(z){return z.el.value.trim()==='';})){fb.className='cfeed no';fb.textContent='Complète toutes les cases.';return;}
+  var allOK=true;
+  st._blanks.forEach(function(z){var ok=blankOK(z.bk,z.el.value);z.el.classList.remove('cbok','cbno');z.el.classList.add(ok?'cbok':'cbno');if(!ok)allOK=false;});
+  if(allOK){st._done=true;st._blanks.forEach(function(z){z.el.disabled=true;});fb.className='cfeed ok';fb.textContent='✅ Bien rédigé.';cascAdvance(e,idx);}
+  else{st._tries++;
+    if(st._tries>=2){Q.casc.clean=false;st._done=true;
+      st._blanks.forEach(function(z){z.el.value=z.bk.show;z.el.disabled=true;z.el.classList.remove('cbno');z.el.classList.add('cbok');});
+      fb.className='cfeed no';fb.textContent='Je te montre la bonne écriture — lis-la bien avant de continuer.';cascAdvance(e,idx);}
+    else{fb.className='cfeed no';fb.textContent='Pas tout à fait : corrige les cases en orange.';}}
+}
+function cascAdvance(e,idx){
+  var nx=idx+1;
+  if(nx<Q.casc.q.steps.length){var blk=cscEl('#cstep'+nx);blk.classList.add('on');cascRender(e,nx);
+    setTimeout(function(){blk.scrollIntoView({behavior:'smooth',block:'center'});},140);}
+  else{cascDone(e);}
+}
+function cascDone(e){
+  Q.locked=true;Q.answered++;
+  if(Q.casc.clean){Q.correct++;Q.streak++;Q.score+=10+Math.min(Q.streak,5)*2;e.feed.className='feedback ok';
+    e.feed.innerHTML='✅ Rédaction complète, sans erreur. Bravo !';if(e.stars)e.stars.textContent='⭐'.repeat(Math.min(Q.streak,5));confettis();}
+  else{Q.streak=0;e.feed.className='feedback ok';e.feed.innerHTML='👍 Rédaction terminée. Vise zéro erreur pour gagner les étoiles !';if(e.stars)e.stars.textContent='';}
+  quizScore();
+  var last=Q.guided&&Q.answered>=serieLen();
+  if(e.next){e.next.textContent=last?'Voir mon résultat ➜':'Suivant ➜';e.next.style.display='inline-flex';}
 }
 function startTrain(t){currentTheme=t;gid('trainTitle').textContent='Entraînement — '+TITLE[t];go('ecranTrain');var els=elsTrain();els.help.textContent=HELP[t];quizStart(THEME_CATS[t],true,els);}
 function trainDone(){var t=currentTheme;themeDone[t]=true;var idx=ORDER.indexOf(t);if(idx<ORDER.length-1){var nx=ORDER[idx+1];unlocked[nx]=true;updateMap();openTheme(nx);}else{unlocked.arene=true;updateMap();go('arene');}}
