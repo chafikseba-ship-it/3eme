@@ -122,7 +122,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)}.cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -222,7 +222,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON vocabulaire -->
 <section id="expVocabulaire" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Vocabulaire des probabilités</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Vocabulaire des probabilités</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--violet)">Définition</span>
     <p class="lead">Une <b>expérience aléatoire</b> est une expérience dont on connaît tous les résultats possibles, mais dont on ne peut pas prédire le résultat : c'est le hasard qui décide.</p>
@@ -253,7 +253,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON probabilite -->
 <section id="expProbabilite" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Calculer une probabilité</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Calculer une probabilité</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--teal)">La formule</span>
     <p class="lead">En situation d'<b>équiprobabilité</b> (toutes les issues ont la même chance) :</p>
@@ -281,7 +281,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON frequence -->
 <section id="expFrequence" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Fréquence et probabilité</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Fréquence et probabilité</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--orange)">Définition</span>
     <p class="lead">La <b>fréquence expérimentale</b> d'un événement est le rapport entre le nombre de fois où il est apparu et le nombre total d'expériences réalisées.</p>
@@ -303,7 +303,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON arbre -->
 <section id="expArbre" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Arbre de probabilités</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Arbre de probabilités</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--vert)">Lecture d'un arbre</span>
     <p class="lead">Un arbre de probabilités représente une expérience en <b>plusieurs étapes</b>. Chaque branche porte la probabilité de l'issue correspondante.</p>
@@ -351,7 +351,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON conditionnelle -->
 <section id="expConditionnelle" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Probabilité conditionnelle</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Probabilité conditionnelle</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--bleu)">Tableau double entrée</span>
     <p class="lead">Un tableau à double entrée permet de lire directement des probabilités.</p>
@@ -377,7 +377,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON redaction -->
 <section id="expRedaction" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Rédiger une solution</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Rédiger une solution</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--or)">Méthode brevet</span>
     <p class="lead">Une bonne rédaction de probabilités suit toujours ces étapes :</p>
@@ -399,7 +399,7 @@ button,input{touch-action:manipulation}
 
 <!-- ENTRAÎNEMENT -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -427,7 +427,7 @@ button,input{touch-action:manipulation}
 
 <!-- ARÈNE -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'arène du hasard</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'arène du hasard</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Parcours terminé ! Entraînement libre, sans note.</p>
     <div class="catgrid">
@@ -806,7 +806,7 @@ function quizNext(){clearTimeout(Q.timer);
   else{e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
 
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
 
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne réponse : '+Q.cur.options[Q.cur.correct]+'.');}
 

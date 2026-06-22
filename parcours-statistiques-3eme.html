@@ -120,7 +120,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)}.cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -202,7 +202,6 @@ button,input{touch-action:manipulation}
 <div style="background:#3a3a3a;color:#fff;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:'Fredoka',sans-serif;font-size:14px;position:sticky;top:0;z-index:999;">
   <span style="background:#EF5D60;padding:3px 10px;border-radius:10px;font-weight:600;">VERSION TEST</span>
   <button onclick="quizNext()" style="font-family:'Fredoka',sans-serif;font-size:14px;border:none;cursor:pointer;background:#5a5a5a;color:#fff;border-radius:12px;padding:7px 12px;">⏭ Passer question</button>
-  <button onclick="Object.keys(unlocked).forEach(function(k){unlocked[k]=true;});updateMap();" style="font-family:'Fredoka',sans-serif;font-size:14px;border:none;cursor:pointer;background:#5a5a5a;color:#fff;border-radius:12px;padding:7px 12px;">🔓 Tout débloquer</button>
 </div>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <div class="wrap">
@@ -242,7 +241,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON VOCABULAIRE ====== -->
 <section id="expVocabulaire" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>📖 Vocabulaire statistique</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>📖 Vocabulaire statistique</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--violet)">🌟 Notre histoire du jour</span>
@@ -290,7 +289,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON ÉTENDUE ====== -->
 <section id="expEtendue" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>📏 L'étendue</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>📏 L'étendue</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--teal)">C'est quoi l'étendue ? 🤔</span>
@@ -304,7 +303,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON MOYENNE ====== -->
 <section id="expMoyenne" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>➕ La moyenne</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>➕ La moyenne</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--orange)">Étape 1 — La formule 📐</span>
@@ -338,7 +337,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON MÉDIANE ====== -->
 <section id="expMediane" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🎯 La médiane</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🎯 La médiane</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--vert)">Étape 1 — C'est quoi ? 🤔</span>
@@ -402,7 +401,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON FRÉQUENCES ====== -->
 <section id="expFrequences" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🔢 Les fréquences</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🔢 Les fréquences</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--bleu)">C'est quoi une fréquence ? 📐</span>
@@ -428,7 +427,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== LEÇON DIAGRAMMES ====== -->
 <section id="expDiagrammes" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>📊 Les diagrammes</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>📊 Les diagrammes</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--or)">Diagramme en barres 📊</span>
@@ -476,7 +475,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== ÉCRAN ENTRAÎNEMENT ====== -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -504,7 +503,7 @@ button,input{touch-action:manipulation}
 
 <!-- ====== ARÈNE ====== -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>⚔️ L'arène des stats !</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>⚔️ L'arène des stats !</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">🏆 Parcours terminé ! Maintenant tu t'entraînes librement. Choisis ton thème !</p>
     <div class="catgrid">
@@ -930,7 +929,7 @@ function quizNext(){clearTimeout(Q.timer);
   else{e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
 
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre ! 🔢';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
 
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne réponse : '+Q.cur.options[Q.cur.correct]+'.');}
 

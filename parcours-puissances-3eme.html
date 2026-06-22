@@ -119,7 +119,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)}.cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -221,7 +221,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 1 : BASES ===================== -->
 <section id="expBases" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🔢 Qu'est-ce qu'une puissance ?</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🔢 Qu'est-ce qu'une puissance ?</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--violet)">👀 Observe</span>
@@ -297,7 +297,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 2 : PUISSANCES DE 10 ===================== -->
 <section id="expPuissances10" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🔟 Puissances de 10</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🔟 Puissances de 10</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--teal)">🌟 L'idée magique</span>
@@ -343,7 +343,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 3 : RÈGLES ===================== -->
 <section id="expRegles" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>📐 Règles de calcul</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>📐 Règles de calcul</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--orange)">✖ Règle 1 — Multiplier des puissances</span>
@@ -394,7 +394,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 4 : PUISSANCES NÉGATIVES ===================== -->
 <section id="expNegatif" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>➖ Puissances négatives</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>➖ Puissances négatives</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--vert)">🔍 Découvrons ensemble</span>
@@ -436,7 +436,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 5 : RACINES CARRÉES ===================== -->
 <section id="expRacines" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>√ Racines carrées</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>√ Racines carrées</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--bleu)">🔄 C'est l'inverse du carré !</span>
@@ -489,7 +489,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===================== LEÇON 6 : NOTATION SCIENTIFIQUE ===================== -->
 <section id="expScientifique" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🔬 Notation scientifique</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🔬 Notation scientifique</h2></div>
 
   <div class="card">
     <span class="tag" style="background:var(--or)">🌍 Pourquoi ?</span>
@@ -538,7 +538,7 @@ button,input{touch-action:manipulation}
 
 <!-- ENTRAÎNEMENT -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -566,7 +566,7 @@ button,input{touch-action:manipulation}
 
 <!-- ARÈNE -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>⚔️ L'arène des puissances</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>⚔️ L'arène des puissances</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">🎉 Parcours terminé ! Entraînement libre, sans note.</p>
     <div class="catgrid">
@@ -851,7 +851,7 @@ function quizNext(){clearTimeout(Q.timer);
   else{e.text.innerHTML=cur.text;e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
 
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
 
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne réponse : '+Q.cur.options[Q.cur.correct]+'.');}
 

@@ -128,7 +128,7 @@ input[type=range]{width:70%;max-width:320px;height:30px;accent-color:var(--bleu)
 .helpnote{font-size:.95rem;color:var(--bois-clair);font-weight:700;margin:6px 0 4px}
 .ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
 .ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;border:3px solid #f0dca8;border-radius:16px;padding:12px;width:160px;color:var(--bois)}
-.ansrow input:focus{outline:none;border-color:var(--or-bas)}
+.ansrow input:focus{outline:3px solid var(--or-bas);outline-offset:2px;border-color:var(--or-bas)}
 .opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:16px 0}
 .opt{font-family:'Fredoka';font-weight:700;font-size:1.1rem;border:3px solid #e7d3a8;background:var(--blanc);color:var(--bois);
   border-radius:16px;padding:12px 20px;cursor:pointer;box-shadow:0 5px 0 #e7d3a8}
@@ -177,7 +177,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)} .cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois,#5C3D2E);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas,#E0A93B);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois,#5C3D2E)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas,#2f9aa6);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas,#2f9aa6);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -268,25 +268,25 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expTest" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Tester une solution</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Tester une solution</h2></div>
   <div class="card"><span class="tag" style="background:var(--violet)">La leçon</span><p class='lead'>Une <b>solution</b> d’une équation est une valeur de l’inconnue qui rend l’égalité vraie. Pour tester une valeur, on la remplace dans les deux membres : si on obtient le même résultat, c’est une solution.</p><p class='note'>Exemple : pour 3x − 1 = 8 et x = 3 → 3 × 3 − 1 = 8. Vrai → 3 est solution.</p></div>
   <div class="mid"><button class="btn vert" onclick="startTrain('test')">Je m’entraîne ➜</button></div>
 </section>
 
 <section id="expPrem1" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Équations du premier degré</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Équations du premier degré</h2></div>
   <div class="card"><span class="tag" style="background:var(--teal)">La leçon</span><p class='lead'>On regroupe les x d’un côté et les nombres de l’autre, puis on divise. Ce qui passe de l’autre côté du « = » change d’opération (+ devient −, × devient ÷).</p><p class='note'>Exemple : 3x − 1 = 8 → 3x = 9 → x = 3.</p></div>
   <div class="mid"><button class="btn vert" onclick="startTrain('prem1')">Je m’entraîne ➜</button></div>
 </section>
 
 <section id="expModelisation" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Modéliser un problème</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Modéliser un problème</h2></div>
   <div class="card"><span class="tag" style="background:var(--bleu)">La leçon</span><p class='lead'>Mettre un problème <b>en équation</b>, c’est traduire l’énoncé avec une inconnue. On suit toujours le même ordre : on <b>choisit l’inconnue</b> (on pose x = …), on <b>écrit l’équation</b> qui traduit l’énoncé, on <b>résout</b>, puis on <b>conclut</b> par une phrase.</p><p class='note'>Exemple (programme de calcul) : « je multiplie un nombre par 3 puis j’ajoute 4, j’obtiens 19 » se traduit par 3x + 4 = 19.</p></div>
   <div class="mid"><button class="btn vert" onclick="startTrain('modelisation')">Je m’entraîne ➜</button></div>
 </section>
 
 <section id="expProd" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Équation produit nul</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Équation produit nul</h2></div>
   <div class="card"><span class="tag" style="background:var(--orange)">La leçon</span><p class='lead'>Un <b>produit de facteurs est nul</b> si, et seulement si, au moins un des facteurs est nul. Donc (x − a)(x − b) = 0 quand x − a = 0 <b>ou</b> x − b = 0.</p><p class='note'>Exemple : (x − 3)(x + 2) = 0 → x = 3 ou x = −2.</p></div>
   <div class="card" style="text-align:center">
     <p class="lead" style="margin-top:0">À toi : <b>(x − 3)(x + 2) = 0</b></p>
@@ -303,7 +303,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expCarre" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Équation x² = a</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Équation x² = a</h2></div>
   <div class="card"><span class="tag" style="background:var(--vert)">La leçon</span><p class='lead'>Si <b>a > 0</b>, l’équation x² = a a <b>deux solutions</b> : √a et −√a. Si <b>a = 0</b>, une seule solution : 0. Si <b>a &lt; 0</b>, <b>aucune solution</b> (un carré n’est jamais négatif).</p><p class='note'>Exemple : x² = 49 → x = 7 ou x = −7.</p></div>
   <div class="card" style="text-align:center">
     <p class="lead" style="margin-top:0">À toi : <b>x² = 36</b></p>
@@ -316,7 +316,7 @@ button,input{touch-action:manipulation}
   <div class="mid"><button class="btn vert" onclick="startTrain('carre')">Je m’entraîne ➜</button></div>
 </section>
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -343,7 +343,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L’arène des stats</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L’arène des stats</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Bravo, séquence terminée ! Entraînement libre, sans note.</p>
     <div class="catgrid">
@@ -606,7 +606,7 @@ function quizNext(){clearTimeout(Q.timer);
   else if(cur.type==='cascade'){e.opts.style.display='none';e.ansrow.style.display='none';cascStart(cur,e);}
   else{e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La réponse est '+Q.cur.disp+'.');}
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne réponse : '+Q.cur.options[Q.cur.correct]+'.');}
 function quizResolve(ok,correctTxt){Q.locked=true;Q.answered++;var e=Q.els;
   if(ok){Q.correct++;Q.streak++;Q.score+=10+Math.min(Q.streak,5)*2;e.feed.className='feedback ok';e.feed.innerHTML='✅ Bravo !<div class="feedlab">'+Q.cur.explain+'</div>';if(e.stars)e.stars.textContent='⭐'.repeat(Math.min(Q.streak,5));confettis();}

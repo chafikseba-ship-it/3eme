@@ -128,7 +128,7 @@ input[type=range]{width:70%;max-width:320px;height:30px;accent-color:var(--bleu)
 .helpnote{font-size:.95rem;color:var(--bois-clair);font-weight:700;margin:6px 0 4px}
 .ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
 .ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;border:3px solid #f0dca8;border-radius:16px;padding:12px;width:160px;color:var(--bois)}
-.ansrow input:focus{outline:none;border-color:var(--or-bas)}
+.ansrow input:focus{outline:3px solid var(--or-bas);outline-offset:2px;border-color:var(--or-bas)}
 .opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:16px 0}
 .opt{font-family:'Fredoka';font-weight:700;font-size:1.1rem;border:3px solid #e7d3a8;background:var(--blanc);color:var(--bois);
   border-radius:16px;padding:12px 20px;cursor:pointer;box-shadow:0 5px 0 #e7d3a8}
@@ -275,7 +275,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== POLYGONES : explication ===== -->
 <section id="expPoly" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Aires des polygones</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Aires des polygones</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--violet)">Rectangle &amp; carré</span>
     <div class="figbox" id="figR"></div>
@@ -295,7 +295,7 @@ button,input{touch-action:manipulation}
   <div class="mid"><button class="btn orange" onclick="go('toolPoly')">À l'atelier ➜</button></div>
 </section>
 <section id="toolPoly" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'atelier des aires</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'atelier des aires</h2></div>
   <div class="card">
     <p class="lead" style="text-align:center">Choisis une figure, entre les longueurs, et l'aire se calcule toute seule.</p>
     <div class="chips" id="pgChips"></div>
@@ -308,7 +308,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== DISQUE ===== -->
 <section id="expDisque" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Aire du disque</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Aire du disque</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--teal)">La formule</span>
     <div class="figbox" id="figD"></div>
@@ -319,7 +319,7 @@ button,input{touch-action:manipulation}
   <div class="mid"><button class="btn orange" onclick="go('toolDisque')">À l'atelier ➜</button></div>
 </section>
 <section id="toolDisque" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'atelier du disque</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'atelier du disque</h2></div>
   <div class="card">
     <p class="lead" style="text-align:center">Entre le rayon et regarde l'aire exacte (en π) et la valeur approchée.</p>
     <div class="chips" id="dqChips"></div>
@@ -332,7 +332,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== VOCABULAIRE DES SOLIDES ===== -->
 <section id="expSolides" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Vocabulaire des solides</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Vocabulaire des solides</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--orange)">Explore le cube</span>
     <p class="lead" style="text-align:center">Touche un bouton : le cube met en valeur ses faces, ses arêtes ou ses sommets.</p>
@@ -352,7 +352,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== PAVES ===== -->
 <section id="expPave" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Volumes : pavé &amp; cube</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Volumes : pavé &amp; cube</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--vert)">Pavé droit</span>
     <div class="figbox" id="figPv"></div>
@@ -367,7 +367,7 @@ button,input{touch-action:manipulation}
   <div class="mid"><button class="btn orange" onclick="go('toolPave')">À l'atelier ➜</button></div>
 </section>
 <section id="toolPave" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'atelier des volumes</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'atelier des volumes</h2></div>
   <div class="card">
     <p class="lead" style="text-align:center">Choisis le solide, entre les dimensions, le volume se calcule.</p>
     <div class="chips" id="pvChips"></div>
@@ -380,7 +380,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== PRISMES ===== -->
 <section id="expPrisme" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Volumes : prisme &amp; cylindre</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Volumes : prisme &amp; cylindre</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--bleu)">La règle commune</span>
     <div class="mid"><span class="formule" style="border-color:var(--bleu-bas)">V = aire de base × hauteur</span></div>
@@ -400,7 +400,7 @@ button,input{touch-action:manipulation}
   <div class="mid"><button class="btn orange" onclick="go('toolPrisme')">À l'atelier ➜</button></div>
 </section>
 <section id="toolPrisme" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'atelier des solides</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'atelier des solides</h2></div>
   <div class="card">
     <p class="lead" style="text-align:center">Choisis le solide, entre les dimensions, le volume se calcule (exact en π pour le cylindre).</p>
     <div class="chips" id="prChips"></div>
@@ -413,7 +413,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== ENTRAÎNEMENT ===== -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card">
     <div class="scorebar"><span class="pill">⭐ <span id="tq_score">0</span></span><span class="pill">🔥 <span id="tq_streak">0</span></span></div>
     <div class="qcard">
@@ -441,7 +441,7 @@ button,input{touch-action:manipulation}
 
 <!-- ===== ARÈNE ===== -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'arène des formules</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'arène des formules</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Bravo, séquence terminée ! Choisis ton entraînement libre.</p>
     <div class="catgrid">
@@ -681,8 +681,9 @@ function quizNext(){
 function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;
   if(s.includes('/')){const p=s.split('/');if(p.length!==2)return null;const a=parseFloat(p[0]),b=parseFloat(p[1]);if(!isFinite(a)||!isFinite(b)||b===0)return null;return a/b;}
   const v=parseFloat(s);return isFinite(v)?v:null;}
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;const e=Q.els;const v=parseNum(e.input.value);
-  if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;const e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}
+  const v=parseNum(e.input.value);
+  if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}
   e.input.disabled=true;e.valid.disabled=true;
   var ok;
   if(typeof Q.cur.piCoef==='number'){

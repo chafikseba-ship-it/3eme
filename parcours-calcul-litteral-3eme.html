@@ -118,7 +118,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)}.cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -208,7 +208,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expVocabulaire" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#128214; Vocabulaire du calcul litt&#233;ral</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#128214; Vocabulaire du calcul litt&#233;ral</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--violet)">&#129522; Les briques de base</span>
     <p class="lead">Une <b>expression litt&#233;rale</b> contient des lettres (variables) et des nombres. Exemple&#160;: <span class="formule">3x + 5</span></p>
@@ -230,7 +230,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expDevelopper" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#128208; D&#233;velopper une expression</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#128208; D&#233;velopper une expression</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--teal)">&#128309; Distributivit&#233; simple</span>
     <p class="lead">k<span class="op-fois">&#8901;</span>(ax + b) = k<span class="op-fois">&#8901;</span>ax + k<span class="op-fois">&#8901;</span>b</p>
@@ -248,7 +248,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expIdentites" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#128483; Identit&#233;s remarquables</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#128483; Identit&#233;s remarquables</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--orange)">&#11088; Les 3 identit&#233;s &#224; conna&#238;tre par c&#339;ur&#160;!</span>
     <div class="id-box"><b>1. (a + b)&#178; = a&#178; + 2ab + b&#178;</b><br><small>Preuve&#160;: (a+b)<span class="op-fois">&#8901;</span>(a+b) = a<span class="op-fois">&#8901;</span>a + a<span class="op-fois">&#8901;</span>b + b<span class="op-fois">&#8901;</span>a + b<span class="op-fois">&#8901;</span>b = a&#178; + 2ab + b&#178;</small></div>
@@ -266,7 +266,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expReduire" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#9986;&#65039; R&#233;duire une expression</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#9986;&#65039; R&#233;duire une expression</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--vert)">&#128204; R&#232;gles des parenth&#232;ses</span>
     <div class="step-example"><b>+ (ax + b)</b> = +ax + b &#8592; signe + : on garde tout</div>
@@ -284,7 +284,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expFactoriser" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#129329; Factoriser une expression</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#129329; Factoriser une expression</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--bleu)">&#128269; C'est quoi factoriser&#160;?</span>
     <p class="lead">Factoriser = &#233;crire comme un <b>PRODUIT</b> de facteurs (avec des parenth&#232;ses). C'est l'<em>oppos&#233;</em> de d&#233;velopper&#160;!</p>
@@ -305,7 +305,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">&#8592;</button><h2 id="trainTitle">Entra&#238;nement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">&#8592;</button><h2 id="trainTitle">Entra&#238;nement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -332,7 +332,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">&#8592;</button><h2>&#9876;&#65039; L'ar&#232;ne du calcul</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">&#8592;</button><h2>&#9876;&#65039; L'ar&#232;ne du calcul</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Parcours termin&#233;&#160;! Entra&#238;nement libre, sans note.</p>
     <div class="catgrid">
@@ -658,7 +658,7 @@ function quizNext(){clearTimeout(Q.timer);
   else{e.opts.style.display='none';e.ansrow.style.display='flex';e.input.value='';e.input.disabled=false;e.valid.disabled=false;e.input.focus();}
   quizScore();}
 
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='\u00c9cris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La r\u00e9ponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La r\u00e9ponse est '+Q.cur.disp+'.');}
 
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne r\u00e9ponse\u00a0: '+Q.cur.options[Q.cur.correct]+'.');}
 

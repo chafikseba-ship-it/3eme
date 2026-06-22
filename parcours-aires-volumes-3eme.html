@@ -139,7 +139,7 @@ h1,h2,h3,.fr{font-family:'Fredoka',sans-serif;font-weight:700}
 .question .v{color:var(--orange-bas)}
 .ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
 .ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;border:3px solid #f0dca8;border-radius:16px;padding:12px;width:180px;color:var(--bois)}
-.ansrow input:focus{outline:none;border-color:var(--or-bas)}
+.ansrow input:focus{outline:3px solid var(--or-bas);outline-offset:2px;border-color:var(--or-bas)}
 .feedback{min-height:2.2em;font-family:'Fredoka';font-weight:700;font-size:1.1rem;margin-top:6px;line-height:1.4}
 .feedback.ok{color:var(--vert-bas)}
 .feedback.no{color:var(--orange-bas)}
@@ -222,7 +222,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== LONGUEUR : explication ===== -->
 <section id="expL" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Longueur</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Longueur</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--vert)">Explication</span>
     <p class="lead">Pour les longueurs, chaque fois qu'on change d'unité on multiplie ou on divise par <b>10</b>. Découpons 1 m en dm.</p>
@@ -236,7 +236,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== AIRE : explication ===== -->
 <section id="expA" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Aire</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Aire</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--orange)">Explication</span>
     <p class="lead">Un carré de <b>1 m</b> de côté a une aire de <b>1 m²</b>. Découpons-le en carrés de <b>1 dm</b> de côté.</p>
@@ -262,7 +262,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== VOLUME : explication ===== -->
 <section id="expV" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Volume</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Volume</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--teal)">Explication</span>
     <p class="lead">Un cube de <b>1 m</b> d'arête a un volume de <b>1 m³</b>. On le remplit de petits cubes de <b>1 dm</b> : une <b>ligne</b> = 10, un <b>étage</b> = 100, et il faut 10 étages.</p>
@@ -288,7 +288,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== TABLEAU (générique) ===== -->
 <section id="ecranTable" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2 id="tableTitle">Le tableau</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2 id="tableTitle">Le tableau</h2></div>
   <div class="card">
     <p class="lead">Écris ton nombre, <b>un chiffre par case</b>. Place le chiffre des unités dans la colonne de ton unité de départ. Puis <b>clique entre deux cases pour placer la virgule</b> ; clique à un autre endroit pour la déplacer jusqu'à l'unité d'arrivée.</p>
     <div class="tablescroll"><div id="tableHolder"></div></div>
@@ -304,7 +304,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== ENTRAÎNEMENT imposé (générique) ===== -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card">
     <div class="scorebar">
       <span class="pill">⭐ <span id="tq_score">0</span></span>
@@ -329,7 +329,7 @@ button,input,.tslot{touch-action:manipulation}
 
 <!-- ===== ARÈNE finale ===== -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L'arène des conversions</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L'arène des conversions</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Bravo, tu as fini le parcours ! Choisis ton entraînement libre.</p>
     <div class="catgrid">
@@ -608,8 +608,9 @@ function quizExplain(){
 }
 function quizValidate(){
   if(Q.locked||!Q.els)return;const e=Q.els;
+  if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}
   const g=normalizeNum(e.input.value);
-  if(g===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre (ex. 12,5).';return;}
+  if(g===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide (ex. 12,5).';return;}
   Q.locked=true;e.input.disabled=true;e.valid.disabled=true;Q.total++;
   const ok=g===Q.answer;
   if(ok){

@@ -82,7 +82,7 @@ h1,h2,h3,.fr{font-family:'Fredoka',sans-serif;font-weight:700}
 .helpnote{font-size:.95rem;color:var(--bois-clair);font-weight:700;margin:6px 0 4px}
 .ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
 .ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;border:3px solid #f0dca8;border-radius:16px;padding:12px;width:160px;color:var(--bois)}
-.ansrow input:focus{outline:none;border-color:var(--or-bas)}
+.ansrow input:focus{outline:3px solid var(--or-bas);outline-offset:2px;border-color:var(--or-bas)}
 .opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:16px 0}
 .opt{font-family:'Fredoka';font-weight:700;font-size:1.1rem;border:3px solid #e7d3a8;background:var(--blanc);color:var(--bois);
   border-radius:16px;padding:12px 20px;cursor:pointer;box-shadow:0 5px 0 #e7d3a8}
@@ -126,7 +126,7 @@ button,input{touch-action:manipulation}
 .cfeed.ok{color:var(--vert-bas)} .cfeed.no{color:var(--orange-bas)}
 .cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;border-bottom:3px solid var(--or-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
-.cblank:focus{outline:none;border-bottom-color:var(--teal-bas,#2f9aa6);background:#fffdf3}
+.cblank:focus{outline:3px solid var(--or-bas);outline-offset:1px;border-bottom-color:var(--teal-bas,#2f9aa6);background:#fffdf3}
 .cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
 .cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
 .cverify{margin-top:10px}
@@ -158,6 +158,28 @@ button,input{touch-action:manipulation}
 .kc-key.fn{background:#eef6f8;color:var(--teal-bas);font-size:1.05rem}
 .kc-key.act{background:var(--rouge);color:#fff;box-shadow:0 4px 0 var(--rouge-bas)}
 .kc-key.eq{background:var(--vert);color:#fff;box-shadow:0 4px 0 var(--vert-bas)}
+.kc-tabs{display:flex;gap:6px;margin-bottom:10px}
+.kc-tab{flex:1;border:none;border-radius:10px;padding:8px 4px;font-family:'Fredoka';font-weight:700;font-size:.9rem;cursor:pointer;background:var(--creme);color:var(--bois-clair);box-shadow:0 3px 0 #e7d3a8}
+.kc-tab.active{background:var(--teal);color:#fff;box-shadow:0 3px 0 var(--teal-bas)}
+.kc-tab:active{transform:translateY(2px)}
+.kcf-zone{padding:2px 0}
+.kcf-display{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 2px;flex-wrap:wrap}
+.kcf-frac{display:inline-flex;flex-direction:column;align-items:center;gap:2px}
+.kcf-in{width:58px;text-align:center;border:2px solid #e7d3a8;border-radius:10px;padding:7px 4px;font-family:'Fredoka';font-weight:700;font-size:1.25rem;color:var(--bois);background:#fff;-webkit-appearance:none}
+.kcf-in:focus{outline:none;border-color:var(--teal-bas);box-shadow:0 0 0 2px rgba(46,138,152,.25)}
+.kcf-bar{width:58px;height:3px;background:var(--bois);border-radius:2px}
+.kcf-sym{font-family:'Fredoka';font-weight:700;font-size:1.6rem;color:var(--orange-bas);padding:0 2px;align-self:center}
+.kcf-eq{font-family:'Fredoka';font-weight:700;font-size:1.4rem;color:var(--vert-bas);padding:0 2px;align-self:center}
+.kcf-res-box{text-align:center;background:#2b2b2b;border-radius:12px;padding:10px 8px;margin:8px 0 4px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.kcf-rfrac{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
+.kcf-rfrac .rnum{font-family:'Fredoka';font-weight:700;font-size:1.4rem;color:#fff;line-height:1.1}
+.kcf-rfrac .rbar{width:40px;height:3px;background:#fff;border-radius:2px;margin:2px 0}
+.kcf-rfrac .rden{font-family:'Fredoka';font-weight:700;font-size:1.4rem;color:#fff;line-height:1.1}
+.kcf-rdec{font-family:'Fredoka';font-size:.85rem;color:#9ac8d4;margin-top:2px}
+.kcf-rint{font-family:'Fredoka';font-weight:700;font-size:1.6rem;color:#fff}
+.kcf-empty{font-family:'Fredoka';color:#666;font-size:.95rem}
+.kcf-ops-row{display:flex;gap:7px;justify-content:center;margin:6px 0}
+
 .figbox{margin:8px auto 4px;text-align:center}
 .steps{list-style:none;padding:0;margin:8px 0;counter-reset:st}
 .steps li{position:relative;padding:8px 8px 8px 42px;margin:6px 0;background:var(--blanc);border-radius:12px;box-shadow:0 3px 0 rgba(92,61,46,.1);font-weight:700;color:var(--bois)}
@@ -245,7 +267,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON FRACTIONS ÉGALES -->
 <section id="expEgales" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>⚖️ Fractions égales</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>⚖️ Fractions égales</h2></div>
 
   <div id="eg_step0" class="lex-step active">
     <div class="card">
@@ -321,7 +343,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON COMPARER -->
 <section id="expComparer" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🔢 Comparer des fractions</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🔢 Comparer des fractions</h2></div>
 
   <div id="cmp_step0" class="lex-step active">
     <div class="card">
@@ -389,7 +411,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON FRACTION D'UNE QUANTITÉ -->
 <section id="expQuantite" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>🍰 Fraction d'une quantité</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>🍰 Fraction d'une quantité</h2></div>
 
   <div id="qte_step0" class="lex-step active">
     <div class="card">
@@ -431,7 +453,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON MULTIPLIER -->
 <section id="expMultiplier" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>✖️ Multiplier des fractions</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>✖️ Multiplier des fractions</h2></div>
 
   <div id="mul_step0" class="lex-step active">
     <div class="card">
@@ -477,7 +499,7 @@ button,input{touch-action:manipulation}
 
 <!-- LEÇON ADDITIONNER -->
 <section id="expAdditionner" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>➕ Additionner / Soustraire</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>➕ Additionner / Soustraire</h2></div>
 
   <div id="add_step0" class="lex-step active">
     <div class="card">
@@ -547,7 +569,7 @@ button,input{touch-action:manipulation}
 
 <!-- ÉCRAN ENTRAÎNEMENT -->
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card" id="tq_card">
     <div class="serieprog" id="tq_prog"></div>
     <div class="helpnote" id="tq_help"></div>
@@ -580,7 +602,7 @@ button,input{touch-action:manipulation}
 
 <!-- ARÈNE -->
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>⚔️ L'arène des fractions !</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>⚔️ L'arène des fractions !</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Bravo, séquence terminée ! Entraînement libre, sans note.</p>
     <div class="catgrid">
@@ -621,8 +643,41 @@ button,input{touch-action:manipulation}
 <button id="kcFab" class="kc-fab" onclick="kcToggle()" aria-label="Ouvrir la calculatrice">🧮</button>
 <div id="kcPanel" class="kc-panel" hidden role="dialog" aria-label="Calculatrice">
   <div class="kc-head"><span>Calculatrice</span><button class="kc-x" onclick="kcToggle()" aria-label="Fermer">✕</button></div>
-  <div class="kc-screen"><div class="kc-expr" id="kcExpr"></div><div class="kc-res" id="kcRes">0</div></div>
-  <div class="kc-keys" id="kcKeys"></div>
+  <div class="kc-tabs">
+    <button class="kc-tab active" id="kcTabStd" onclick="kcSwitchTab('std')">Standard</button>
+    <button class="kc-tab" id="kcTabFrac" onclick="kcSwitchTab('frac')">Fractions</button>
+  </div>
+  <div id="kcStdPanel">
+    <div class="kc-screen"><div class="kc-expr" id="kcExpr"></div><div class="kc-res" id="kcRes">0</div></div>
+    <div class="kc-keys" id="kcKeys"></div>
+  </div>
+  <div id="kcFracPanel" style="display:none" class="kcf-zone">
+    <div class="kcf-display">
+      <div class="kcf-frac">
+        <input class="kcf-in" id="kcfN1" type="text" inputmode="numeric" placeholder="num" maxlength="4" autocomplete="off">
+        <div class="kcf-bar"></div>
+        <input class="kcf-in" id="kcfD1" type="text" inputmode="numeric" placeholder="den" maxlength="4" autocomplete="off">
+      </div>
+      <span class="kcf-sym" id="kcfOpSym">+</span>
+      <div class="kcf-frac">
+        <input class="kcf-in" id="kcfN2" type="text" inputmode="numeric" placeholder="num" maxlength="4" autocomplete="off">
+        <div class="kcf-bar"></div>
+        <input class="kcf-in" id="kcfD2" type="text" inputmode="numeric" placeholder="den" maxlength="4" autocomplete="off">
+      </div>
+      <span class="kcf-eq">=</span>
+      <div class="kcf-res-box" id="kcfRes"><span class="kcf-empty">?</span></div>
+    </div>
+    <div class="kcf-ops-row">
+      <button class="kc-key op" onclick="kcfSetOp('+')">+</button>
+      <button class="kc-key op" onclick="kcfSetOp('−')">−</button>
+      <button class="kc-key op" onclick="kcfSetOp('×')">×</button>
+      <button class="kc-key op" onclick="kcfSetOp('÷')">÷</button>
+      <button class="kc-key eq" onclick="kcfCalc()">=</button>
+      <button class="kc-key fn" onclick="kcfSimp1()">Simplifier</button>
+      <button class="kc-key act" onclick="kcfClear()">C</button>
+    </div>
+    <p style="font-family:'Fredoka';font-size:.8rem;color:var(--bois-clair);text-align:center;margin:4px 0 0">Clique = après avoir rempli les cases</p>
+  </div>
 </div>
 
 <script>
@@ -960,7 +1015,7 @@ function pickSign(s){
   quizResolve(s===Q.cur.correct,Q.cur.explain);
 }
 
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='\u00c9cris un nombre.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La r\u00e9ponse est '+Q.cur.disp+'.');}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;var e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}var v=parseNum(e.input.value);if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}e.input.disabled=true;e.valid.disabled=true;var tol=Q.cur.tol||0.01;quizResolve(Math.abs(v-Q.cur.answer)<tol,'La r\u00e9ponse est '+Q.cur.disp+'.');}
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;var e=Q.els;var btns=[].slice.call(e.opts.children);btns.forEach(function(b,j){if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');quizResolve(i===Q.cur.correct,'La bonne r\u00e9ponse\u00a0: '+Q.cur.options[Q.cur.correct]+'.');}
 function quizResolve(ok,correctTxt){Q.locked=true;Q.answered++;var e=Q.els;
   if(ok){Q.correct++;Q.streak++;Q.score+=10+Math.min(Q.streak,5)*2;e.feed.className='feedback ok';e.feed.innerHTML='\u2705 Bravo\u00a0!'+(Q.cur.explain?'<div class="feedlab">'+Q.cur.explain+'</div>':'');if(e.stars)e.stars.textContent='\u2b50'.repeat(Math.min(Q.streak,5));confettis();}
@@ -1117,6 +1172,57 @@ function kcClear(){kcS='';kcJust=false;kcRender();}
 function kcBack(){if(kcJust)kcJust=false;kcS=kcS.slice(0,-1);kcRender();}
 function kcEq(){var v=kcEval(kcS);if(v===null){gid('kcRes').textContent='Erreur';return;}kcS=kcFmt(v);kcJust=true;gid('kcExpr').textContent='';gid('kcRes').textContent=kcS;}
 function kcToggle(){gid('kcPanel').hidden=!gid('kcPanel').hidden;}
+
+/* ===== CALCULATRICE — ONGLETS ===== */
+function kcSwitchTab(tab){
+  var std=gid('kcStdPanel'),frac=gid('kcFracPanel');
+  var ts=gid('kcTabStd'),tf=gid('kcTabFrac');
+  if(tab==='std'){std.style.display='';frac.style.display='none';ts.classList.add('active');tf.classList.remove('active');}
+  else{std.style.display='none';frac.style.display='';tf.classList.add('active');ts.classList.remove('active');}
+}
+/* ===== CALCULATRICE FRACTIONS ===== */
+var kcfCurrentOp='+';
+function kcfSetOp(op){kcfCurrentOp=op;gid('kcfOpSym').textContent=op;}
+function kcfGetInt(id){var v=parseInt((gid(id).value||'').trim(),10);return isNaN(v)?null:v;}
+function kcfShowRes(n,d){
+  var box=gid('kcfRes');
+  if(d===0){box.innerHTML='<span style="color:#f88;font-family:Fredoka;font-weight:700">Impossible (÷0)</span>';return;}
+  var g=pgcd(Math.abs(n),Math.abs(d));
+  if(d<0){n=-n;d=-d;}
+  var ns=n/g,ds=d/g;
+  if(ds===1){box.innerHTML='<span class="kcf-rint">'+ns+'</span>';return;}
+  var dec=Math.round(n/d*10000)/10000;
+  var decStr=String(dec).replace('.',',');
+  box.innerHTML='<div class="kcf-rfrac"><span class="rnum">'+ns+'</span><span class="rbar"></span><span class="rden">'+ds+'</span></div><span class="kcf-rdec">≈ '+decStr+'</span>';
+}
+function kcfCalc(){
+  var n1=kcfGetInt('kcfN1'),d1=kcfGetInt('kcfD1'),n2=kcfGetInt('kcfN2'),d2=kcfGetInt('kcfD2');
+  if(n1===null||d1===null||n2===null||d2===null){gid('kcfRes').innerHTML='<span class="kcf-empty">Remplis les 4 cases</span>';return;}
+  if(d1===0||d2===0){gid('kcfRes').innerHTML='<span style="color:#f88;font-family:Fredoka;font-weight:700">Dénominateur = 0 !</span>';return;}
+  var rn,rd;
+  var op=kcfCurrentOp;
+  if(op==='+'||op==='−'){
+    var lcd=ppcm(Math.abs(d1),Math.abs(d2));
+    rn=(n1*(lcd/d1))+(op==='+'?1:-1)*(n2*(lcd/d2));rd=lcd;
+  }else if(op==='×'){
+    rn=n1*n2;rd=d1*d2;
+  }else{// ÷
+    if(n2===0){gid('kcfRes').innerHTML='<span style="color:#f88;font-family:Fredoka;font-weight:700">Division par 0 !</span>';return;}
+    rn=n1*d2;rd=d1*n2;
+  }
+  kcfShowRes(rn,rd);
+}
+function kcfSimp1(){
+  var n=kcfGetInt('kcfN1'),d=kcfGetInt('kcfD1');
+  if(n===null||d===null){gid('kcfRes').innerHTML='<span class="kcf-empty">Remplis la 1ère fraction</span>';return;}
+  kcfShowRes(n,d);
+}
+function kcfClear(){
+  ['kcfN1','kcfD1','kcfN2','kcfD2'].forEach(function(id){gid(id).value='';});
+  gid('kcfRes').innerHTML='<span class="kcf-empty">?</span>';
+  kcfCurrentOp='+';gid('kcfOpSym').textContent='+';
+}
+
 var KEYS2=[
   {l:'C',a:'clr',c:'act'},{l:'\u232b',a:'back',c:'op'},{l:'(',a:'(',c:'op'},{l:')',a:')',c:'op'},
   {l:'7',a:'7'},{l:'8',a:'8'},{l:'9',a:'9'},{l:'\u00f7',a:'\u00f7',c:'op'},

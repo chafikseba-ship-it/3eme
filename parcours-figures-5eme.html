@@ -128,7 +128,7 @@ input[type=range]{width:70%;max-width:320px;height:30px;accent-color:var(--bleu)
 .helpnote{font-size:.95rem;color:var(--bois-clair);font-weight:700;margin:6px 0 4px}
 .ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
 .ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;border:3px solid #f0dca8;border-radius:16px;padding:12px;width:160px;color:var(--bois)}
-.ansrow input:focus{outline:none;border-color:var(--or-bas)}
+.ansrow input:focus{outline:3px solid var(--or-bas);outline-offset:2px;border-color:var(--or-bas)}
 .opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:16px 0}
 .opt{font-family:'Fredoka';font-weight:700;font-size:1.1rem;border:3px solid #e7d3a8;background:var(--blanc);color:var(--bois);
   border-radius:16px;padding:12px 20px;cursor:pointer;box-shadow:0 5px 0 #e7d3a8}
@@ -281,7 +281,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expPara" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Le parallélogramme</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Le parallélogramme</h2></div>
   <div class="card">
     <div class="lesnav" id="paraNav"></div>
     <span class="tag" id="paraTag" style="background:var(--violet)"></span>
@@ -299,7 +299,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expRect" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Le rectangle</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Le rectangle</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--teal)">Explore la figure</span>
     <p class="lead" style="text-align:center">Touche un bouton pour mettre une propriété en évidence sur la figure.</p>
@@ -311,7 +311,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expLos" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Le losange</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Le losange</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--orange)">Explore la figure</span>
     <p class="lead" style="text-align:center">Touche un bouton pour mettre une propriété en évidence sur la figure.</p>
@@ -323,7 +323,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expCar" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Le carré</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Le carré</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--vert)">Explore la figure</span>
     <p class="lead" style="text-align:center">Touche un bouton pour mettre une propriété en évidence sur la figure.</p>
@@ -335,7 +335,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="expClasser" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>Reconnaître &amp; classer</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>Reconnaître &amp; classer</h2></div>
   <div class="card">
     <span class="tag" style="background:var(--bleu)">La famille des quadrilatères</span>
     <p class="lead">Le rectangle, le losange et le carré sont des <b>parallélogrammes particuliers</b>. Le carré est à la fois un rectangle (4 angles droits) et un losange (4 côtés de même longueur).</p>
@@ -346,7 +346,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="ecranTrain" class="screen">
-  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
   <div class="card">
     <div class="scorebar"><span class="pill">⭐ <span id="tq_score">0</span></span><span class="pill">🔥 <span id="tq_streak">0</span></span></div>
     <div class="qcard">
@@ -373,7 +373,7 @@ button,input{touch-action:manipulation}
 </section>
 
 <section id="arene" class="screen">
-  <div class="topbar"><button class="back" onclick="go('accueil')">←</button><h2>L’arène des figures</h2></div>
+  <div class="topbar"><button class="back" aria-label="Retour au menu" onclick="go('accueil')">←</button><h2>L’arène des figures</h2></div>
   <div class="card" id="areneMenu">
     <p class="lead" style="text-align:center">Bravo, séquence terminée ! Choisis ton entraînement libre.</p>
     <div class="catgrid">
@@ -650,8 +650,9 @@ function quizNext(){
 function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;
   if(s.includes('/')){const p=s.split('/');if(p.length!==2)return null;const a=parseFloat(p[0]),b=parseFloat(p[1]);if(!isFinite(a)||!isFinite(b)||b===0)return null;return a/b;}
   const v=parseFloat(s);return isFinite(v)?v:null;}
-function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;const e=Q.els;const v=parseNum(e.input.value);
-  if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre.';return;}
+function quizValidate(){if(Q.locked||!Q.cur||Q.cur.type!=='num')return;const e=Q.els;if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}
+  const v=parseNum(e.input.value);
+  if(v===null){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}
   e.input.disabled=true;e.valid.disabled=true;quizResolve(Math.abs(v-Q.cur.answer)<0.01,'La réponse est '+Q.cur.disp+'.');}
 function quizPick(i){if(Q.locked||!Q.cur||Q.cur.type!=='qcm')return;const e=Q.els;const btns=[...e.opts.children];
   btns.forEach((b,j)=>{if(j===Q.cur.correct)b.classList.add('good');});if(i!==Q.cur.correct)btns[i].classList.add('bad');
