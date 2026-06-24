@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DNB blanc — Physique-Chimie n°2</title>
+<title>DNB blanc — Physique-Chimie — Sujet 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -12,32 +12,59 @@
     --creme:#FFF6E6;--creme2:#FFF0D6;--jaune:#FFC93C;--jaune-fonce:#E0A415;
     --vert:#9FD356;--vert-fonce:#6FA52A;--orange:#FF9F45;--orange-fonce:#E07A1F;
     --rouge:#E76F51;--brun:#5A4A2F;--brun-clair:#8A744C;--blanc:#FFFFFF;--ombre:rgba(120,90,30,.18);
+    --bleu:#4FA3D1;--bleu-fonce:#2A7AB0;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Nunito',sans-serif;background:var(--creme);color:var(--brun);min-height:100vh;padding:18px 14px 90px;-webkit-text-size-adjust:100%;}
   h1,h2,h3,.titre{font-family:'Fredoka',sans-serif;}
-  .wrap{max-width:680px;margin:0 auto;}
-  .entete{background:linear-gradient(135deg,var(--jaune),var(--orange));border-radius:24px;padding:22px;color:#fff;text-align:center;box-shadow:0 6px 0 var(--orange-fonce);margin-bottom:18px;}
-  .entete h1{font-size:26px;font-weight:600;text-shadow:0 2px 0 rgba(0,0,0,.12);}
-  .entete p{font-weight:700;opacity:.95;margin-top:4px;}
+  .wrap{max-width:700px;margin:0 auto;}
+
+  .btn-retour{display:inline-flex;align-items:center;gap:6px;font-family:'Fredoka';font-weight:600;font-size:16px;
+    background:var(--orange);border:2px solid var(--orange-fonce);color:#fff;border-radius:12px;
+    padding:8px 14px;cursor:pointer;text-decoration:none;margin-bottom:12px;transition:background .12s;}
+  .btn-retour:hover{background:var(--orange-fonce);}
+
+  /* En-tête officiel */
+  .entete-sujet{background:var(--blanc);border:2px solid var(--brun-clair);border-radius:18px;padding:22px 24px;margin-bottom:18px;text-align:center;box-shadow:0 4px 0 var(--ombre);}
+  .entete-sujet .diplome{font-family:'Fredoka';font-size:20px;font-weight:700;color:var(--brun);letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid var(--brun-clair);padding-bottom:10px;margin-bottom:10px;}
+  .entete-sujet .matiere{font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--brun-clair);margin-bottom:6px;}
+  .entete-sujet .infos{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:8px;}
+  .entete-sujet .info-item{background:var(--creme2);border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;}
+  .entete-sujet .consigne-gen{font-size:14px;color:var(--brun-clair);margin-top:10px;line-height:1.5;border-top:1px solid var(--creme2);padding-top:8px;}
+
+  /* Progression */
   .progression{display:flex;gap:6px;margin-bottom:18px;}
   .progression .pas{flex:1;height:10px;border-radius:6px;background:var(--creme2);box-shadow:inset 0 2px 4px var(--ombre);}
   .progression .pas.fait{background:var(--vert);}
   .progression .pas.actif{background:var(--jaune);}
-  .carte{background:var(--blanc);border-radius:22px;padding:22px;box-shadow:0 5px 0 var(--ombre);margin-bottom:18px;}
-  .carte h2{font-size:21px;color:var(--brun);margin-bottom:6px;font-weight:600;}
-  .carte h2 .num{color:var(--orange-fonce);}
-  .badge-theme{display:inline-block;background:var(--vert);color:#fff;font-family:'Fredoka';font-weight:600;font-size:13px;padding:4px 12px;border-radius:20px;margin-bottom:12px;}
-  .consigne{font-size:17px;line-height:1.5;margin:10px 0;}
-  .sous{color:var(--brun-clair);font-weight:600;font-size:15px;}
-  .btn{font-family:'Fredoka';font-weight:600;font-size:18px;border:none;cursor:pointer;border-radius:18px;padding:14px 22px;color:#fff;transition:transform .05s,box-shadow .05s;display:inline-block;}
-  .btn-vert{background:var(--vert);box-shadow:0 5px 0 var(--vert-fonce);}
-  .btn-jaune{background:var(--jaune);color:var(--brun);box-shadow:0 5px 0 var(--jaune-fonce);}
-  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--vert-fonce);}
-  .btn-jaune:active{box-shadow:0 1px 0 var(--jaune-fonce);}
-  .ligne-btn{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+
+  /* Exercice carte */
+  .exercice{background:var(--blanc);border-radius:22px;overflow:hidden;box-shadow:0 5px 0 var(--ombre);margin-bottom:18px;}
+  .exercice-header{background:linear-gradient(135deg,var(--jaune),var(--orange));padding:16px 22px;}
+  .exercice-header h2{font-family:'Fredoka';font-size:20px;font-weight:700;color:var(--brun);}
+  .exercice-header .bareme{font-size:14px;font-weight:700;color:var(--brun);opacity:.85;margin-top:3px;}
+  .exercice-body{padding:20px 22px;}
+
+  /* Document contexte */
+  .document-contexte{background:#F0F7FF;border-left:5px solid var(--bleu);border-radius:12px;padding:16px 18px;margin:0 0 14px 0;}
+  .document-contexte .doc-titre{font-family:'Fredoka';font-size:14px;font-weight:700;color:var(--bleu-fonce);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .document-contexte p{font-size:15px;line-height:1.6;margin-bottom:6px;}
+  .document-contexte table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
+  .document-contexte th{background:#d8edf8;padding:8px 10px;text-align:center;border:1.5px solid var(--bleu);font-family:'Fredoka';font-weight:700;}
+  .document-contexte td{background:var(--blanc);padding:7px 10px;text-align:center;border:1.5px solid #b5d7ee;font-weight:700;}
+  .donnees-encadrees{background:#FFF8E6;border:2px solid var(--jaune);border-radius:10px;padding:10px 14px;margin-top:10px;}
+  .donnees-encadrees .don-titre{font-family:'Fredoka';font-weight:700;color:var(--orange-fonce);margin-bottom:5px;font-size:14px;}
+  .donnees-encadrees ul{list-style:none;padding:0;}
+  .donnees-encadrees li{padding:2px 0;font-size:14px;line-height:1.6;}
+  .donnees-encadrees li::before{content:"• ";color:var(--orange-fonce);font-weight:700;}
+
+  /* Figure */
+  .figure{background:var(--creme2);border-radius:18px;padding:14px;text-align:center;margin:14px 0;}
+  .figure svg{max-width:100%;height:auto;}
+
+  /* Moteur rédaction */
   .qbloc{margin:20px 0 6px;padding:13px 15px;background:linear-gradient(135deg,#FFE7B0,#FFD98A);border-radius:14px;box-shadow:0 3px 0 rgba(180,140,40,.2);}
-  .qbloc h3{font-size:18px;color:var(--brun);font-weight:600;}
+  .qbloc h3{font-size:17px;color:var(--brun);font-weight:600;}
   .qbloc p{font-size:15px;line-height:1.45;margin-top:5px;}
   .etape{border-radius:16px;padding:14px;margin:10px 0;background:var(--creme);border:2px solid var(--creme2);transition:opacity .3s;}
   .etape.verrou{opacity:.45;pointer-events:none;}
@@ -52,12 +79,21 @@
   .msg.faux{color:var(--rouge);}
   .aide{background:#FFF3D0;border-left:5px solid var(--jaune);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:15px;}
   .solution{background:#eef7df;border-left:5px solid var(--vert);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:15px;}
-  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 4px;}
-  .frac .num{padding:0 6px 2px;border-bottom:2.5px solid var(--brun);}
-  .frac .den{padding:2px 6px 0;}
-  .frac-saisie{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;}
-  .frac-saisie input{width:140px;text-align:center;font-family:'Nunito';font-weight:700;font-size:18px;border:2px solid var(--brun-clair);border-radius:8px;padding:6px;background:#fff;color:var(--brun);}
-  .frac-saisie .barre-frac{height:3px;background:var(--brun);margin:4px 0;border-radius:2px;}
+
+  /* Boutons */
+  .btn{font-family:'Fredoka';font-weight:600;font-size:18px;border:none;cursor:pointer;border-radius:18px;padding:14px 22px;color:#fff;transition:transform .05s,box-shadow .05s;display:inline-block;text-decoration:none;}
+  .btn-vert{background:var(--vert);box-shadow:0 5px 0 var(--vert-fonce);}
+  .btn-jaune{background:var(--jaune);color:var(--brun);box-shadow:0 5px 0 var(--jaune-fonce);}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--vert-fonce);}
+  .btn-jaune:active{box-shadow:0 1px 0 var(--jaune-fonce);}
+  .ligne-btn{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+
+  /* Clavier sym */
+  .clavier-sym{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .clavier-sym button{font-family:'Fredoka';font-weight:600;font-size:16px;border:none;cursor:pointer;background:var(--creme2);color:var(--brun);border-radius:10px;padding:8px 13px;min-width:42px;box-shadow:0 3px 0 var(--ombre);}
+  .clavier-sym button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ombre);}
+
+  /* Calculatrice */
   #btn-calc{position:fixed;right:18px;bottom:18px;z-index:50;width:60px;height:60px;border-radius:50%;background:var(--orange);color:#fff;border:none;cursor:pointer;font-size:26px;box-shadow:0 5px 0 var(--orange-fonce);}
   #btn-calc:active{transform:translateY(4px);box-shadow:0 1px 0 var(--orange-fonce);}
   #calc{position:fixed;right:18px;bottom:88px;z-index:51;width:300px;max-width:calc(100vw - 36px);max-height:calc(100vh - 120px);overflow-y:auto;background:var(--blanc);border-radius:20px;box-shadow:0 8px 24px rgba(80,60,20,.3);padding:14px;display:none;}
@@ -72,30 +108,37 @@
   .grille-calc button.op{background:var(--jaune);}
   .grille-calc button.fct{background:var(--vert);color:#fff;font-size:14px;}
   .grille-calc button.eg{background:var(--orange);color:#fff;}
-  .clavier-sym{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .clavier-sym button{font-family:'Fredoka';font-weight:600;font-size:16px;border:none;cursor:pointer;background:var(--creme2);color:var(--brun);border-radius:10px;padding:8px 13px;min-width:42px;box-shadow:0 3px 0 var(--ombre);}
-  .clavier-sym button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ombre);}
-  .fin{background:linear-gradient(135deg,var(--vert),var(--jaune));color:#fff;text-align:center;}
-  .fin h2{font-size:24px;}
+
+  /* Fin */
+  .fin{background:linear-gradient(135deg,var(--vert),var(--jaune));color:var(--brun);text-align:center;padding:28px 22px;border-radius:22px;box-shadow:0 5px 0 var(--ombre);}
+  .fin h2{font-size:26px;font-family:'Fredoka';}
   .cache{display:none;}
-  .btn-retour{display:inline-flex;align-items:center;gap:6px;font-family:'Fredoka';font-weight:600;font-size:16px;
-    background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);color:#fff;border-radius:12px;
-    padding:8px 14px;cursor:pointer;text-decoration:none;margin-bottom:10px;transition:background .12s}
-  .btn-retour:hover{background:rgba(255,255,255,.4)}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <a href="index.html" class="btn-retour">← Accueil</a>
-  <div class="entete">
-    <h1>🔬 DNB blanc — Physique-Chimie n°2</h1>
-    <p>Sujet n°2 · 3 exercices · 45 minutes</p>
+
+  <!-- EN-TÊTE OFFICIEL -->
+  <div class="entete-sujet">
+    <div class="diplome">Diplôme national du brevet &mdash; Session 2025</div>
+    <div class="matiere">Physique &ndash; Chimie &nbsp;|&nbsp; Sujet n°&nbsp;2</div>
+    <div class="infos">
+      <div class="info-item">⏱ Durée : 45 min</div>
+      <div class="info-item">📊 Total : 25 points</div>
+      <div class="info-item">🧮 Calculatrice autorisée</div>
+    </div>
+    <div class="consigne-gen">Le sujet comporte 3 exercices indépendants. La qualité de la rédaction est prise en compte. Les résultats numériques doivent être accompagnés de leur unité.</div>
   </div>
+
   <div class="progression" id="progression"></div>
   <div id="zone-ecrans"></div>
+
 </div>
 
-<button id="btn-calc" onclick="toggleCalc()" aria-label="Calculatrice">&#x1F9EE;</button>
+<!-- CALCULATRICE -->
+<button id="btn-calc" onclick="toggleCalc()" aria-label="Calculatrice">🧮</button>
 <div id="calc" role="dialog" aria-label="Calculatrice">
   <div class="mode">degrés (°)</div>
   <div class="affichage" id="calc-ecran">0</div>
@@ -108,7 +151,7 @@
     <button onclick="cTok('0')">0</button><button onclick="cTok('.')">,</button><button class="op" onclick="cTok('√(')">&#x221A;</button><button class="op" onclick="cTok('+')">+</button>
     <button class="op" onclick="cTok('(')">(</button><button class="op" onclick="cTok(')')">)</button><button class="op" onclick="cTok('^2')">x²</button><button class="eg" onclick="cEgal()">=</button>
   </div>
-  <button class="envoyer" onclick="cEnvoyer()">&#x2B06; Envoyer le résultat dans la réponse</button>
+  <button class="envoyer" onclick="cEnvoyer()">&#x2B06; Envoyer dans la réponse</button>
 </div>
 
 <script>
@@ -116,7 +159,8 @@
 function fr(x){return (''+x).replace('.',',');}
 
 /* ===== NORMALISATION ===== */
-function norm(inp){return (inp==null?"":inp.toString()).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').replace(/,/g,'.').replace(/\*/g,'');}
+function norm(inp){return (inp==null?"":inp.toString()).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\u00b2/g,'^2').replace(/\s+/g,'').replace(/,/g,'.').replace(/\*/g,'');}
+function nbs(inp){return (norm(inp).match(/\d+(\.\d+)?/g)||[]).map(function(x){return parseFloat(x);});}
 
 /* ===== CALCULATRICE ===== */
 var calcExpr="";
@@ -146,7 +190,7 @@ function inserer(champ,txt){if(!champ||champ.disabled)return;var d=(champ.select
 function symPress(ev,btn,sym){ev.preventDefault();var etape=btn.closest('.etape');var champ=(dernierChamp&&etape.contains(dernierChamp)&&!dernierChamp.disabled)?dernierChamp:etape.querySelector('input[type=text]:not([disabled])');inserer(champ,sym);}
 function cEnvoyer(){if(dernierChamp&&!dernierChamp.disabled){inserer(dernierChamp,calcExpr);}else{var e=document.getElementById('calc-ecran');var t=e.textContent;e.textContent="clique d'abord dans une réponse";setTimeout(function(){e.textContent=t;},1400);}}
 
-/* ===== MOTEUR REDACTION GUIDEE ===== */
+/* ===== MOTEUR RÉDACTION GUIDÉE ===== */
 function construireRedaction(conteneurId, etapes, onFini){
   var cont=document.getElementById(conteneurId);cont.innerHTML="";
   etapes.forEach(function(et,i){
@@ -157,7 +201,7 @@ function construireRedaction(conteneurId, etapes, onFini){
     }
     var div=document.createElement('div');
     div.className='etape'+(i===0?'':' verrou');div.dataset.i=i;
-    var saisieHTML='<input type="text" placeholder="\xc9cris ici\u2026">';
+    var saisieHTML='<input type="text" placeholder="Écris ici…">';
     var clavierHTML='';
     if(et.clavier&&et.clavier.length){
       clavierHTML='<div class="clavier-sym">'+et.clavier.map(function(sym){return '<button type="button" onmousedown="symPress(event,this,\''+(''+sym).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">' +sym+'</button>';}).join('')+'</div>';
@@ -173,246 +217,472 @@ function validerEtape(conteneurId,i){
   var ok=et.verif(div.querySelector('input[type=text]').value);
   var msg=div.querySelector('[data-msg]');var aideBox=div.querySelector('[data-aide]');
   if(ok){
-    msg.textContent="\u2713 Bien r\xe9dig\xe9.";msg.className="msg bon";div.classList.add('ok');
+    msg.textContent="\u2713 Bien rédigé.";msg.className="msg bon";div.classList.add('ok');
     div.querySelectorAll('input').forEach(function(inp){inp.disabled=true;});div.querySelector('.ligne-valid').style.display='none';
     var suiv=cont.querySelector('.etape[data-i="'+(i+1)+'"]');
     if(suiv){suiv.classList.remove('verrou');suiv.querySelector('input').focus();}
     else if(cont.__onFini)cont.__onFini();
   }else{
     cont.__erreurs[i]++;var n=cont.__erreurs[i];
-    msg.textContent="Pas encore. Relis ton \xe9criture.";msg.className="msg faux";
-    if(n>=3)aideBox.innerHTML='<div class="solution"><b>La bonne \xe9criture :</b><br>'+et.solutionHTML+'</div>';
-    else if(n>=2)aideBox.innerHTML='<div class="aide">\ud83d\udca1 '+et.aide+'</div>';
+    msg.textContent="Pas encore. Relis ton écriture.";msg.className="msg faux";
+    if(n>=3)aideBox.innerHTML='<div class="solution"><b>La bonne écriture :</b><br>'+et.solutionHTML+'</div>';
+    else if(n>=2)aideBox.innerHTML='<div class="aide">💡 '+et.aide+'</div>';
   }
 }
 
-/* ===== PROGRESSION + NAVIGATION ===== */
-var ecrans=[],ecranActuel=0;
-function construireProgression(n){var p=document.getElementById('progression');p.innerHTML="";for(var i=0;i<n;i++){var d=document.createElement('div');d.className='pas';p.appendChild(d);}majProgression();}
-function majProgression(){document.querySelectorAll('#progression .pas').forEach(function(d,i){d.className='pas'+(i<ecranActuel?' fait':i===ecranActuel?' actif':'');});}
-function montrerEcran(i){ecrans.forEach(function(e,k){e.classList.toggle('cache',k!==i);});ecranActuel=i;majProgression();window.scrollTo({top:0,behavior:'smooth'});}
-function ecranSuivant(){if(ecranActuel<ecrans.length-1)montrerEcran(ecranActuel+1);}
-document.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches('.etape input[type=text]'))dernierChamp=e.target;});
+/* ===== FIGURES SVG ===== */
+function svgTxt(x,y,s,sz,col){
+  return '<text x="'+x+'" y="'+y+'" font-family="Fredoka" font-weight="600" font-size="'+(sz||16)+'" fill="'+(col||'#5A4A2F')+'" text-anchor="middle" dominant-baseline="middle">'+s+'</text>';
+}
 
-/* ===== CONTENU : 3 EXERCICES PC ===== */
+function dessinerParachute(cibleId){
+  var svg='<svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Saut en parachute - relevé de distances">';
+  // Ciel
+  svg+='<rect x="0" y="0" width="380" height="160" fill="#EEF8FF"/>';
+  // Sol
+  svg+='<rect x="0" y="160" width="380" height="60" fill="#9FD356" opacity="0.4"/>';
+  svg+='<line x1="0" y1="160" x2="380" y2="160" stroke="#6FA52A" stroke-width="2"/>';
+  // Parachute (demi-cercle)
+  svg+='<path d="M 100 80 Q 150 30 200 80" fill="#FF9F45" stroke="#E07A1F" stroke-width="2.5"/>';
+  svg+='<line x1="110" y1="78" x2="150" y2="110" stroke="#8A744C" stroke-width="1.5"/>';
+  svg+='<line x1="190" y1="78" x2="150" y2="110" stroke="#8A744C" stroke-width="1.5"/>';
+  // Personnage
+  svg+='<circle cx="150" cy="115" r="7" fill="#E07A1F"/>';
+  svg+='<line x1="150" y1="122" x2="150" y2="142" stroke="#5A4A2F" stroke-width="2"/>';
+  svg+='<line x1="140" y1="130" x2="160" y2="130" stroke="#5A4A2F" stroke-width="2"/>';
+  svg+='<line x1="150" y1="142" x2="143" y2="158" stroke="#5A4A2F" stroke-width="2"/>';
+  svg+='<line x1="150" y1="142" x2="157" y2="158" stroke="#5A4A2F" stroke-width="2"/>';
+  // Flèche vitesse vers le bas
+  svg+='<line x1="280" y1="70" x2="280" y2="130" stroke="#9FD356" stroke-width="2.5"/>';
+  svg+='<polygon points="275,130 285,130 280,142" fill="#9FD356"/>';
+  svg+=svgTxt(313,100,'v = ? m/s',13,'#6FA52A');
+  // Tableau de données intégré
+  svg+='<rect x="6" y="6" width="90" height="64" rx="8" fill="rgba(255,248,230,0.95)" stroke="#E0A415" stroke-width="1.5"/>';
+  svg+=svgTxt(51,18,'t (s)',12,'#E07A1F');
+  svg+=svgTxt(51,32,'d (m)',12,'#2A7AB0');
+  svg+=svgTxt(20,18,'',10,'#5A4A2F');
+  // Valeurs tableau
+  var ts=[0,1,2,3,4,5];var ds=[0,45,90,135,180,225];
+  // On les affiche à droite du schéma via le tableau HTML, juste indiquer ici
+  svg+=svgTxt(190,210,'Figure non à l\'échelle',11,'#A08B6E');
+  svg+='</svg>';
+  document.getElementById(cibleId).innerHTML=svg;
+}
 
-/* --- Exercice 1 : Mouvements et vitesse --- */
+function dessinerGraphiqueChauffage(cibleId){
+  var W=380, H=230;
+  var svg='<svg viewBox="0 0 380 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Courbe de chauffage de l\'eau">';
+  svg+='<rect x="0" y="0" width="380" height="230" fill="#FFF6E6" rx="10"/>';
+  // Axes
+  var ox=50, oy=190, axW=300, axH=160;
+  svg+='<line x1="'+ox+'" y1="'+oy+'" x2="'+(ox+axW)+'" y2="'+oy+'" stroke="#5A4A2F" stroke-width="2"/>'; // axe x
+  svg+='<line x1="'+ox+'" y1="'+(oy-axH)+'" x2="'+ox+'" y2="'+oy+'" stroke="#5A4A2F" stroke-width="2"/>'; // axe y
+  // Flèches axes
+  svg+='<polygon points="'+(ox+axW)+','+(oy-5)+' '+(ox+axW+10)+','+oy+' '+(ox+axW)+','+(oy+5)+'" fill="#5A4A2F"/>';
+  svg+='<polygon points="'+(ox-5)+','+(oy-axH)+' '+ox+','+(oy-axH-10)+' '+(ox+5)+','+(oy-axH)+'" fill="#5A4A2F"/>';
+  // Labels axes
+  svg+=svgTxt(ox+axW/2,oy+18,'Temps (min)',13,'#5A4A2F');
+  svg+=svgTxt(ox-28,oy-axH/2,'T (°C)',13,'#5A4A2F');
+  // Graduations T
+  // 0°C = oy - 40, 100°C = oy - 130
+  var y0=oy-40, y100=oy-130;
+  svg+='<line x1="'+(ox-5)+'" y1="'+y0+'" x2="'+(ox+axW)+'" y2="'+y0+'" stroke="#C9B68A" stroke-width="1" stroke-dasharray="4,4"/>';
+  svg+='<line x1="'+(ox-5)+'" y1="'+y100+'" x2="'+(ox+axW)+'" y2="'+y100+'" stroke="#C9B68A" stroke-width="1" stroke-dasharray="4,4"/>';
+  svg+=svgTxt(ox-16,y0,'0',12,'#8A744C');
+  svg+=svgTxt(ox-16,y100,'100',12,'#8A744C');
+  // Courbe de chauffage (3 phases)
+  // Phase 1 : montée de -20°C à 0°C (x: 50→100, y: oy-10 → y0)
+  var x1s=50+50, x1e=50+80, y1s=oy-10, y1e=y0;
+  // Phase 2 : palier à 0°C fusion (x: 100→140)
+  var x2s=x1e, x2e=50+120;
+  // Phase 3 : montée de 0°C à 100°C (x: 140→230)
+  var x3s=x2e, x3e=50+210;
+  // Phase 4 : palier à 100°C vaporisation (x: 230→280)
+  var x4s=x3e, x4e=50+270;
+  // Phase 5 : montée après 100°C (x: 280→330)
+  var x5s=x4e, x5e=50+295;
+  svg+='<polyline points="'+x1s+','+y1s+' '+x1e+','+y1e+' '+x2e+','+y1e+' '+x3e+','+y100+' '+x4e+','+y100+' '+x5e+','+(y100-20)+'" fill="none" stroke="#4FA3D1" stroke-width="3" stroke-linejoin="round"/>';
+  // Annotations paliers
+  svg+=svgTxt(x2s+(x2e-x2s)/2,y0-14,'Fusion (0 °C)',12,'#E07A1F');
+  svg+=svgTxt(x3e+(x4e-x3e)/2,y100-14,'Vaporisation (100 °C)',12,'#E07A1F');
+  // Légende
+  svg+=svgTxt(190,218,'Courbe de chauffage de l\'eau — non à l\'échelle',11,'#A08B6E');
+  svg+='</svg>';
+  document.getElementById(cibleId).innerHTML=svg;
+}
+
+/* ===== ÉTAPES EXERCICE 1 : Parachutiste ===== */
 var etapesEx1=[
   {
-    question:'Question 1 — Calcul de la vitesse en m/s',
-    consigneQ:'Une voiture parcourt d = 540 m en t = 30 s. Calcule sa vitesse v en m/s.',
+    question:'Q1 — Nature du mouvement (2 pts)',
+    consigneQ:'Observer le tableau de mesures pour déterminer la nature du mouvement.',
+    role:'Analyser le tableau',
+    q:'En regardant le tableau : chaque seconde, quelle distance supplémentaire le parachutiste parcourt-il ? (en mètres)',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-45)<=2;});},
+    aide:'Entre chaque seconde : 45 − 0 = 45 m, 90 − 45 = 45 m, etc. La distance parcourue est toujours de 45 m.',
+    solutionHTML:'Chaque seconde, il parcourt 45 m de plus.'
+  },
+  {
+    role:'Conclure sur la nature du mouvement',
+    q:'La distance parcourue est la même à chaque intervalle de temps. Comment appelle-t-on ce type de mouvement ?',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('uniforme')||t.includes('rectiligne')||t.includes('constant')||t.includes('regulier');
+    },
+    aide:'Quand la distance parcourue est identique à chaque intervalle égal, le mouvement est uniforme (vitesse constante).',
+    solutionHTML:'Le mouvement est rectiligne uniforme (vitesse constante).'
+  },
+  {
+    question:'Q2 — Calcul de la vitesse (3 pts)',
+    consigneQ:'Calculer la vitesse moyenne. Rappel : v = d ÷ t.',
     role:'Rappeler la formule',
-    q:'Écris la formule de la vitesse (en utilisant v, d et t).',
     clavier:['v','=','d','÷','t'],
-    verif:function(inp){var t=norm(inp);return t.includes('v')&&t.includes('d')&&t.includes('t')&&t.includes('=');},
-    aide:'La formule est v = d ÷ t',
+    q:'Rappelle la formule de la vitesse moyenne reliant v, d et t.',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('v')&&t.includes('d')&&t.includes('t')&&t.includes('=');
+    },
+    aide:'v = d ÷ t (vitesse = distance ÷ temps)',
     solutionHTML:'v = d ÷ t'
   },
   {
-    role:'Substituer les valeurs',
-    clavier:['540','÷','30','='],
-    q:'Remplace d = 540 m et t = 30 s dans la formule.',
-    verif:function(inp){var t=norm(inp);return t.includes('540')&&t.includes('30');},
-    aide:'v = 540 ÷ 30',
-    solutionHTML:'v = 540 ÷ 30'
+    role:'Remplacer les valeurs',
+    clavier:['÷','='],
+    q:'En utilisant d = 225 m et t = 5 s, remplace dans la formule.',
+    verif:function(inp){
+      var ns=nbs(inp);
+      return ns.some(function(x){return Math.abs(x-225)<5;})&&ns.some(function(x){return Math.abs(x-5)<0.1;});
+    },
+    aide:'v = 225 ÷ 5',
+    solutionHTML:'v = 225 ÷ 5'
   },
   {
-    role:'Calculer la vitesse',
-    clavier:['×','÷','='],
-    q:'Calcule v = 540 ÷ 30. Donne le résultat avec l\'unité.',
-    verif:function(inp){return (function(){var ns=(norm(inp).match(/\d+(\.\d+)?/g)||[]).map(parseFloat);return ns.some(function(x){return Math.abs(x-18)<=0.05;});}());},
-    aide:'540 ÷ 30 = 18 m/s',
-    solutionHTML:'v = 18 m/s'
+    role:'Calculer la vitesse en m/s',
+    q:'Calcule v = 225 ÷ 5. Donne le résultat en mètres par seconde (m/s).',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-45)<=1;});},
+    aide:'225 ÷ 5 = 45 m/s',
+    solutionHTML:'v = 45 m/s'
   },
   {
-    question:'Question 2 — Conversion en km/h',
-    consigneQ:'Convertis la vitesse v = 18 m/s en km/h.',
+    question:'Q3 — Conversion en km/h (3 pts)',
+    consigneQ:'Convertir v = 45 m/s en km/h. Rappel : 1 m/s = 3,6 km/h.',
+    role:'Rappeler le facteur de conversion',
+    q:'Quel facteur multiplicatif permet de passer des m/s aux km/h ?',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-3.6)<=0.1;});},
+    aide:'1 m/s = 3,6 km/h. Le facteur est 3,6.',
+    solutionHTML:'Facteur : × 3,6'
+  },
+  {
     role:'Calculer en km/h',
-    clavier:['18','×','3,6','='],
-    q:'Applique la conversion : v (km/h) = v (m/s) × 3,6. Calcule 18 × 3,6.',
-    verif:function(inp){var ns=(norm(inp).match(/\d+(\.\d+)?/g)||[]).map(parseFloat);return ns.some(function(x){return Math.abs(x-64.8)<=0.05;});},
-    aide:'18 × 3,6 = 64,8 km/h',
-    solutionHTML:'v = 18 × 3,6 = 64,8 km/h'
-  },
-  {
-    question:'Question 3 — Nature du mouvement',
-    consigneQ:'Le mouvement de cette voiture est-il rectiligne uniforme ? Justifie.',
-    role:'Conclure',
-    q:'Le mouvement est-il rectiligne uniforme ? Justifie en une phrase (mentionne la trajectoire et la vitesse).',
-    verif:function(inp){var t=norm(inp);return t.includes('oui')||(t.includes('rect')&&(t.includes('uniform')||t.includes('const')));},
-    aide:'Oui, car la trajectoire est rectiligne et la vitesse est constante.',
-    solutionHTML:'Oui, le mouvement est rectiligne uniforme car la trajectoire est rectiligne et la vitesse est constante.'
+    clavier:['×','='],
+    q:'Calcule v = 45 × 3,6. Donne le résultat en km/h.',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-162)<=3;});},
+    aide:'45 × 3,6 = 162 km/h',
+    solutionHTML:'v = 45 × 3,6 = 162 km/h'
   }
 ];
 
-/* --- Exercice 2 : Puissance et énergie électrique --- */
+/* ===== ÉTAPES EXERCICE 2 : Four micro-ondes ===== */
 var etapesEx2=[
   {
-    question:'Question 1 — Calcul de la puissance (en W)',
-    consigneQ:'Un grille-pain fonctionne sous U = 230 V avec I = 4 A. Calcule sa puissance P.',
+    question:'Q1 — Puissance du four (3 pts)',
+    consigneQ:'Calculer la puissance électrique du four. Rappel : P = U × I.',
     role:'Rappeler la formule',
     clavier:['P','=','U','×','I'],
-    q:'Écris la formule de la puissance électrique (avec P, U et I).',
-    verif:function(inp){var t=norm(inp);return t.includes('p')&&t.includes('u')&&t.includes('i')&&t.includes('=');},
-    aide:'La formule est P = U × I',
+    q:'Rappelle la formule de la puissance électrique en fonction de U et I.',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('p')&&t.includes('u')&&t.includes('i')&&t.includes('=');
+    },
+    aide:'P = U × I',
     solutionHTML:'P = U × I'
   },
   {
-    role:'Substituer les valeurs',
-    clavier:['230','×','4','='],
-    q:'Remplace U = 230 V et I = 4 A dans la formule.',
-    verif:function(inp){var t=norm(inp);return t.includes('230')&&t.includes('4');},
-    aide:'P = 230 × 4',
-    solutionHTML:'P = 230 × 4'
+    role:'Remplacer les valeurs',
+    clavier:['×','='],
+    q:'Remplace U = 230 V et I = 5 A.',
+    verif:function(inp){
+      var ns=nbs(inp);
+      return ns.some(function(x){return Math.abs(x-230)<2;})&&ns.some(function(x){return Math.abs(x-5)<0.1;});
+    },
+    aide:'P = 230 × 5',
+    solutionHTML:'P = 230 × 5'
   },
   {
     role:'Calculer la puissance',
-    q:'Calcule P = 230 × 4. Donne le résultat avec l\'unité.',
-    verif:function(inp){var ns=(norm(inp).match(/\d+(\.\d+)?/g)||[]).map(parseFloat);return ns.some(function(x){return Math.abs(x-920)<=0.05;});},
-    aide:'230 × 4 = 920 W',
-    solutionHTML:'P = 920 W'
+    q:'Calcule P = 230 × 5. Donne le résultat en watts (W).',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-1150)<=20;});},
+    aide:'230 × 5 = 1 150 W',
+    solutionHTML:'P = 1 150 W'
   },
   {
-    question:'Question 2 — Conversion de la durée en secondes',
-    consigneQ:'Le grille-pain fonctionne pendant t = 3 minutes. Convertis en secondes.',
-    role:'Convertir en secondes',
-    clavier:['3','×','60','='],
-    q:'Calcule t en secondes : t = 3 × 60 s.',
-    verif:function(inp){var ns=(norm(inp).match(/\d+(\.\d+)?/g)||[]).map(parseFloat);return ns.some(function(x){return Math.abs(x-180)<=0.05;});},
-    aide:'t = 3 × 60 = 180 s',
-    solutionHTML:'t = 3 × 60 = 180 s'
+    question:'Q2 — Énergie consommée en 15 min (3 pts)',
+    consigneQ:'Calculer l\'énergie consommée. Rappel : E = P × t (t doit être en secondes).',
+    role:'Convertir la durée en secondes',
+    clavier:['×','60','='],
+    q:'Convertis t = 15 min en secondes. Rappel : 1 min = 60 s.',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-900)<=5;});},
+    aide:'15 × 60 = 900 s',
+    solutionHTML:'t = 15 × 60 = 900 s'
   },
   {
-    question:'Question 3 — Calcul de l\'énergie consommée (en J)',
-    consigneQ:'Calcule l\'énergie E consommée par le grille-pain.',
-    role:'Rappeler la formule',
+    role:'Rappeler la formule de l\'énergie',
     clavier:['E','=','P','×','t'],
-    q:'Écris la formule de l\'énergie électrique (avec E, P et t).',
-    verif:function(inp){var t=norm(inp);return t.includes('e')&&t.includes('p')&&t.includes('t')&&t.includes('=');},
-    aide:'La formule est E = P × t',
+    q:'Rappelle la formule de l\'énergie électrique consommée.',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('e')&&t.includes('p')&&t.includes('t')&&t.includes('=');
+    },
+    aide:'E = P × t',
     solutionHTML:'E = P × t'
   },
   {
-    role:'Substituer les valeurs',
-    clavier:['920','×','180','='],
-    q:'Remplace P = 920 W et t = 180 s dans la formule.',
-    verif:function(inp){var t=norm(inp);return t.includes('920')&&t.includes('180');},
-    aide:'E = 920 × 180',
-    solutionHTML:'E = 920 × 180'
+    role:'Calculer l\'énergie en joules',
+    clavier:['×','='],
+    q:'Calcule E = P × t = 1 150 × 900. Donne le résultat en joules (J).',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-1035000)<=20000;});},
+    aide:'1 150 × 900 = 1 035 000 J',
+    solutionHTML:'E = 1 150 × 900 = 1 035 000 J'
+  },
+  {
+    question:'Q3 — Conversion en kWh (3 pts)',
+    consigneQ:'Convertir l\'énergie en kWh. Rappel : 1 kWh = 3 600 000 J.',
+    role:'Écrire la conversion',
+    clavier:['÷','='],
+    q:'Pour convertir des joules en kWh, on divise par 3 600 000. Écris le calcul.',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('1035000')&&(t.includes('÷')||t.includes('/')||t.includes('divise'));
+    },
+    aide:'E(kWh) = E(J) ÷ 3 600 000 = 1 035 000 ÷ 3 600 000',
+    solutionHTML:'E(kWh) = 1 035 000 ÷ 3 600 000'
+  },
+  {
+    role:'Calculer en kWh',
+    clavier:['÷','='],
+    q:'Calcule E = 1 035 000 ÷ 3 600 000. Arrondi au millième.',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0.2875)<=0.02;});},
+    aide:'1 035 000 ÷ 3 600 000 ≈ 0,288 kWh',
+    solutionHTML:'E ≈ 0,288 kWh'
+  }
+];
+
+/* ===== ÉTAPES EXERCICE 3 : États de la matière ===== */
+var etapesEx3=[
+  {
+    question:'Q1 — Changements d\'état de l\'eau (2 pts)',
+    consigneQ:'Analyser la courbe de chauffage de l\'eau.',
+    role:'Identifier la température de fusion',
+    q:'D\'après la courbe, à quelle température l\'eau solide (glace) se transforme-t-elle en eau liquide ?',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0)<=1;});},
+    aide:'La glace fond à 0 °C (premier palier sur la courbe).',
+    solutionHTML:'L\'eau fond à 0 °C.'
+  },
+  {
+    role:'Nommer le changement d\'état',
+    q:'Comment s\'appelle le changement d\'état solide → liquide ?',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('fusion');
+    },
+    aide:'Solide → Liquide : c\'est la fusion.',
+    solutionHTML:'Ce changement d\'état s\'appelle la fusion.'
+  },
+  {
+    question:'Q2 — Palier de température (3 pts)',
+    consigneQ:'Expliquer pourquoi la température reste constante pendant un changement d\'état.',
+    role:'Identifier la phase de changement d\'état',
+    q:'Sur la courbe, que se passe-t-il à 100 °C ? La température monte-t-elle encore ? (oui / non)',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('non')||t.includes('reste')||t.includes('constante')||t.includes('palier');
+    },
+    aide:'Non. La température reste constante à 100 °C : c\'est le palier de vaporisation.',
+    solutionHTML:'Non, la température reste constante : c\'est un palier.'
+  },
+  {
+    role:'Expliquer le palier',
+    q:'Pourquoi la température reste-t-elle constante ? Que fait l\'énergie absorbée ?',
+    verif:function(inp){
+      var t=norm(inp);
+      return (t.includes('energie')||t.includes('chaleur'))&&(t.includes('etat')||t.includes('liaisons')||t.includes('changement'));
+    },
+    aide:'L\'énergie absorbée sert à rompre les liaisons entre molécules pour changer l\'état, pas à augmenter la température.',
+    solutionHTML:'L\'énergie sert à rompre les liaisons entre molécules (changement d\'état), pas à augmenter T.'
+  },
+  {
+    question:'Q3 — Énergie de vaporisation (3 pts)',
+    consigneQ:'Calculer l\'énergie pour vaporiser 100 g d\'eau à 100 °C. Lv = 2 260 J/g.',
+    role:'Rappeler la formule',
+    clavier:['E','=','m','×','Lv'],
+    q:'La formule de l\'énergie de changement d\'état est E = m × Lv. Rappelle-la.',
+    verif:function(inp){
+      var t=norm(inp);
+      return t.includes('e')&&t.includes('m')&&(t.includes('l')||t.includes('lv'))&&t.includes('=');
+    },
+    aide:'E = m × Lv',
+    solutionHTML:'E = m × Lv'
+  },
+  {
+    role:'Remplacer les valeurs',
+    clavier:['×','='],
+    q:'Remplace m = 100 g et Lv = 2 260 J/g.',
+    verif:function(inp){
+      var ns=nbs(inp);
+      return ns.some(function(x){return Math.abs(x-100)<2;})&&ns.some(function(x){return Math.abs(x-2260)<10;});
+    },
+    aide:'E = 100 × 2 260',
+    solutionHTML:'E = 100 × 2 260'
   },
   {
     role:'Calculer l\'énergie',
-    q:'Calcule E = 920 × 180. Donne le résultat avec l\'unité.',
-    verif:function(inp){var ns=(norm(inp).match(/\d+(\.\d+)?/g)||[]).map(parseFloat);return ns.some(function(x){return Math.abs(x-165600)<=1;});},
-    aide:'920 × 180 = 165 600 J',
-    solutionHTML:'E = 165 600 J'
+    clavier:['×','='],
+    q:'Calcule E = 100 × 2 260. Donne le résultat en joules.',
+    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-226000)<=2000;});},
+    aide:'100 × 2 260 = 226 000 J',
+    solutionHTML:'E = 226 000 J'
   }
 ];
 
-/* --- Exercice 3 : États de la matière et changements d'état --- */
-var etapesEx3=[
-  {
-    question:'Question 1 — Changement d\'état à 0 °C',
-    consigneQ:'On chauffe de la glace à −10 °C. La température reste constante à 0 °C un moment. Quel changement d\'état se produit ?',
-    role:'Nommer le changement d\'état',
-    q:'Quel est le nom du changement d\'état qui se produit à 0 °C (passage de l\'état solide à l\'état liquide) ?',
-    verif:function(inp){return norm(inp).includes('fusion');},
-    aide:'C\'est la fusion (passage du solide au liquide).',
-    solutionHTML:'fusion'
-  },
-  {
-    question:'Question 2 — État entre 0 °C et 100 °C',
-    consigneQ:'Entre 0 °C et 100 °C, la température monte. Dans quel état se trouve l\'eau ?',
-    role:'Identifier l\'état',
-    q:'Quel est l\'état physique de l\'eau entre 0 °C et 100 °C ?',
-    verif:function(inp){return norm(inp).includes('liquid');},
-    aide:'L\'eau est à l\'état liquide entre 0 °C et 100 °C.',
-    solutionHTML:'liquide'
-  },
-  {
-    question:'Question 3 — Changement d\'état à 100 °C',
-    consigneQ:'À 100 °C, la température reste constante à nouveau. Quel changement d\'état se produit ?',
-    role:'Nommer le changement d\'état',
-    q:'Quel est le nom du changement d\'état qui se produit à 100 °C (passage de l\'état liquide à l\'état gazeux) ?',
-    verif:function(inp){var t=norm(inp);return t.includes('vaporis')||t.includes('ebullition')||t.includes('ebull');},
-    aide:'C\'est la vaporisation (ou ébullition) : passage du liquide au gaz.',
-    solutionHTML:'vaporisation (ou ébullition)'
-  },
-  {
-    question:'Question 4 — Palier de température',
-    consigneQ:'Pourquoi la température reste-t-elle constante pendant un changement d\'état ?',
-    role:'Expliquer le palier',
-    q:'Explique pourquoi la température ne change pas pendant un changement d\'état (utilise les mots "énergie" ou "palier").',
-    verif:function(inp){var t=norm(inp);return t.includes('energie')||t.includes('palier')||(t.includes('const')&&t.includes('changement'));},
-    aide:'L\'énergie reçue sert entièrement au changement d\'état : c\'est pourquoi on observe un palier de température.',
-    solutionHTML:'L\'énergie reçue sert au changement d\'état (et non à faire monter la température) → palier de température constante.'
-  }
-];
+/* ===== CONSTRUCTION DES ÉCRANS ===== */
+var ecrans=[], ecranActuel=0;
 
-/* ===== CONSTRUCTION DES ECRANS ===== */
 function construireEcrans(){
-  var zone=document.getElementById('zone-ecrans');zone.innerHTML='';
+  var zone=document.getElementById('zone-ecrans');
+  zone.innerHTML='';
 
-  // Ecran intro
+  // Intro
   zone.insertAdjacentHTML('beforeend',
-    '<div class="carte ecran" data-section="intro">'+
-    '<span class="badge-theme">Physique-Chimie 3ème</span>'+
-    '<h2>Brevet blanc — Physique-Chimie n°2</h2>'+
-    '<p class="consigne">Ce sujet comporte <b>3 exercices</b> de physique-chimie de niveau 3ème. Pour chaque exercice, lis attentivement le contexte puis rédige chaque étape de la solution.</p>'+
-    '<p class="consigne sous">Durée conseillée : 45 minutes · Calculatrice disponible en bas à droite.</p>'+
-    '<div class="ligne-btn"><button class="btn btn-vert" onclick="ecranSuivant()">Commencer</button></div>'+
-    '</div>'
-  );
+    '<div class="exercice ecran" data-section="intro">'+
+    '<div class="exercice-header"><h2>Sujet de Physique-Chimie</h2>'+
+    '<div class="bareme">Lis l\'ensemble du sujet avant de commencer</div></div>'+
+    '<div class="exercice-body">'+
+    '<p style="font-size:16px;line-height:1.7;">Ce sujet comporte <b>3 exercices indépendants</b> :<br>'+
+    '&bull; Exercice 1 — Le saut en parachute <span style="color:var(--brun-clair)">(8 pts)</span><br>'+
+    '&bull; Exercice 2 — Le four à micro-ondes <span style="color:var(--brun-clair)">(9 pts)</span><br>'+
+    '&bull; Exercice 3 — L\'eau dans la nature <span style="color:var(--brun-clair)">(8 pts)</span></p>'+
+    '<p style="margin-top:10px;font-size:15px;color:var(--brun-clair);">La calculatrice est disponible en bas à droite de l\'écran.</p>'+
+    '<div class="ligne-btn"><button class="btn btn-vert" onclick="ecranSuivant()">Commencer →</button></div>'+
+    '</div></div>');
 
   // Exercice 1
   zone.insertAdjacentHTML('beforeend',
-    '<div class="carte ecran cache" data-section="exo0">'+
-    '<h2><span class="num">Exercice 1</span> — Mouvements et vitesse</h2>'+
-    '<p class="consigne"><b>Contexte :</b> Une voiture parcourt une distance <b>d = 540 m</b> en <b>t = 30 s</b> sur une route rectiligne.</p>'+
-    '<div id="redac-0"></div>'+
-    '<div class="ligne-btn cache" id="suite-0"><button class="btn btn-vert" onclick="ecranSuivant()">Exercice suivant</button></div>'+
-    '</div>'
-  );
+    '<div class="exercice ecran cache" data-section="ex1">'+
+    '<div class="exercice-header"><h2>Exercice 1 &mdash; Le saut en parachute</h2>'+
+    '<div class="bareme">8 points</div></div>'+
+    '<div class="exercice-body">'+
+    '<div class="document-contexte">'+
+    '<div class="doc-titre">Document 1 &mdash; Relevé de distances lors d\'un saut</div>'+
+    '<p>Lors d\'un saut en parachute ouvert, un chronophotographe relève les données suivantes :</p>'+
+    '<table>'+
+    '<tr><th>Temps t (s)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>'+
+    '<tr><td>Distance d (m)</td><td>0</td><td>45</td><td>90</td><td>135</td><td>180</td><td>225</td></tr>'+
+    '</table>'+
+    '<div class="donnees-encadrees" style="margin-top:10px;"><div class="don-titre">Rappels</div><ul>'+
+    '<li>Vitesse moyenne : v = d ÷ t</li>'+
+    '<li>Conversion m/s → km/h : multiplier par 3,6</li>'+
+    '</ul></div>'+
+    '</div>'+
+    '<div class="figure" id="fig-ex1"></div>'+
+    '<div id="redac-ex1"></div>'+
+    '<div class="cache ligne-btn" id="suite-ex1">'+
+    '<button class="btn btn-vert" onclick="ecranSuivant()">Exercice 2 →</button>'+
+    '</div></div></div>');
 
   // Exercice 2
   zone.insertAdjacentHTML('beforeend',
-    '<div class="carte ecran cache" data-section="exo1">'+
-    '<h2><span class="num">Exercice 2</span> — Puissance et énergie électrique</h2>'+
-    '<p class="consigne"><b>Contexte :</b> Un grille-pain fonctionne sous une tension <b>U = 230 V</b> et est traversé par un courant d\'intensité <b>I = 4 A</b>. Il fonctionne pendant <b>t = 3 minutes</b>.</p>'+
-    '<div id="redac-1"></div>'+
-    '<div class="ligne-btn cache" id="suite-1"><button class="btn btn-vert" onclick="ecranSuivant()">Exercice suivant</button></div>'+
-    '</div>'
-  );
+    '<div class="exercice ecran cache" data-section="ex2">'+
+    '<div class="exercice-header"><h2>Exercice 2 &mdash; Le four à micro-ondes</h2>'+
+    '<div class="bareme">9 points</div></div>'+
+    '<div class="exercice-body">'+
+    '<div class="document-contexte">'+
+    '<div class="doc-titre">Document 2 &mdash; Plaque signalétique du four</div>'+
+    '<p>Sur le dos d\'un four à micro-ondes, on peut lire :</p>'+
+    '<div style="background:#1a1a2e;color:#fff;border-radius:12px;padding:14px 18px;font-family:\'Fredoka\';font-size:15px;line-height:2;display:inline-block;min-width:220px;margin:10px 0;">'+
+    '<div style="font-size:17px;font-weight:700;color:#FFC93C;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:4px;margin-bottom:6px;">FOUR MICRO-ONDES</div>'+
+    '<div>&#x26A1; Tension : <b>230 V</b></div>'+
+    '<div>&#x1F50B; Intensité : <b>5 A</b></div>'+
+    '<div>&#x23F1; Utilisation quotidienne : <b>15 min</b></div>'+
+    '</div>'+
+    '<div class="donnees-encadrees" style="margin-top:10px;"><div class="don-titre">Rappels</div><ul>'+
+    '<li>Puissance : P = U × I</li>'+
+    '<li>Énergie : E = P × t &nbsp; (t en secondes)</li>'+
+    '<li>Conversion : 1 kWh = 3 600 000 J</li>'+
+    '</ul></div>'+
+    '</div>'+
+    '<div id="redac-ex2"></div>'+
+    '<div class="cache ligne-btn" id="suite-ex2">'+
+    '<button class="btn btn-vert" onclick="ecranSuivant()">Exercice 3 →</button>'+
+    '</div></div></div>');
 
   // Exercice 3
   zone.insertAdjacentHTML('beforeend',
-    '<div class="carte ecran cache" data-section="exo2">'+
-    '<h2><span class="num">Exercice 3</span> — États de la matière</h2>'+
-    '<p class="consigne"><b>Contexte :</b> On chauffe de l\'eau initialement à l\'état solide (glace à −10 °C). La température reste constante à 0 °C pendant un certain temps, puis elle monte jusqu\'à 100 °C où elle reste constante à nouveau.</p>'+
-    '<div id="redac-2"></div>'+
-    '<div class="ligne-btn cache" id="suite-2"><button class="btn btn-vert" onclick="ecranSuivant()">Terminer</button></div>'+
-    '</div>'
-  );
+    '<div class="exercice ecran cache" data-section="ex3">'+
+    '<div class="exercice-header"><h2>Exercice 3 &mdash; L\'eau dans la nature</h2>'+
+    '<div class="bareme">8 points</div></div>'+
+    '<div class="exercice-body">'+
+    '<div class="document-contexte">'+
+    '<div class="doc-titre">Document 3 &mdash; Courbe de chauffage de l\'eau</div>'+
+    '<p>On chauffe 100 g d\'eau solide (glace à −20 °C). Le graphique ci-dessous représente l\'évolution de la température au cours du temps.</p>'+
+    '</div>'+
+    '<div class="figure" id="fig-ex3"></div>'+
+    '<div class="document-contexte">'+
+    '<div class="don-titre" style="font-family:\'Fredoka\';font-weight:700;color:var(--orange-fonce);margin-bottom:5px;font-size:14px;">Données</div>'+
+    '<ul style="list-style:none;padding:0;">'+
+    '<li style="padding:2px 0;font-size:14px;line-height:1.6;"><span style="color:var(--orange-fonce);font-weight:700;">• </span>Chaleur latente de vaporisation de l\'eau : Lv = 2 260 J/g</li>'+
+    '<li style="padding:2px 0;font-size:14px;line-height:1.6;"><span style="color:var(--orange-fonce);font-weight:700;">• </span>Masse d\'eau étudiée : m = 100 g</li>'+
+    '<li style="padding:2px 0;font-size:14px;line-height:1.6;"><span style="color:var(--orange-fonce);font-weight:700;">• </span>Formule : E = m × Lv</li>'+
+    '</ul>'+
+    '</div>'+
+    '<div id="redac-ex3"></div>'+
+    '<div class="cache ligne-btn" id="suite-ex3">'+
+    '<button class="btn btn-vert" onclick="ecranFin()">Terminer le sujet →</button>'+
+    '</div></div></div>');
 
-  // Ecran fin
+  // Fin
   zone.insertAdjacentHTML('beforeend',
-    '<div class="carte ecran fin cache" data-section="fin">'+
-    '<h2>Bravo, sujet terminé ! 🎉</h2>'+
-    '<p class="consigne" style="color:#fff;margin-top:12px;">Tu as rédigé les 3 exercices de physique-chimie. Relis tes réponses et vérifie tes unités.</p>'+
-    '<div class="ligne-btn"><button class="btn btn-jaune" onclick="location.reload()">Recommencer</button></div>'+
-    '</div>'
-  );
+    '<div class="fin ecran cache" data-section="fin">'+
+    '<h2>Sujet terminé ! 🎉</h2>'+
+    '<p style="margin-top:10px;font-size:16px;">Tu as rédigé les 3 exercices du DNB blanc Physique-Chimie.</p>'+
+    '<div class="ligne-btn" style="margin-top:18px;">'+
+    '<a href="index.html" class="btn btn-jaune">← Retour à l\'accueil</a>'+
+    '</div></div>');
 
-  // Construire les rédactions et lier les boutons suite
-  construireRedaction('redac-0', etapesEx1, function(){document.getElementById('suite-0').classList.remove('cache');});
-  construireRedaction('redac-1', etapesEx2, function(){document.getElementById('suite-1').classList.remove('cache');});
-  construireRedaction('redac-2', etapesEx3, function(){document.getElementById('suite-2').classList.remove('cache');});
+  // Figures
+  dessinerParachute('fig-ex1');
+  dessinerGraphiqueChauffage('fig-ex3');
+
+  // Rédactions
+  construireRedaction('redac-ex1',etapesEx1,function(){document.getElementById('suite-ex1').classList.remove('cache');});
+  construireRedaction('redac-ex2',etapesEx2,function(){document.getElementById('suite-ex2').classList.remove('cache');});
+  construireRedaction('redac-ex3',etapesEx3,function(){document.getElementById('suite-ex3').classList.remove('cache');});
 }
 
+/* ===== PROGRESSION + NAVIGATION ===== */
+function construireProgression(){
+  var p=document.getElementById('progression');p.innerHTML='';
+  for(var i=0;i<ecrans.length;i++){var d=document.createElement('div');d.className='pas';p.appendChild(d);}
+  majProgression();
+}
+function majProgression(){
+  document.querySelectorAll('#progression .pas').forEach(function(d,i){
+    d.className='pas'+(i<ecranActuel?' fait':i===ecranActuel?' actif':'');
+  });
+}
+function montrerEcran(i){
+  ecrans.forEach(function(e,k){e.classList.toggle('cache',k!==i);});
+  ecranActuel=i;majProgression();window.scrollTo({top:0,behavior:'smooth'});
+}
+function ecranSuivant(){if(ecranActuel<ecrans.length-1)montrerEcran(ecranActuel+1);}
+function ecranFin(){montrerEcran(ecrans.length-1);}
+
+document.addEventListener('focusin',function(e){
+  if(e.target.matches&&e.target.matches('.etape input[type=text]'))dernierChamp=e.target;
+});
 window.addEventListener('DOMContentLoaded',function(){
   construireEcrans();
   ecrans=Array.from(document.querySelectorAll('#zone-ecrans .ecran'));
-  construireProgression(ecrans.length);
+  construireProgression();
   montrerEcran(0);
 });
 </script>
