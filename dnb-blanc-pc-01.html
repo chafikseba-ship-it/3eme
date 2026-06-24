@@ -18,34 +18,25 @@
   body{font-family:'Nunito',sans-serif;background:var(--creme);color:var(--brun);min-height:100vh;padding:18px 14px 90px;-webkit-text-size-adjust:100%;}
   h1,h2,h3,.titre{font-family:'Fredoka',sans-serif;}
   .wrap{max-width:700px;margin:0 auto;}
-
   .btn-retour{display:inline-flex;align-items:center;gap:6px;font-family:'Fredoka';font-weight:600;font-size:16px;
     background:var(--orange);border:2px solid var(--orange-fonce);color:#fff;border-radius:12px;
     padding:8px 14px;cursor:pointer;text-decoration:none;margin-bottom:12px;transition:background .12s;}
   .btn-retour:hover{background:var(--orange-fonce);}
-
-  /* En-tête officiel */
   .entete-sujet{background:var(--blanc);border:2px solid var(--brun-clair);border-radius:18px;padding:22px 24px;margin-bottom:18px;text-align:center;box-shadow:0 4px 0 var(--ombre);}
   .entete-sujet .diplome{font-family:'Fredoka';font-size:20px;font-weight:700;color:var(--brun);letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid var(--brun-clair);padding-bottom:10px;margin-bottom:10px;}
   .entete-sujet .matiere{font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--brun-clair);margin-bottom:6px;}
   .entete-sujet .infos{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:8px;}
   .entete-sujet .info-item{background:var(--creme2);border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;}
   .entete-sujet .consigne-gen{font-size:14px;color:var(--brun-clair);margin-top:10px;line-height:1.5;border-top:1px solid var(--creme2);padding-top:8px;}
-
-  /* Progression */
   .progression{display:flex;gap:6px;margin-bottom:18px;}
   .progression .pas{flex:1;height:10px;border-radius:6px;background:var(--creme2);box-shadow:inset 0 2px 4px var(--ombre);}
   .progression .pas.fait{background:var(--vert);}
   .progression .pas.actif{background:var(--jaune);}
-
-  /* Exercice carte */
   .exercice{background:var(--blanc);border-radius:22px;overflow:hidden;box-shadow:0 5px 0 var(--ombre);margin-bottom:18px;}
   .exercice-header{background:linear-gradient(135deg,var(--jaune),var(--orange));padding:16px 22px;}
   .exercice-header h2{font-family:'Fredoka';font-size:20px;font-weight:700;color:var(--brun);}
   .exercice-header .bareme{font-size:14px;font-weight:700;color:var(--brun);opacity:.85;margin-top:3px;}
   .exercice-body{padding:20px 22px;}
-
-  /* Document contexte */
   .document-contexte{background:#F0F7FF;border-left:5px solid var(--bleu);border-radius:12px;padding:16px 18px;margin:0 0 14px 0;}
   .document-contexte .doc-titre{font-family:'Fredoka';font-size:14px;font-weight:700;color:var(--bleu-fonce);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
   .document-contexte p{font-size:15px;line-height:1.6;margin-bottom:6px;}
@@ -54,12 +45,8 @@
   .donnees-encadrees ul{list-style:none;padding:0;}
   .donnees-encadrees li{padding:2px 0;font-size:14px;line-height:1.6;}
   .donnees-encadrees li::before{content:"• ";color:var(--orange-fonce);font-weight:700;}
-
-  /* Figure */
   .figure{background:var(--creme2);border-radius:18px;padding:14px;text-align:center;margin:14px 0;}
   .figure svg{max-width:100%;height:auto;}
-
-  /* Moteur rédaction */
   .qbloc{margin:20px 0 6px;padding:13px 15px;background:linear-gradient(135deg,#FFE7B0,#FFD98A);border-radius:14px;box-shadow:0 3px 0 rgba(180,140,40,.2);}
   .qbloc h3{font-size:17px;color:var(--brun);font-weight:600;}
   .qbloc p{font-size:15px;line-height:1.45;margin-top:5px;}
@@ -76,21 +63,15 @@
   .msg.faux{color:var(--rouge);}
   .aide{background:#FFF3D0;border-left:5px solid var(--jaune);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:15px;}
   .solution{background:#eef7df;border-left:5px solid var(--vert);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:15px;}
-
-  /* Boutons */
   .btn{font-family:'Fredoka';font-weight:600;font-size:18px;border:none;cursor:pointer;border-radius:18px;padding:14px 22px;color:#fff;transition:transform .05s,box-shadow .05s;display:inline-block;text-decoration:none;}
   .btn-vert{background:var(--vert);box-shadow:0 5px 0 var(--vert-fonce);}
   .btn-jaune{background:var(--jaune);color:var(--brun);box-shadow:0 5px 0 var(--jaune-fonce);}
   .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--vert-fonce);}
   .btn-jaune:active{box-shadow:0 1px 0 var(--jaune-fonce);}
   .ligne-btn{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
-
-  /* Clavier sym */
   .clavier-sym{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
   .clavier-sym button{font-family:'Fredoka';font-weight:600;font-size:16px;border:none;cursor:pointer;background:var(--creme2);color:var(--brun);border-radius:10px;padding:8px 13px;min-width:42px;box-shadow:0 3px 0 var(--ombre);}
   .clavier-sym button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ombre);}
-
-  /* Calculatrice */
   #btn-calc{position:fixed;right:18px;bottom:18px;z-index:50;width:60px;height:60px;border-radius:50%;background:var(--orange);color:#fff;border:none;cursor:pointer;font-size:26px;box-shadow:0 5px 0 var(--orange-fonce);}
   #btn-calc:active{transform:translateY(4px);box-shadow:0 1px 0 var(--orange-fonce);}
   #calc{position:fixed;right:18px;bottom:88px;z-index:51;width:300px;max-width:calc(100vw - 36px);max-height:calc(100vh - 120px);overflow-y:auto;background:var(--blanc);border-radius:20px;box-shadow:0 8px 24px rgba(80,60,20,.3);padding:14px;display:none;}
@@ -105,8 +86,6 @@
   .grille-calc button.op{background:var(--jaune);}
   .grille-calc button.fct{background:var(--vert);color:#fff;font-size:14px;}
   .grille-calc button.eg{background:var(--orange);color:#fff;}
-
-  /* Fin */
   .fin{background:linear-gradient(135deg,var(--vert),var(--jaune));color:var(--brun);text-align:center;padding:28px 22px;border-radius:22px;box-shadow:0 5px 0 var(--ombre);}
   .fin h2{font-size:26px;font-family:'Fredoka';}
   .cache{display:none;}
@@ -117,7 +96,6 @@
 
   <a href="index.html" class="btn-retour">← Accueil</a>
 
-  <!-- EN-TÊTE OFFICIEL -->
   <div class="entete-sujet">
     <div class="diplome">Diplôme national du brevet &mdash; Session 2025</div>
     <div class="matiere">Physique &ndash; Chimie &nbsp;|&nbsp; Sujet n°&nbsp;1</div>
@@ -126,7 +104,7 @@
       <div class="info-item">📊 Total : 25 points</div>
       <div class="info-item">🧮 Calculatrice autorisée</div>
     </div>
-    <div class="consigne-gen">Le sujet comporte 3 exercices indépendants. La qualité de la rédaction est prise en compte. Les résultats numériques doivent être accompagnés de leur unité.</div>
+    <div class="consigne-gen">Sujet tiré aléatoirement parmi 7 exercices. Recharge la page pour un nouveau tirage. La qualité de la rédaction est prise en compte.</div>
   </div>
 
   <div class="progression" id="progression"></div>
@@ -134,7 +112,6 @@
 
 </div>
 
-<!-- CALCULATRICE -->
 <button id="btn-calc" onclick="toggleCalc()" aria-label="Calculatrice">🧮</button>
 <div id="calc" role="dialog" aria-label="Calculatrice">
   <div class="mode">degrés (°)</div>
@@ -153,6 +130,9 @@
 
 <script>
 /* ===== OUTILS ===== */
+function rnd(n){return Math.floor(Math.random()*n);}
+function choix(t){return t[rnd(t.length)];}
+function melange(t){t=t.slice();for(var i=t.length-1;i>0;i--){var j=rnd(i+1);var tmp=t[i];t[i]=t[j];t[j]=tmp;}return t;}
 function fr(x){return (''+x).replace('.',',');}
 
 /* ===== NORMALISATION ===== */
@@ -232,418 +212,714 @@ function svgTxt(x,y,s,sz,col){
   return '<text x="'+x+'" y="'+y+'" font-family="Fredoka" font-weight="600" font-size="'+(sz||16)+'" fill="'+(col||'#5A4A2F')+'" text-anchor="middle" dominant-baseline="middle">'+s+'</text>';
 }
 
-function dessinerIceberg(cibleId){
-  var W=360, H=260;
-  var svg='<svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Iceberg flottant dans la mer">';
-  // Ciel
-  svg+='<rect x="0" y="0" width="360" height="140" fill="#EEF8FF"/>';
-  // Mer
-  svg+='<rect x="0" y="140" width="360" height="120" fill="#4FA3D1" opacity="0.75"/>';
-  // Partie immergée
-  svg+='<polygon points="95,140 265,140 240,232 120,232" fill="#a8d8ea" stroke="#2A7AB0" stroke-width="2"/>';
-  // Partie émergée
-  svg+='<polygon points="115,140 245,140 210,68 180,55 150,68" fill="#e8f4fb" stroke="#4FA3D1" stroke-width="2.5"/>';
-  // Niveau mer
-  svg+='<line x1="0" y1="140" x2="360" y2="140" stroke="#fff" stroke-width="3" stroke-dasharray="10,5"/>';
-  // Étiquettes
-  svg+=svgTxt(180,100,'Partie émergée (~10 %)',13,'#2A7AB0');
-  svg+=svgTxt(180,185,'Partie immergée (~90 %)',13,'#fff');
-  svg+=svgTxt(30,128,'Mer',12,'#fff');
-  // Données
-  svg+='<rect x="6" y="6" width="220" height="44" rx="8" fill="rgba(255,248,230,0.9)" stroke="#E0A415" stroke-width="1.5"/>';
-  svg+=svgTxt(116,18,'ρ_glace = 0,92 g/cm³',12,'#E07A1F');
-  svg+=svgTxt(116,36,'ρ_mer = 1,03 g/cm³',12,'#2A7AB0');
-  svg+=svgTxt(180,252,'Figure non à l\'échelle',11,'#A08B6E');
-  svg+='</svg>';
-  document.getElementById(cibleId).innerHTML=svg;
+/* ===== GÉNÉRATEUR 1 : Flottaison ===== */
+function genFlottaison(){
+  var configs=[
+    {rhoSolide:0.92,rhoLiquide:1.03,nomSolide:'glace',nomLiquide:'eau de mer',V:5000,uniteV:'m³',uniteRho:'t/m³',flotte:true},
+    {rhoSolide:0.8,rhoLiquide:1.0,nomSolide:'bois de pin',nomLiquide:'eau douce',V:200,uniteV:'dm³',uniteRho:'kg/dm³',flotte:true},
+    {rhoSolide:7.8,rhoLiquide:1.0,nomSolide:'fer',nomLiquide:'eau',V:10,uniteV:'cm³',uniteRho:'g/cm³',flotte:false},
+    {rhoSolide:0.55,rhoLiquide:1.0,nomSolide:'liège',nomLiquide:'eau',V:500,uniteV:'cm³',uniteRho:'g/cm³',flotte:true}
+  ];
+  var cfg=choix(configs);
+  var rs=cfg.rhoSolide, rl=cfg.rhoLiquide;
+  var masse=Math.round(rs*cfg.V*100)/100;
+  var pct=cfg.flotte?Math.round((1-rs/rl)*100):0;
+  var enonceHTML='Un bloc de <b>'+cfg.nomSolide+'</b> est plongé dans <b>'+cfg.nomLiquide+'</b>.<br>'+
+    'Masse volumique du '+cfg.nomSolide+' : ρ₁ = '+fr(rs)+' '+cfg.uniteRho+'<br>'+
+    'Masse volumique du '+cfg.nomLiquide+' : ρ₂ = '+fr(rl)+' '+cfg.uniteRho+'<br>'+
+    'Volume du bloc : V = '+cfg.V+' '+cfg.uniteV+'<br>'+
+    '<i>Rappel : ρ = m ÷ V &nbsp;→&nbsp; m = ρ × V</i>';
+  var etapes=[
+    {
+      question:'Q1 — Comparer les masses volumiques (2 pts)',
+      consigneQ:'Utiliser le symbole < ou > pour comparer ρ₁ et ρ₂.',
+      role:'Comparer',
+      q:'Compare ρ₁ = '+fr(rs)+' et ρ₂ = '+fr(rl)+' '+cfg.uniteRho+'. Laquelle est la plus grande ? Utilise < ou >.',
+      verif:function(inp){var t=norm(inp);return (t.includes('<')||t.includes('inferieur')||t.includes('pluspetit'))&&nbs(inp).some(function(x){return Math.abs(x-rs)<0.05||Math.abs(x-rl)<0.05;});},
+      aide:'Compare directement : '+fr(rs)+' et '+fr(rl),
+      solutionHTML:'ρ₁ = '+fr(rs)+' '+(rs<rl?'&lt;':'&gt;')+' ρ₂ = '+fr(rl)+' '+cfg.uniteRho
+    },
+    {
+      role:'Conclure sur la flottaison',
+      q:'Le '+cfg.nomSolide+' flotte-t-il dans le '+cfg.nomLiquide+' ? Justifie en une phrase.',
+      verif:function(inp){var t=norm(inp);return cfg.flotte?(t.includes('flotte')||t.includes('flottera')):(t.includes('coule')||t.includes('pas')||t.includes('non'));},
+      aide:'Un solide flotte si sa masse volumique est inférieure à celle du liquide.',
+      solutionHTML:cfg.flotte?'Le '+cfg.nomSolide+' flotte car ρ₁ &lt; ρ₂.':'Le '+cfg.nomSolide+' coule car ρ₁ &gt; ρ₂.'
+    },
+    {
+      question:'Q2 — Calculer la masse du bloc (3 pts)',
+      consigneQ:'Rappel : m = ρ × V',
+      role:'Rappeler la formule',
+      clavier:['m','=','ρ','×','V','÷'],
+      q:'Rappelle la formule reliant ρ, m et V, puis isole m.',
+      verif:function(inp){var t=norm(inp);return t.includes('m')&&t.includes('v')&&t.includes('=')&&(t.includes('\u03c1')||t.includes('rho')||t.includes('p'));},
+      aide:'ρ = m ÷ V  →  m = ρ × V',
+      solutionHTML:'m = ρ × V'
+    },
+    {
+      role:'Remplacer les valeurs',
+      clavier:['×','='],
+      q:'Remplace ρ = '+fr(rs)+' et V = '+cfg.V+' dans m = ρ × V.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-rs)<0.05;})&&ns.some(function(x){return Math.abs(x-cfg.V)<1;});},
+      aide:'m = '+fr(rs)+' × '+cfg.V,
+      solutionHTML:'m = '+fr(rs)+' × '+cfg.V
+    },
+    {
+      role:'Calculer la masse',
+      clavier:['×','='],
+      q:'Calcule m = '+fr(rs)+' × '+cfg.V+'. Donne le résultat avec son unité.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-masse)<=masse*0.05+0.1;});},
+      aide:fr(rs)+' × '+cfg.V+' = '+fr(masse),
+      solutionHTML:'m = '+fr(masse)+' '+cfg.uniteRho.replace('/'+cfg.uniteV.replace('³',''),'').replace('/m³','t').replace('/dm³','kg').replace('/cm³','g')
+    }
+  ];
+  return {
+    titre:'La flottaison — '+cfg.nomSolide,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var W=360,H=240;
+      var svg='<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="360" height="120" fill="#EEF8FF"/>';
+      svg+='<rect x="0" y="120" width="360" height="120" fill="#4FA3D1" opacity="0.7"/>';
+      if(cfg.flotte){
+        svg+='<rect x="110" y="95" width="140" height="55" rx="6" fill="#e8f4fb" stroke="#4FA3D1" stroke-width="2"/>';
+        svg+=svgTxt(180,82,cfg.nomSolide,13,'#2A7AB0');
+      } else {
+        svg+='<rect x="110" y="160" width="140" height="50" rx="6" fill="#ccc" stroke="#888" stroke-width="2"/>';
+        svg+=svgTxt(180,220,cfg.nomSolide+' (coule)',13,'#5A4A2F');
+      }
+      svg+='<line x1="0" y1="120" x2="360" y2="120" stroke="#fff" stroke-width="2.5" stroke-dasharray="10,5"/>';
+      svg+=svgTxt(30,108,'Air',12,'#2A7AB0');
+      svg+=svgTxt(30,145,cfg.nomLiquide,12,'#fff');
+      svg+='<rect x="6" y="6" width="220" height="38" rx="8" fill="rgba(255,248,230,0.9)" stroke="#E0A415" stroke-width="1.5"/>';
+      svg+=svgTxt(116,17,'ρ₁ = '+fr(rs)+' '+cfg.uniteRho,12,'#E07A1F');
+      svg+=svgTxt(116,33,'ρ₂ = '+fr(rl)+' '+cfg.uniteRho,12,'#2A7AB0');
+      svg+=svgTxt(180,232,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
 }
 
-function dessinerCircuit(cibleId){
-  var W=380, H=200;
-  var svg='<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma circuit chargeur">';
-  svg+='<rect x="0" y="0" width="380" height="200" fill="#FFF6E6" rx="12"/>';
-  // Fils
-  svg+='<polyline points="50,55 310,55 310,155 50,155 50,55" fill="none" stroke="#5A4A2F" stroke-width="3" stroke-linejoin="round"/>';
-  // Générateur (cercle avec + et -)
-  svg+='<circle cx="50" cy="105" r="22" fill="#FFE7B0" stroke="#E0A415" stroke-width="2.5"/>';
-  svg+=svgTxt(50,102,'+',14,'#E07A1F');
-  svg+=svgTxt(50,116,'−',14,'#2A7AB0');
-  svg+=svgTxt(50,170,'U = 5 V',12,'#E07A1F');
-  svg+=svgTxt(50,183,'Générateur',11,'#8A744C');
-  // Résistance câble (zigzag en haut)
-  var zx=140, zy=55;
-  svg+='<polyline points="140,55 150,40 162,70 174,40 186,70 198,40 210,55" fill="none" stroke="#E07A1F" stroke-width="2.5" stroke-linejoin="round"/>';
-  svg+=svgTxt(175,26,'R = 0,5 Ω',13,'#E07A1F');
-  svg+=svgTxt(175,38,'câble',11,'#8A744C');
-  // Téléphone (rectangle droite)
-  svg+='<rect x="275" y="78" width="70" height="54" rx="8" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5"/>';
-  svg+=svgTxt(310,100,'📱',18,'#4FA3D1');
-  svg+=svgTxt(310,120,'Téléphone',11,'#4FA3D1');
-  // Flèche intensité
-  svg+='<polygon points="108,49 118,55 108,61" fill="#9FD356"/>';
-  svg+=svgTxt(80,44,'I = 2 A',12,'#6FA52A');
-  svg+=svgTxt(190,192,'Schéma non à l\'échelle',11,'#A08B6E');
-  svg+='</svg>';
-  document.getElementById(cibleId).innerHTML=svg;
+/* ===== GÉNÉRATEUR 2 : Loi d'Ohm ===== */
+function genOhm(){
+  var configs=[
+    {contexte:'chargeur USB',U:5,R:0.5,I:2,Utel:4,Ptel:8,Pcable:1},
+    {contexte:'lampe de bureau',U:12,R:2,I:3,Utel:6,Ptel:18,Pcable:6},
+    {contexte:'circuit de voiture',U:12,R:0.4,I:5,Utel:10,Ptel:50,Pcable:2},
+    {contexte:'petit moteur',U:9,R:3,I:1,Utel:6,Ptel:6,Pcable:3}
+  ];
+  var cfg=choix(configs);
+  var Ucable=Math.round(cfg.R*cfg.I*100)/100;
+  var Pcable=Math.round(Ucable*cfg.I*100)/100;
+  var Ucharge=Math.round((cfg.U-Ucable)*100)/100;
+  var Pcharge=Math.round(Ucharge*cfg.I*100)/100;
+  var enonceHTML='Un '+cfg.contexte+' est alimenté sous <b>U = '+cfg.U+' V</b>. L\'intensité du courant est <b>I = '+cfg.I+' A</b>.<br>'+
+    'Le câble de connexion a une résistance <b>R = '+fr(cfg.R)+' Ω</b>.<br>'+
+    'Rappels : Loi d\'Ohm : U = R × I &nbsp;|&nbsp; Puissance : P = U × I';
+  var etapes=[
+    {
+      question:'Q1 — Tension aux bornes du câble (3 pts)',
+      role:'Écrire la loi d\'Ohm',
+      clavier:['U','=','R','×','I'],
+      q:'Rappelle la loi d\'Ohm reliant U, R et I.',
+      verif:function(inp){var t=norm(inp);return t.includes('u')&&t.includes('r')&&t.includes('i')&&t.includes('=');},
+      aide:'Loi d\'Ohm : U = R × I',
+      solutionHTML:'U = R × I'
+    },
+    {
+      role:'Remplacer les valeurs',
+      clavier:['×','='],
+      q:'Remplace R = '+fr(cfg.R)+' Ω et I = '+cfg.I+' A.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.R)<0.05;})&&ns.some(function(x){return Math.abs(x-cfg.I)<0.1;});},
+      aide:'U = '+fr(cfg.R)+' × '+cfg.I,
+      solutionHTML:'U = '+fr(cfg.R)+' × '+cfg.I
+    },
+    {
+      role:'Calculer la tension du câble',
+      q:'Calcule U_câble. Donne le résultat en volts (V).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Ucable)<=0.05*Math.abs(Ucable)+0.1;});},
+      aide:fr(cfg.R)+' × '+cfg.I+' = '+fr(Ucable)+' V',
+      solutionHTML:'U_câble = '+fr(Ucable)+' V'
+    },
+    {
+      question:'Q2 — Puissance dissipée dans le câble (3 pts)',
+      role:'Écrire la formule de puissance',
+      clavier:['P','=','U','×','I'],
+      q:'Rappelle la formule de la puissance électrique.',
+      verif:function(inp){var t=norm(inp);return t.includes('p')&&t.includes('u')&&t.includes('i')&&t.includes('=');},
+      aide:'P = U × I',
+      solutionHTML:'P = U × I'
+    },
+    {
+      role:'Calculer la puissance dissipée',
+      clavier:['×','='],
+      q:'Calcule P_câble = U_câble × I = '+fr(Ucable)+' × '+cfg.I+'. Donne le résultat en watts (W).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Pcable)<=0.05*Math.abs(Pcable)+0.1;});},
+      aide:fr(Ucable)+' × '+cfg.I+' = '+fr(Pcable)+' W',
+      solutionHTML:'P_câble = '+fr(Pcable)+' W'
+    },
+    {
+      question:'Q3 — Puissance utile reçue par l\'appareil (3 pts)',
+      role:'Calculer U de l\'appareil',
+      clavier:['−','='],
+      q:'La tension totale est U = '+cfg.U+' V. Calcule U_appareil = U_total − U_câble = '+cfg.U+' − '+fr(Ucable)+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Ucharge)<=0.05*Math.abs(Ucharge)+0.1;});},
+      aide:cfg.U+' − '+fr(Ucable)+' = '+fr(Ucharge)+' V',
+      solutionHTML:'U_appareil = '+fr(Ucharge)+' V'
+    },
+    {
+      role:'Calculer la puissance utile',
+      clavier:['×','='],
+      q:'Calcule P_utile = U_appareil × I = '+fr(Ucharge)+' × '+cfg.I+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Pcharge)<=0.05*Math.abs(Pcharge)+0.1;});},
+      aide:fr(Ucharge)+' × '+cfg.I+' = '+fr(Pcharge)+' W',
+      solutionHTML:'P_utile = '+fr(Pcharge)+' W'
+    }
+  ];
+  return {
+    titre:'Loi d\'Ohm — '+cfg.contexte,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="200" fill="#FFF6E6" rx="12"/>';
+      svg+='<polyline points="50,55 310,55 310,155 50,155 50,55" fill="none" stroke="#5A4A2F" stroke-width="3" stroke-linejoin="round"/>';
+      svg+='<circle cx="50" cy="105" r="22" fill="#FFE7B0" stroke="#E0A415" stroke-width="2.5"/>';
+      svg+=svgTxt(50,102,'+',14,'#E07A1F');svg+=svgTxt(50,116,'−',14,'#2A7AB0');
+      svg+=svgTxt(50,170,'U = '+cfg.U+' V',12,'#E07A1F');svg+=svgTxt(50,183,'Générateur',11,'#8A744C');
+      svg+='<polyline points="140,55 150,40 162,70 174,40 186,70 198,40 210,55" fill="none" stroke="#E07A1F" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+=svgTxt(175,26,'R = '+fr(cfg.R)+' Ω',13,'#E07A1F');svg+=svgTxt(175,38,'câble',11,'#8A744C');
+      svg+='<rect x="275" y="78" width="70" height="54" rx="8" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5"/>';
+      svg+=svgTxt(310,100,'🔌',18,'#4FA3D1');svg+=svgTxt(310,120,cfg.contexte,10,'#4FA3D1');
+      svg+='<polygon points="108,49 118,55 108,61" fill="#9FD356"/>';
+      svg+=svgTxt(80,44,'I = '+cfg.I+' A',12,'#6FA52A');
+      svg+=svgTxt(190,192,'Schéma non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
 }
 
-/* ===== ÉTAPES EXERCICE 1 : Flottaison ===== */
-var etapesEx1=[
-  {
-    question:'Q1 — Comparaison des masses volumiques (2 pts)',
-    consigneQ:'Comparer ρ_glace et ρ_mer, puis conclure sur la flottaison.',
-    role:'Comparer les valeurs',
-    q:'Compare ρ_glace = 0,92 g/cm³ et ρ_mer = 1,03 g/cm³. Laquelle est la plus grande ? Utilise le symbole < ou >.',
-    verif:function(inp){
-      var t=norm(inp);
-      return (t.includes('0.92')||t.includes('glace'))&&(t.includes('<')||t.includes('inferieur')||t.includes('pluspetit'));
+/* ===== GÉNÉRATEUR 3 : Réaction chimique (rouille) ===== */
+function genReaction(){
+  return {
+    titre:'La corrosion du fer',
+    enonceHTML:'Le fer (Fe) réagit avec le dioxygène (O₂) de l\'air en présence d\'eau pour former de la rouille (Fe₂O₃).<br>'+
+      '<div style="text-align:center;font-family:\'Fredoka\';font-weight:700;font-size:17px;background:#FFF0D6;padding:10px;border-radius:8px;margin:10px 0;">4 Fe &nbsp;+&nbsp; 3 O₂ &nbsp;→&nbsp; 2 Fe₂O₃</div>'+
+      '<i>Données : M(Fe) = 56 g/mol, M(O) = 16 g/mol, M(Fe₂O₃) = 160 g/mol</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 140" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="140" fill="#FFF6E6" rx="10"/>';
+      svg+=svgTxt(190,30,'Équation de la réaction',14,'#5A4A2F');
+      svg+='<rect x="20" y="50" width="340" height="50" rx="10" fill="#FFF0D6" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(190,75,'4 Fe  +  3 O₂  →  2 Fe₂O₃',18,'#E07A1F');
+      svg+=svgTxt(80,115,'Réactifs',13,'#2A7AB0');
+      svg+=svgTxt(280,115,'Produit',13,'#6FA52A');
+      svg+='<line x1="190" y1="105" x2="190" y2="130" stroke="#C9A24A" stroke-width="1.5" stroke-dasharray="4,3"/>';
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
     },
-    aide:'ρ_glace = 0,92 g/cm³ < ρ_mer = 1,03 g/cm³ : la masse volumique de la glace est inférieure.',
-    solutionHTML:'ρ_glace = 0,92 g/cm³ &lt; ρ_mer = 1,03 g/cm³'
-  },
-  {
-    role:'Conclure sur la flottaison',
-    q:'Que peut-on conclure ? La glace flotte-t-elle dans l\'eau de mer ? Justifie en une phrase.',
-    verif:function(inp){
-      var t=norm(inp);
-      return t.includes('flotte')||t.includes('flottera')||t.includes('flottaison');
+    etapes:[
+      {
+        question:'Q1 — Réactifs et produits (2 pts)',
+        role:'Identifier les réactifs',
+        q:'Quels sont les réactifs de cette équation (à gauche de la flèche) ?',
+        verif:function(inp){var t=norm(inp);return (t.includes('fe')||t.includes('fer'))&&(t.includes('o2')||t.includes('dioxygene'));},
+        aide:'Les réactifs sont Fe (fer) et O₂ (dioxygène).',
+        solutionHTML:'Réactifs : Fe et O₂'
+      },
+      {
+        role:'Identifier le produit',
+        q:'Quel est le produit (à droite de la flèche) ?',
+        verif:function(inp){var t=norm(inp);return t.includes('fe2o3')||t.includes('rouille')||t.includes('oxyde');},
+        aide:'Le produit est Fe₂O₃ (oxyde de fer / rouille).',
+        solutionHTML:'Produit : Fe₂O₃ (rouille)'
+      },
+      {
+        question:'Q2 — Vérifier l\'équilibrage (3 pts)',
+        role:'Compter les atomes Fe à gauche',
+        q:'Combien y a-t-il d\'atomes de fer Fe à gauche de la flèche ?',
+        verif:function(inp){return nbs(inp).some(function(x){return x===4;});},
+        aide:'4 × Fe = 4 atomes de fer.',
+        solutionHTML:'4 atomes de Fe'
+      },
+      {
+        role:'Vérifier Fe à droite',
+        q:'Combien y a-t-il d\'atomes Fe à droite ? (2 molécules Fe₂O₃, chacune contient 2 Fe)',
+        verif:function(inp){return nbs(inp).some(function(x){return x===4;});},
+        aide:'2 molécules × 2 atomes Fe = 4 atomes Fe.',
+        solutionHTML:'2 × 2 = 4 atomes Fe ✓'
+      },
+      {
+        role:'Compter les atomes d\'oxygène des deux côtés',
+        q:'Donne le nombre d\'atomes O à gauche (3 O₂) et à droite (2 Fe₂O₃). Sont-ils égaux ?',
+        verif:function(inp){return nbs(inp).some(function(x){return x===6;});},
+        aide:'Gauche : 3 × 2 = 6 atomes O. Droite : 2 × 3 = 6 atomes O.',
+        solutionHTML:'6 = 6 ✓ L\'équation est équilibrée.'
+      },
+      {
+        question:'Q3 — Masse de rouille formée (3 pts)',
+        role:'Calculer n(Fe)',
+        clavier:['÷','='],
+        q:'Calcule le nombre de moles de fer : n(Fe) = 11,2 ÷ 56.',
+        verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0.2)<=0.01;});},
+        aide:'n(Fe) = 11,2 ÷ 56 = 0,2 mol',
+        solutionHTML:'n(Fe) = 0,2 mol'
+      },
+      {
+        role:'Appliquer la stœchiométrie',
+        clavier:['×','÷','='],
+        q:'4 mol Fe → 2 mol Fe₂O₃. Calcule n(Fe₂O₃) = 0,2 × 2 ÷ 4.',
+        verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0.1)<=0.01;});},
+        aide:'n(Fe₂O₃) = 0,2 × 2 ÷ 4 = 0,1 mol',
+        solutionHTML:'n(Fe₂O₃) = 0,1 mol'
+      },
+      {
+        role:'Calculer la masse de rouille',
+        clavier:['×','='],
+        q:'Calcule m(Fe₂O₃) = n × M = 0,1 × 160.',
+        verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-16)<=0.5;});},
+        aide:'m = 0,1 × 160 = 16 g',
+        solutionHTML:'m(Fe₂O₃) = 16 g'
+      }
+    ]
+  };
+}
+
+/* ===== GÉNÉRATEUR 4 : Concentration massique ===== */
+function genConcentration(){
+  var configs=[
+    {solute:'sucre',solvant:'eau',V:0.5,m:100,Csat:200,unitV:'L'},
+    {solute:'sel',solvant:'eau',V:1,m:250,Csat:360,unitV:'L'},
+    {solute:'sucre',solvant:'eau',V:2,m:350,Csat:200,unitV:'L'},
+    {solute:'sel',solvant:'eau',V:0.25,m:80,Csat:360,unitV:'L'}
+  ];
+  var cfg=choix(configs);
+  var C=Math.round(cfg.m/cfg.V*10)/10;
+  var sature=C>=cfg.Csat;
+  var enonceHTML='On prépare une solution en dissolvant <b>'+cfg.m+' g de '+cfg.solute+'</b> dans <b>'+fr(cfg.V)+' L d\''+cfg.solvant+'</b>.<br>'+
+    'Concentration de saturation du '+cfg.solute+' : C<sub>sat</sub> = '+cfg.Csat+' g/L.<br>'+
+    '<i>Rappel : C = m ÷ V &nbsp;(m en g, V en L, C en g/L)</i>';
+  var etapes=[
+    {
+      question:'Q1 — Formule de la concentration (2 pts)',
+      role:'Rappeler la formule',
+      clavier:['C','=','m','÷','V'],
+      q:'Rappelle la formule de la concentration massique C en fonction de la masse m et du volume V.',
+      verif:function(inp){var t=norm(inp);return t.includes('c')&&t.includes('m')&&t.includes('v')&&t.includes('=')&&(t.includes('÷')||t.includes('/'));},
+      aide:'C = m ÷ V',
+      solutionHTML:'C = m ÷ V'
     },
-    aide:'Un solide flotte si sa masse volumique est inférieure à celle du liquide.',
-    solutionHTML:'La glace flotte car ρ_glace &lt; ρ_mer.'
-  },
-  {
-    question:'Q2 — Calcul de la masse de l\'iceberg (3 pts)',
-    consigneQ:'Calculer la masse d\'un iceberg de volume V = 5 000 m³. Rappel : ρ = m ÷ V.',
-    role:'Rappeler la formule',
-    clavier:['ρ','=','m','÷','V','×'],
-    q:'Rappelle la formule reliant ρ, m et V, puis isole m.',
-    verif:function(inp){
-      var t=norm(inp);
-      return t.includes('m')&&t.includes('v')&&t.includes('=')&&(t.includes('ρ')||t.includes('rho')||t.includes('p'));
+    {
+      question:'Q2 — Calculer la concentration (3 pts)',
+      role:'Remplacer les valeurs',
+      clavier:['÷','='],
+      q:'Remplace m = '+cfg.m+' g et V = '+fr(cfg.V)+' L dans la formule.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.m)<1;})&&ns.some(function(x){return Math.abs(x-cfg.V)<0.01;});},
+      aide:'C = '+cfg.m+' ÷ '+fr(cfg.V),
+      solutionHTML:'C = '+cfg.m+' ÷ '+fr(cfg.V)
     },
-    aide:'ρ = m ÷ V  ⟹  m = ρ × V',
-    solutionHTML:'ρ = m ÷ V &nbsp;⟹&nbsp; m = ρ × V'
-  },
-  {
-    role:'Remplacer les valeurs',
-    clavier:['×','='],
-    q:'La masse volumique de la glace en t/m³ est ρ = 0,92 t/m³. Remplace ρ = 0,92 et V = 5 000 dans m = ρ × V.',
-    verif:function(inp){
-      var ns=nbs(inp);
-      return ns.some(function(x){return Math.abs(x-0.92)<0.02;})&&ns.some(function(x){return Math.abs(x-5000)<10;});
+    {
+      role:'Calculer C',
+      q:'Calcule C = '+cfg.m+' ÷ '+fr(cfg.V)+'. Donne le résultat en g/L.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-C)<=0.05*Math.abs(C)+0.1;});},
+      aide:'C = '+fr(C)+' g/L',
+      solutionHTML:'C = '+fr(C)+' g/L'
     },
-    aide:'m = 0,92 × 5 000',
-    solutionHTML:'m = 0,92 × 5 000'
-  },
-  {
-    role:'Calculer la masse',
-    clavier:['×','='],
-    q:'Calcule m = 0,92 × 5 000. Donne le résultat en tonnes.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-4600)<=50;});},
-    aide:'0,92 × 5 000 = 4 600',
-    solutionHTML:'m = 4 600 t'
-  },
-  {
-    question:'Q3 — Volume de la partie émergée (3 pts)',
-    consigneQ:'La partie émergée représente environ 10 % du volume total V = 5 000 m³.',
-    role:'Écrire le calcul',
-    clavier:['×','÷','%','='],
-    q:'Écris le calcul permettant de trouver 10 % de 5 000 m³.',
-    verif:function(inp){
-      var t=norm(inp);
-      return (t.includes('10')||t.includes('0.1'))&&t.includes('5000');
+    {
+      question:'Q3 — Comparer à la saturation (2 pts)',
+      role:'Comparer C et C_sat',
+      q:'Compare C = '+fr(C)+' g/L et C_sat = '+cfg.Csat+' g/L. La solution est-elle saturée ?',
+      verif:function(inp){var t=norm(inp);return sature?(t.includes('sature')||t.includes('depasse')||t.includes('>')):(t.includes('non')||t.includes('pas')||t.includes('<'));},
+      aide:'Si C > C_sat, la solution est saturée (le soluté ne se dissout plus entièrement).',
+      solutionHTML:sature?'C > C_sat : solution saturée (précipité possible).':'C < C_sat : solution non saturée.'
+    }
+  ];
+  return {
+    titre:'Concentration massique — '+cfg.solute,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="360" height="200" fill="#FFF6E6" rx="10"/>';
+      // Bécher
+      svg+='<path d="M 120 40 L 110 170 L 250 170 L 240 40 Z" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+='<line x1="115" y1="40" x2="245" y2="40" stroke="#4FA3D1" stroke-width="2"/>';
+      // Liquide
+      svg+='<path d="M 113 130 L 110 170 L 250 170 L 247 130 Z" fill="#7EC8E8" opacity="0.6"/>';
+      // Label
+      svg+=svgTxt(180,155,cfg.solute+' + '+cfg.solvant,12,'#2A7AB0');
+      // Flèches
+      svg+=svgTxt(60,80,'m = '+cfg.m+' g',13,'#E07A1F');
+      svg+=svgTxt(300,80,'V = '+fr(cfg.V)+' L',13,'#E07A1F');
+      svg+=svgTxt(180,190,'C = m ÷ V = ? g/L',12,'#5A4A2F');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
     },
-    aide:'10 % de 5 000 = 5 000 × 10 ÷ 100',
-    solutionHTML:'V_émergée = 5 000 × 10 ÷ 100'
-  },
-  {
-    role:'Calculer le volume émergé',
-    clavier:['×','÷','='],
-    q:'Calcule V_émergée = 5 000 × 0,1.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-500)<=5;});},
-    aide:'5 000 × 0,1 = 500 m³',
-    solutionHTML:'V_émergée = 500 m³'
-  }
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 5 : Poussée d'Archimède ===== */
+function genArchimede(){
+  var configs=[
+    {objet:'cube de bois',V:500,rho:0.6,contexte:'eau'},
+    {objet:'bille de métal',V:20,rho:7.8,contexte:'eau'},
+    {objet:'bouée',V:8000,rho:0.1,contexte:'mer'},
+    {objet:'rocher',V:300,rho:2.7,contexte:'eau'}
+  ];
+  var cfg=choix(configs);
+  var V_m3=cfg.V/1e6; // cm³ → m³
+  var Pa=Math.round(1000*V_m3*10*1000)/1000; // ρ_eau × V × g, en N
+  var masse_kg=cfg.rho*cfg.V/1000; // masse en kg (rho en g/cm³, V en cm³)
+  var poids=Math.round(masse_kg*10*1000)/1000; // P = m × g, en N
+  var flotte=Pa>=poids;
+  var Pa_arrondi=Math.round(Pa*100)/100;
+  var poids_arrondi=Math.round(poids*100)/100;
+  var enonceHTML='Un objet (<b>'+cfg.objet+'</b>) est immergé dans l\''+cfg.contexte+'.<br>'+
+    'Volume de l\'objet : V = '+cfg.V+' cm³<br>'+
+    'Masse volumique de l\'objet : ρ_objet = '+fr(cfg.rho)+' g/cm³<br>'+
+    'Masse volumique de l\'eau : ρ_eau = 1 g/cm³ = 1 000 kg/m³<br>'+
+    '<i>Rappels : g = 10 N/kg &nbsp;|&nbsp; F_A = ρ_eau × V × g &nbsp;|&nbsp; P = m × g</i>';
+  var etapes=[
+    {
+      question:'Q1 — Poussée d\'Archimède (3 pts)',
+      role:'Rappeler la formule',
+      clavier:['F','=','ρ','×','V','×','g'],
+      q:'Rappelle la formule de la poussée d\'Archimède F_A.',
+      verif:function(inp){var t=norm(inp);return t.includes('v')&&t.includes('g')&&(t.includes('rho')||t.includes('\u03c1')||t.includes('p'))&&t.includes('=');},
+      aide:'F_A = ρ_eau × V × g',
+      solutionHTML:'F_A = ρ_eau × V × g'
+    },
+    {
+      role:'Convertir le volume en m³',
+      clavier:['÷','='],
+      q:'Convertis V = '+cfg.V+' cm³ en m³ (1 m³ = 1 000 000 cm³). Donne la valeur en m³.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-V_m3)<=V_m3*0.05+1e-8;});},
+      aide:cfg.V+' ÷ 1 000 000 = '+V_m3+' m³',
+      solutionHTML:'V = '+V_m3+' m³'
+    },
+    {
+      role:'Calculer F_A',
+      clavier:['×','='],
+      q:'Calcule F_A = 1 000 × '+V_m3+' × 10. Donne le résultat en newtons (N).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Pa_arrondi)<=0.05*Math.abs(Pa_arrondi)+0.1;});},
+      aide:'F_A = 1 000 × '+V_m3+' × 10 = '+fr(Pa_arrondi)+' N',
+      solutionHTML:'F_A = '+fr(Pa_arrondi)+' N'
+    },
+    {
+      question:'Q2 — Poids de l\'objet et flottaison (3 pts)',
+      role:'Calculer la masse de l\'objet',
+      clavier:['×','='],
+      q:'Calcule la masse de l\'objet : m = ρ_objet × V = '+fr(cfg.rho)+' × '+cfg.V+' puis convertis en kg.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-masse_kg)<=0.05*Math.abs(masse_kg)+0.1;});},
+      aide:'m = '+fr(cfg.rho)+' × '+cfg.V+' = '+(cfg.rho*cfg.V)+' g = '+fr(masse_kg)+' kg',
+      solutionHTML:'m = '+fr(masse_kg)+' kg'
+    },
+    {
+      role:'Calculer le poids',
+      clavier:['×','='],
+      q:'Calcule P = m × g = '+fr(masse_kg)+' × 10. Donne le résultat en newtons (N).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-poids_arrondi)<=0.05*Math.abs(poids_arrondi)+0.1;});},
+      aide:'P = '+fr(masse_kg)+' × 10 = '+fr(poids_arrondi)+' N',
+      solutionHTML:'P = '+fr(poids_arrondi)+' N'
+    },
+    {
+      role:'Conclure sur la flottaison',
+      q:'Compare F_A = '+fr(Pa_arrondi)+' N et P = '+fr(poids_arrondi)+' N. L\'objet flotte-t-il ?',
+      verif:function(inp){var t=norm(inp);return flotte?(t.includes('flotte')||t.includes('monte')||t.includes('oui')):(t.includes('coule')||t.includes('non')||t.includes('fond'));},
+      aide:flotte?'F_A > P : la poussée dépasse le poids, l\'objet flotte.':'F_A < P : le poids dépasse la poussée, l\'objet coule.',
+      solutionHTML:flotte?'F_A > P → l\'objet flotte.':'F_A < P → l\'objet coule.'
+    }
+  ];
+  return {
+    titre:'Poussée d\'Archimède — '+cfg.objet,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="360" height="220" fill="#FFF6E6" rx="10"/>';
+      svg+='<rect x="60" y="30" width="240" height="160" rx="10" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2"/>';
+      svg+='<rect x="60" y="100" width="240" height="90" rx="0" fill="#7EC8E8" opacity="0.5"/>';
+      svg+='<line x1="60" y1="100" x2="300" y2="100" stroke="#4FA3D1" stroke-width="2" stroke-dasharray="6,4"/>';
+      // Objet
+      svg+='<rect x="148" y="110" width="64" height="50" rx="6" fill="#E07A1F" opacity="0.85"/>';
+      svg+=svgTxt(180,135,cfg.objet.substring(0,6),10,'#fff');
+      // Flèche poussée (vers le haut)
+      svg+='<line x1="180" y1="108" x2="180" y2="75" stroke="#9FD356" stroke-width="3"/>';
+      svg+='<polygon points="175,75 185,75 180,62" fill="#9FD356"/>';
+      svg+=svgTxt(230,72,'F_A',13,'#6FA52A');
+      // Flèche poids (vers le bas)
+      svg+='<line x1="180" y1="162" x2="180" y2="185" stroke="#E76F51" stroke-width="3"/>';
+      svg+='<polygon points="175,185 185,185 180,198" fill="#E76F51"/>';
+      svg+=svgTxt(230,188,'P',13,'#E76F51');
+      svg+=svgTxt(180,210,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 6 : Résistances en série ===== */
+function genResistances(){
+  var R1=10*(2+rnd(9)); // 20 à 100 Ω par pas de 10
+  var R2=10*(2+rnd(9));
+  var U=choix([6,9,12,15,24]);
+  var Rtot=R1+R2;
+  var I=Math.round(U/Rtot*1000)/1000;
+  var U1=Math.round(R1*I*100)/100;
+  var U2=Math.round(R2*I*100)/100;
+  var I_arrondi=Math.round(U/Rtot*100)/100;
+  var enonceHTML='Deux résistances <b>R₁ = '+R1+' Ω</b> et <b>R₂ = '+R2+' Ω</b> sont branchées <b>en série</b>.<br>'+
+    'La tension totale aux bornes du circuit est <b>U = '+U+' V</b>.<br>'+
+    '<i>Rappels : R_série = R₁ + R₂ &nbsp;|&nbsp; Loi d\'Ohm : U = R × I &nbsp;|&nbsp; Diviseur de tension : U₁ = R₁ × I</i>';
+  var etapes=[
+    {
+      question:'Q1 — Résistance totale (2 pts)',
+      role:'Formule résistance en série',
+      clavier:['+','='],
+      q:'Rappelle la formule de la résistance totale pour deux résistances en série.',
+      verif:function(inp){var t=norm(inp);return (t.includes('r1')||t.includes('r₁'))&&(t.includes('r2')||t.includes('r₂'))&&t.includes('+')&&t.includes('=');},
+      aide:'R_tot = R₁ + R₂',
+      solutionHTML:'R_tot = R₁ + R₂'
+    },
+    {
+      role:'Calculer R_tot',
+      clavier:['+','='],
+      q:'Calcule R_tot = '+R1+' + '+R2+'. Donne le résultat en ohms (Ω).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Rtot)<=0.1;});},
+      aide:R1+' + '+R2+' = '+Rtot+' Ω',
+      solutionHTML:'R_tot = '+Rtot+' Ω'
+    },
+    {
+      question:'Q2 — Intensité du courant (3 pts)',
+      role:'Appliquer la loi d\'Ohm',
+      clavier:['U','=','R','×','I','÷'],
+      q:'Isole I dans U = R_tot × I. Écris la formule pour calculer I.',
+      verif:function(inp){var t=norm(inp);return t.includes('i')&&(t.includes('u')||t.includes(U+''))&&t.includes('=')&&(t.includes('÷')||t.includes('/'));},
+      aide:'I = U ÷ R_tot',
+      solutionHTML:'I = U ÷ R_tot'
+    },
+    {
+      role:'Calculer I',
+      clavier:['÷','='],
+      q:'Calcule I = '+U+' ÷ '+Rtot+'. Donne le résultat en ampères (A). Arrondi au centième.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-I_arrondi)<=0.05*Math.abs(I_arrondi)+0.01;});},
+      aide:'I = '+U+' ÷ '+Rtot+' = '+fr(I_arrondi)+' A',
+      solutionHTML:'I = '+fr(I_arrondi)+' A'
+    },
+    {
+      question:'Q3 — Tensions aux bornes de chaque résistance (3 pts)',
+      role:'Calculer U₁',
+      clavier:['×','='],
+      q:'Calcule U₁ = R₁ × I = '+R1+' × '+fr(I_arrondi)+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-U1)<=0.05*Math.abs(U1)+0.1;});},
+      aide:'U₁ = '+R1+' × '+fr(I_arrondi)+' = '+fr(U1)+' V',
+      solutionHTML:'U₁ = '+fr(U1)+' V'
+    },
+    {
+      role:'Calculer U₂',
+      clavier:['×','='],
+      q:'Calcule U₂ = R₂ × I = '+R2+' × '+fr(I_arrondi)+'. Vérifie que U₁ + U₂ = U.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-U2)<=0.05*Math.abs(U2)+0.1;});},
+      aide:'U₂ = '+R2+' × '+fr(I_arrondi)+' = '+fr(U2)+' V',
+      solutionHTML:'U₂ = '+fr(U2)+' V'
+    }
+  ];
+  return {
+    titre:'Résistances en série',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="400" height="180" fill="#FFF6E6" rx="10"/>';
+      svg+='<polyline points="40,50 360,50 360,140 40,140 40,50" fill="none" stroke="#5A4A2F" stroke-width="2.5" stroke-linejoin="round"/>';
+      // Générateur
+      svg+='<circle cx="40" cy="95" r="20" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(40,92,'+',13,'#E07A1F');svg+=svgTxt(40,104,'−',13,'#2A7AB0');
+      svg+=svgTxt(40,160,'U='+U+'V',11,'#E07A1F');
+      // R1 en haut gauche
+      svg+='<polyline points="100,50 110,36 120,64 130,36 140,64 150,36 160,50" fill="none" stroke="#E07A1F" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+=svgTxt(130,22,'R₁='+R1+'Ω',12,'#E07A1F');
+      // R2 en haut droite
+      svg+='<polyline points="220,50 230,36 240,64 250,36 260,64 270,36 280,50" fill="none" stroke="#4FA3D1" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+=svgTxt(250,22,'R₂='+R2+'Ω',12,'#4FA3D1');
+      // Flèche I
+      svg+='<polygon points="72,44 82,50 72,56" fill="#9FD356"/>';
+      svg+=svgTxt(58,38,'I',12,'#6FA52A');
+      svg+=svgTxt(200,165,'Circuit série — schéma non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 7 : Combustion ===== */
+function genCombustion(){
+  var configs=[
+    {
+      nom:'méthane',formule:'CH₄',
+      reactif:'CH₄  +  2 O₂  →  CO₂  +  2 H₂O',
+      coefCH:1,coefO2:2,coefCO2:1,coefH2O:2,
+      M_combustible:16,
+      masse_kg:16,rep_CO2:44,
+      explication:'CH₄ a M = 12 + 4×1 = 16 g/mol. CO₂ a M = 12 + 2×16 = 44 g/mol. 1 mol CH₄ → 1 mol CO₂.'
+    },
+    {
+      nom:'butane',formule:'C₄H₁₀',
+      reactif:'2 C₄H₁₀  +  13 O₂  →  8 CO₂  +  10 H₂O',
+      coefCH:2,coefO2:13,coefCO2:8,coefH2O:10,
+      M_combustible:58,
+      masse_kg:116,rep_CO2:352,
+      explication:'C₄H₁₀ a M = 4×12 + 10 = 58 g/mol. 2 mol C₄H₁₀ → 8 mol CO₂ (M = 44 g/mol). Pour 116 g = 2 mol → 8 × 44 = 352 g CO₂.'
+    }
+  ];
+  var cfg=choix(configs);
+  var enonceHTML='La combustion du '+cfg.nom+' ('+cfg.formule+') dans le dioxygène produit du dioxyde de carbone (CO₂) et de l\'eau (H₂O).<br>'+
+    '<div style="text-align:center;font-family:\'Fredoka\';font-weight:700;font-size:16px;background:#FFF0D6;padding:10px;border-radius:8px;margin:10px 0;">'+cfg.reactif+'</div>'+
+    '<i>Données : M(C) = 12 g/mol, M(H) = 1 g/mol, M(O) = 16 g/mol</i>';
+  var etapes=[
+    {
+      question:'Q1 — Réactifs et produits (2 pts)',
+      role:'Identifier les réactifs',
+      q:'Quels sont les réactifs de la combustion du '+cfg.nom+' ?',
+      verif:function(inp){var t=norm(inp);return (t.includes(cfg.nom.substring(0,4))||t.includes('ch')||t.includes('c4h'))&&(t.includes('o2')||t.includes('oxygene'));},
+      aide:'Réactifs : '+cfg.formule+' ('+cfg.nom+') et O₂ (dioxygène).',
+      solutionHTML:'Réactifs : '+cfg.formule+' et O₂'
+    },
+    {
+      role:'Identifier les produits',
+      q:'Quels sont les produits de cette combustion ?',
+      verif:function(inp){var t=norm(inp);return (t.includes('co2')||t.includes('carbone'))&&(t.includes('h2o')||t.includes('eau'));},
+      aide:'Produits : CO₂ (dioxyde de carbone) et H₂O (eau).',
+      solutionHTML:'Produits : CO₂ et H₂O'
+    },
+    {
+      question:'Q2 — Masse molaire (2 pts)',
+      role:'Calculer M('+cfg.formule+')',
+      clavier:['×','+','='],
+      q:'Calcule la masse molaire M de '+cfg.formule+'. M(C)=12, M(H)=1.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.M_combustible)<=0.5;});},
+      aide:'M('+cfg.formule+') = '+cfg.explication.split('.')[0],
+      solutionHTML:'M('+cfg.formule+') = '+cfg.M_combustible+' g/mol'
+    },
+    {
+      question:'Q3 — Masse de CO₂ produite (3 pts)',
+      role:'Calculer n('+cfg.formule+')',
+      clavier:['÷','='],
+      q:'Calcule le nombre de moles de '+cfg.formule+' contenues dans '+cfg.masse_kg+' g : n = '+cfg.masse_kg+' ÷ '+cfg.M_combustible+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.masse_kg/cfg.M_combustible)<=0.01;});},
+      aide:'n = '+cfg.masse_kg+' ÷ '+cfg.M_combustible+' = '+fr(cfg.masse_kg/cfg.M_combustible)+' mol',
+      solutionHTML:'n('+cfg.formule+') = '+fr(cfg.masse_kg/cfg.M_combustible)+' mol'
+    },
+    {
+      role:'Appliquer la stœchiométrie',
+      clavier:['×','÷','='],
+      q:'D\'après l\'équation : '+cfg.coefCH+' mol '+cfg.formule+' → '+cfg.coefCO2+' mol CO₂. Calcule n(CO₂).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.coefCO2/cfg.coefCH*(cfg.masse_kg/cfg.M_combustible))<=0.1;});},
+      aide:'n(CO₂) = '+fr(cfg.masse_kg/cfg.M_combustible)+' × '+cfg.coefCO2+' ÷ '+cfg.coefCH+' = '+fr(cfg.coefCO2/cfg.coefCH*(cfg.masse_kg/cfg.M_combustible))+' mol',
+      solutionHTML:'n(CO₂) = '+fr(cfg.coefCO2/cfg.coefCH*(cfg.masse_kg/cfg.M_combustible))+' mol'
+    },
+    {
+      role:'Calculer la masse de CO₂',
+      clavier:['×','='],
+      q:'Calcule m(CO₂) = n(CO₂) × M(CO₂). M(CO₂) = 44 g/mol.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.rep_CO2)<=cfg.rep_CO2*0.05+0.5;});},
+      aide:'m(CO₂) = '+fr(cfg.coefCO2/cfg.coefCH*(cfg.masse_kg/cfg.M_combustible))+' × 44 = '+cfg.rep_CO2+' g',
+      solutionHTML:'m(CO₂) = '+cfg.rep_CO2+' g'
+    }
+  ];
+  return {
+    titre:'Combustion — '+cfg.nom,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="160" fill="#FFF6E6" rx="10"/>';
+      svg+=svgTxt(190,22,'Équation de combustion du '+cfg.nom,13,'#5A4A2F');
+      svg+='<rect x="10" y="38" width="360" height="50" rx="10" fill="#FFF0D6" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(190,63,cfg.reactif,14,'#E07A1F');
+      // Flamme
+      svg+='<path d="M 60 130 Q 55 110 65 105 Q 60 118 70 115 Q 65 105 75 100 Q 72 115 82 112 Q 78 125 70 130 Z" fill="#FF9F45" stroke="#E07A1F" stroke-width="1"/>';
+      svg+=svgTxt(190,145,'Réaction exothermique — dégage de la chaleur',12,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== BANQUE ===== */
+var BANQUE=[
+  {notion:'flottaison', gen:genFlottaison},
+  {notion:'ohm', gen:genOhm},
+  {notion:'reaction', gen:genReaction},
+  {notion:'concentration', gen:genConcentration},
+  {notion:'archimede', gen:genArchimede},
+  {notion:'resistances', gen:genResistances},
+  {notion:'combustion', gen:genCombustion}
 ];
 
-/* ===== ÉTAPES EXERCICE 2 : Loi d'Ohm ===== */
-var etapesEx2=[
-  {
-    question:'Q1 — Tension aux bornes du câble (3 pts)',
-    consigneQ:'Calculer la tension aux bornes de la résistance du câble. Rappel : U = R × I.',
-    role:'Écrire la loi d\'Ohm',
-    clavier:['U','=','R','×','I'],
-    q:'Rappelle la loi d\'Ohm reliant tension U (en V), résistance R (en Ω) et intensité I (en A).',
-    verif:function(inp){
-      var t=norm(inp);
-      return t.includes('u')&&t.includes('r')&&t.includes('i')&&t.includes('=');
-    },
-    aide:'Loi d\'Ohm : U = R × I',
-    solutionHTML:'U = R × I'
-  },
-  {
-    role:'Remplacer les valeurs',
-    clavier:['×','='],
-    q:'Remplace R = 0,5 Ω et I = 2 A dans la formule.',
-    verif:function(inp){
-      var ns=nbs(inp);
-      return ns.some(function(x){return Math.abs(x-0.5)<0.02;})&&ns.some(function(x){return Math.abs(x-2)<0.01;});
-    },
-    aide:'U = 0,5 × 2',
-    solutionHTML:'U = 0,5 × 2'
-  },
-  {
-    role:'Calculer la tension',
-    q:'Calcule U = 0,5 × 2. Donne le résultat en volts (V).',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-1)<=0.05;});},
-    aide:'0,5 × 2 = 1 V',
-    solutionHTML:'U_câble = 1 V'
-  },
-  {
-    question:'Q2 — Puissance dissipée dans le câble (3 pts)',
-    consigneQ:'Calculer la puissance dissipée dans le câble. Rappel : P = U × I.',
-    role:'Écrire la formule de puissance',
-    clavier:['P','=','U','×','I'],
-    q:'Rappelle la formule de la puissance électrique.',
-    verif:function(inp){
-      var t=norm(inp);
-      return t.includes('p')&&t.includes('u')&&t.includes('i')&&t.includes('=');
-    },
-    aide:'P = U × I',
-    solutionHTML:'P = U × I'
-  },
-  {
-    role:'Remplacer les valeurs',
-    clavier:['×','='],
-    q:'Remplace U_câble = 1 V et I = 2 A.',
-    verif:function(inp){
-      var ns=nbs(inp);
-      return ns.some(function(x){return Math.abs(x-1)<0.02;})&&ns.some(function(x){return Math.abs(x-2)<0.01;});
-    },
-    aide:'P = 1 × 2',
-    solutionHTML:'P = 1 × 2'
-  },
-  {
-    role:'Calculer la puissance',
-    q:'Calcule P = 1 × 2. Donne le résultat en watts (W).',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-2)<=0.1;});},
-    aide:'1 × 2 = 2 W',
-    solutionHTML:'P_câble = 2 W'
-  },
-  {
-    question:'Q3 — Puissance utile reçue par le téléphone (3 pts)',
-    consigneQ:'La tension aux bornes du téléphone : U_tel = U_total − U_câble = 5 − 1 = 4 V.',
-    role:'Calculer la puissance utile',
-    clavier:['×','−','='],
-    q:'Calcule la puissance utile : P_tel = U_tel × I = 4 × 2.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-8)<=0.2;});},
-    aide:'P_tel = 4 × 2 = 8 W',
-    solutionHTML:'P_tel = 4 × 2 = 8 W'
-  }
-];
-
-/* ===== ÉTAPES EXERCICE 3 : La rouille ===== */
-var etapesEx3=[
-  {
-    question:'Q1 — Réactifs et produits (2 pts)',
-    consigneQ:'Dans l\'équation : 4 Fe + 3 O₂ → 2 Fe₂O₃',
-    role:'Identifier les réactifs',
-    q:'Quels sont les réactifs (espèces à gauche de la flèche) ? Donne leurs noms ou formules.',
-    verif:function(inp){
-      var t=norm(inp);
-      return (t.includes('fe')||t.includes('fer'))&&(t.includes('o2')||t.includes('dioxygene')||t.includes('o₂'));
-    },
-    aide:'Les réactifs sont : Fe (fer) et O₂ (dioxygène).',
-    solutionHTML:'Réactifs : Fe (fer) et O₂ (dioxygène)'
-  },
-  {
-    role:'Identifier le produit',
-    q:'Quel est le produit (espèce à droite de la flèche) ?',
-    verif:function(inp){
-      var t=norm(inp);
-      return t.includes('fe2o3')||t.includes('rouille')||t.includes('oxyde')||t.includes('fe₂o₃');
-    },
-    aide:'Le produit est Fe₂O₃ (oxyde de fer = rouille).',
-    solutionHTML:'Produit : Fe₂O₃ (oxyde de fer — rouille)'
-  },
-  {
-    question:'Q2 — Vérifier l\'équilibrage (3 pts)',
-    consigneQ:'Vérifier que l\'équation 4 Fe + 3 O₂ → 2 Fe₂O₃ est équilibrée.',
-    role:'Compter les atomes de Fe',
-    q:'Compte les atomes de fer (Fe) à gauche de la flèche. Combien y en a-t-il ?',
-    verif:function(inp){return nbs(inp).some(function(x){return x===4;});},
-    aide:'À gauche : 4 × Fe → 4 atomes de fer.',
-    solutionHTML:'Gauche : 4 atomes de Fe'
-  },
-  {
-    role:'Compter les atomes de Fe à droite',
-    q:'Compte les atomes de fer à droite (2 Fe₂O₃ : chaque molécule contient 2 atomes Fe). Combien y en a-t-il ?',
-    verif:function(inp){return nbs(inp).some(function(x){return x===4;});},
-    aide:'À droite : 2 molécules × 2 atomes Fe = 4 atomes Fe. ✓',
-    solutionHTML:'Droite : 2 × 2 = 4 atomes Fe ✓'
-  },
-  {
-    role:'Compter les atomes d\'oxygène',
-    q:'Compte les atomes d\'oxygène (O) à gauche (3 O₂) et à droite (2 Fe₂O₃). Sont-ils égaux ? Donne les deux nombres.',
-    verif:function(inp){return nbs(inp).some(function(x){return x===6;});},
-    aide:'Gauche : 3 × 2 = 6 atomes O. Droite : 2 × 3 = 6 atomes O. ✓',
-    solutionHTML:'Gauche : 3 × 2 = 6 atomes O &nbsp;|&nbsp; Droite : 2 × 3 = 6 atomes O ✓'
-  },
-  {
-    question:'Q3 — Masse de rouille formée (3 pts)',
-    consigneQ:'Calculer la masse de Fe₂O₃ formée à partir de 11,2 g de fer. M(Fe) = 56 g/mol ; M(Fe₂O₃) = 160 g/mol.',
-    role:'Calculer la quantité de matière de Fe',
-    clavier:['÷','='],
-    q:'Calcule le nombre de moles de fer : n(Fe) = m ÷ M = 11,2 ÷ 56.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0.2)<=0.01;});},
-    aide:'n(Fe) = 11,2 ÷ 56 = 0,2 mol',
-    solutionHTML:'n(Fe) = 11,2 ÷ 56 = 0,2 mol'
-  },
-  {
-    role:'Appliquer les coefficients stœchiométriques',
-    clavier:['×','÷','='],
-    q:'L\'équation donne : 4 mol Fe → 2 mol Fe₂O₃. Calcule n(Fe₂O₃) = n(Fe) × 2 ÷ 4 = 0,2 × 2 ÷ 4.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-0.1)<=0.01;});},
-    aide:'n(Fe₂O₃) = 0,2 × 2 ÷ 4 = 0,1 mol',
-    solutionHTML:'n(Fe₂O₃) = 0,2 × 2 ÷ 4 = 0,1 mol'
-  },
-  {
-    role:'Calculer la masse de rouille',
-    clavier:['×','='],
-    q:'Calcule la masse : m(Fe₂O₃) = n × M = 0,1 × 160.',
-    verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-16)<=0.5;});},
-    aide:'m(Fe₂O₃) = 0,1 × 160 = 16 g',
-    solutionHTML:'m(Fe₂O₃) = 0,1 × 160 = 16 g'
-  }
-];
-
-/* ===== CONSTRUCTION DES ÉCRANS ===== */
-var ecrans=[], ecranActuel=0;
+var SUJET=[],ecrans=[],ecranActuel=0;
+function tirerSujet(n){SUJET=melange(BANQUE.slice()).slice(0,n).map(function(b){return b.gen();});}
 
 function construireEcrans(){
-  var zone=document.getElementById('zone-ecrans');
-  zone.innerHTML='';
-
-  // Écran intro
+  var zone=document.getElementById('zone-ecrans');zone.innerHTML='';
+  var n=SUJET.length,mot=n>1?n+' exercices':'un exercice';
   zone.insertAdjacentHTML('beforeend',
     '<div class="exercice ecran" data-section="intro">'+
     '<div class="exercice-header"><h2>Sujet de Physique-Chimie</h2>'+
-    '<div class="bareme">Lis l\'ensemble du sujet avant de commencer</div></div>'+
+    '<div class="bareme">Tirage aléatoire — recharge pour un nouveau sujet</div></div>'+
     '<div class="exercice-body">'+
-    '<p style="font-size:16px;line-height:1.7;">Ce sujet comporte <b>3 exercices indépendants</b> :<br>'+
-    '&bull; Exercice 1 — La flottaison des icebergs <span style="color:var(--brun-clair)">(8 pts)</span><br>'+
-    '&bull; Exercice 2 — Le chargeur de téléphone <span style="color:var(--brun-clair)">(9 pts)</span><br>'+
-    '&bull; Exercice 3 — La rouille <span style="color:var(--brun-clair)">(8 pts)</span></p>'+
-    '<p style="margin-top:10px;font-size:15px;color:var(--brun-clair);">La calculatrice est disponible en bas à droite de l\'écran.</p>'+
+    '<p style="font-size:16px;line-height:1.7;">Voici <b>'+mot+'</b> tirés aléatoirement parmi 7 notions :<br>'+
+    SUJET.map(function(ex,i){return '&bull; Exercice '+(i+1)+' — '+ex.titre;}).join('<br>')+
+    '</p>'+
+    '<p style="margin-top:10px;font-size:15px;color:var(--brun-clair);">La calculatrice est disponible en bas à droite.</p>'+
     '<div class="ligne-btn"><button class="btn btn-vert" onclick="ecranSuivant()">Commencer →</button></div>'+
     '</div></div>');
 
-  // Exercice 1
-  zone.insertAdjacentHTML('beforeend',
-    '<div class="exercice ecran cache" data-section="ex1">'+
-    '<div class="exercice-header"><h2>Exercice 1 &mdash; La flottaison des icebergs</h2>'+
-    '<div class="bareme">8 points</div></div>'+
-    '<div class="exercice-body">'+
-    '<div class="document-contexte">'+
-    '<div class="doc-titre">Document 1 &mdash; Les icebergs</div>'+
-    '<p>Un iceberg est un bloc de glace qui flotte dans l\'eau de mer. Sa densité est inférieure à celle de l\'eau salée, ce qui explique que la majeure partie de sa masse se trouve sous la surface.</p>'+
-    '<div class="donnees-encadrees"><div class="don-titre">Données</div><ul>'+
-    '<li>Masse volumique de la glace : ρ<sub>glace</sub> = 0,92 g/cm³ = 0,92 t/m³</li>'+
-    '<li>Masse volumique de l\'eau de mer : ρ<sub>mer</sub> = 1,03 g/cm³</li>'+
-    '<li>Volume total de l\'iceberg étudié : V = 5 000 m³</li>'+
-    '<li>Rappel : ρ = m ÷ V &nbsp; donc &nbsp; m = ρ × V</li>'+
-    '</ul></div>'+
-    '</div>'+
-    '<div class="figure" id="fig-ex1"></div>'+
-    '<div id="redac-ex1"></div>'+
-    '<div class="cache ligne-btn" id="suite-ex1">'+
-    '<button class="btn btn-vert" onclick="ecranSuivant()">Exercice 2 →</button>'+
-    '</div></div></div>');
+  SUJET.forEach(function(ex,i){
+    var dernier=i===SUJET.length-1;
+    zone.insertAdjacentHTML('beforeend',
+      '<div class="exercice ecran cache" data-section="exo'+i+'">'+
+      '<div class="exercice-header"><h2>Exercice '+(i+1)+' &mdash; '+ex.titre+'</h2>'+
+      '<div class="bareme">Physique-Chimie</div></div>'+
+      '<div class="exercice-body">'+
+      '<div class="document-contexte">'+
+      '<div class="doc-titre">Situation</div>'+
+      '<p>'+ex.enonceHTML+'</p>'+
+      '</div>'+
+      '<div class="figure" id="figure-'+i+'"></div>'+
+      '<div id="redac-'+i+'"></div>'+
+      '<div class="cache ligne-btn" id="suite-'+i+'">'+
+      '<button class="btn btn-vert" onclick="ecranSuivant()">'+(dernier?'Terminer':'Exercice suivant →')+'</button>'+
+      '</div></div></div>');
+  });
 
-  // Exercice 2
-  zone.insertAdjacentHTML('beforeend',
-    '<div class="exercice ecran cache" data-section="ex2">'+
-    '<div class="exercice-header"><h2>Exercice 2 &mdash; Le chargeur de téléphone</h2>'+
-    '<div class="bareme">9 points</div></div>'+
-    '<div class="exercice-body">'+
-    '<div class="document-contexte">'+
-    '<div class="doc-titre">Document 2 &mdash; Caractéristiques d\'un chargeur USB</div>'+
-    '<p>Sur l\'emballage d\'un chargeur de téléphone, on peut lire les informations suivantes :</p>'+
-    '<div class="donnees-encadrees"><div class="don-titre">Plaque signalétique du chargeur</div><ul>'+
-    '<li>Tension de sortie : U = 5 V</li>'+
-    '<li>Intensité maximale délivrée : I = 2 A</li>'+
-    '<li>Résistance interne du câble USB : R = 0,5 Ω</li>'+
-    '</ul></div>'+
-    '<p style="margin-top:8px;font-size:14px;">Le câble et le téléphone sont branchés <b>en série</b>. La loi d\'Ohm s\'applique : U = R × I. La puissance se calcule : P = U × I.</p>'+
-    '</div>'+
-    '<div class="figure" id="fig-ex2"></div>'+
-    '<div id="redac-ex2"></div>'+
-    '<div class="cache ligne-btn" id="suite-ex2">'+
-    '<button class="btn btn-vert" onclick="ecranSuivant()">Exercice 3 →</button>'+
-    '</div></div></div>');
-
-  // Exercice 3
-  zone.insertAdjacentHTML('beforeend',
-    '<div class="exercice ecran cache" data-section="ex3">'+
-    '<div class="exercice-header"><h2>Exercice 3 &mdash; La rouille</h2>'+
-    '<div class="bareme">8 points</div></div>'+
-    '<div class="exercice-body">'+
-    '<div class="document-contexte">'+
-    '<div class="doc-titre">Document 3 &mdash; La corrosion du fer</div>'+
-    '<p>Le fer (Fe) réagit avec le dioxygène (O₂) de l\'air en présence d\'eau pour former de la rouille, appelée <b>oxyde de fer</b> (Fe₂O₃).</p>'+
-    '<p style="margin:10px 0 4px;font-size:16px;text-align:center;font-family:\'Fredoka\';font-weight:700;background:var(--creme2);padding:10px;border-radius:8px;">4 Fe &nbsp;+&nbsp; 3 O₂ &nbsp;→&nbsp; 2 Fe₂O₃</p>'+
-    '<div class="donnees-encadrees" style="margin-top:10px;"><div class="don-titre">Masses molaires atomiques</div><ul>'+
-    '<li>M(Fe) = 56 g/mol</li>'+
-    '<li>M(O) = 16 g/mol &nbsp;&nbsp;→ M(O₂) = 32 g/mol</li>'+
-    '<li>M(Fe₂O₃) = 2 × 56 + 3 × 16 = 160 g/mol</li>'+
-    '</ul></div>'+
-    '</div>'+
-    '<div id="redac-ex3"></div>'+
-    '<div class="cache ligne-btn" id="suite-ex3">'+
-    '<button class="btn btn-vert" onclick="ecranFin()">Terminer le sujet →</button>'+
-    '</div></div></div>');
-
-  // Écran fin
   zone.insertAdjacentHTML('beforeend',
     '<div class="fin ecran cache" data-section="fin">'+
     '<h2>Sujet terminé ! 🎉</h2>'+
-    '<p style="margin-top:10px;font-size:16px;">Tu as rédigé les 3 exercices du DNB blanc Physique-Chimie.</p>'+
+    '<p style="margin-top:10px;font-size:16px;">Tu as rédigé les exercices du DNB blanc Physique-Chimie.</p>'+
     '<div class="ligne-btn" style="margin-top:18px;">'+
-    '<a href="index.html" class="btn btn-jaune">← Retour à l\'accueil</a>'+
+    '<button class="btn btn-jaune" onclick="location.reload()">Nouveau sujet aléatoire</button>'+
+    '<a href="index.html" class="btn btn-vert">← Accueil</a>'+
     '</div></div>');
 
-  // Figures
-  dessinerIceberg('fig-ex1');
-  dessinerCircuit('fig-ex2');
-
-  // Rédactions
-  construireRedaction('redac-ex1',etapesEx1,function(){document.getElementById('suite-ex1').classList.remove('cache');});
-  construireRedaction('redac-ex2',etapesEx2,function(){document.getElementById('suite-ex2').classList.remove('cache');});
-  construireRedaction('redac-ex3',etapesEx3,function(){document.getElementById('suite-ex3').classList.remove('cache');});
+  SUJET.forEach(function(ex,i){
+    ex.dessiner('figure-'+i);
+    construireRedaction('redac-'+i,ex.etapes,(function(idx){return function(){document.getElementById('suite-'+idx).classList.remove('cache');};})(i));
+  });
 }
 
 /* ===== PROGRESSION + NAVIGATION ===== */
-function construireProgression(){
-  var p=document.getElementById('progression');p.innerHTML='';
-  for(var i=0;i<ecrans.length;i++){var d=document.createElement('div');d.className='pas';p.appendChild(d);}
-  majProgression();
-}
-function majProgression(){
-  document.querySelectorAll('#progression .pas').forEach(function(d,i){
-    d.className='pas'+(i<ecranActuel?' fait':i===ecranActuel?' actif':'');
-  });
-}
-function montrerEcran(i){
-  ecrans.forEach(function(e,k){e.classList.toggle('cache',k!==i);});
-  ecranActuel=i;majProgression();window.scrollTo({top:0,behavior:'smooth'});
-}
+function construireProgression(){var p=document.getElementById('progression');p.innerHTML="";for(var i=0;i<ecrans.length;i++){var d=document.createElement('div');d.className='pas';p.appendChild(d);}majProgression();}
+function majProgression(){document.querySelectorAll('#progression .pas').forEach(function(d,i){d.className='pas'+(i<ecranActuel?' fait':i===ecranActuel?' actif':'');});}
+function montrerEcran(i){ecrans.forEach(function(e,k){e.classList.toggle('cache',k!==i);});ecranActuel=i;majProgression();window.scrollTo({top:0,behavior:'smooth'});}
 function ecranSuivant(){if(ecranActuel<ecrans.length-1)montrerEcran(ecranActuel+1);}
-function ecranFin(){montrerEcran(ecrans.length-1);}
 
-document.addEventListener('focusin',function(e){
-  if(e.target.matches&&e.target.matches('.etape input[type=text]'))dernierChamp=e.target;
-});
+document.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches('.etape input[type=text]'))dernierChamp=e.target;});
 window.addEventListener('DOMContentLoaded',function(){
+  tirerSujet(2);
   construireEcrans();
   ecrans=Array.from(document.querySelectorAll('#zone-ecrans .ecran'));
   construireProgression();

@@ -892,6 +892,366 @@ function genEchellePlan(){
   };
 }
 
+/* --- Nouvelle situation 8 : Aire composée (rectangle + demi-cercle) --- */
+function genAireComposee(){
+  var configs=[
+    {larg:4,haut:6},{larg:5,haut:8},{larg:6,haut:10},{larg:3,haut:7},{larg:8,haut:12}
+  ];
+  var cfg=choix(configs);
+  var L=cfg.larg, H=cfg.haut; // L = largeur rectangle = diamètre du demi-cercle
+  var r=L/2;
+  var P_rect=H; // côtés verticaux (2×H) + base L, mais le demi-cercle remplace le haut
+  // Périmètre : 2 côtés verticaux + base du bas + demi-circonférence
+  var demiCirc=Math.round(Math.PI*r*100)/100;
+  var perim=Math.round((2*H+L+Math.PI*r)*100)/100;
+  var aireRect=L*H;
+  var aireDemi=Math.round(Math.PI*r*r/2*100)/100;
+  var aireTotal=Math.round((aireRect+aireDemi)*100)/100;
+  var enonceHTML='Une fenêtre est composée d\'un rectangle de largeur <b>'+L+' m</b> et hauteur <b>'+H+' m</b>, surmonté d\'un <b>demi-cercle</b> de diamètre '+L+' m.'
+    +'<br><b>1.</b> Calcule le périmètre de la fenêtre (sans la base du demi-cercle car elle est commune).'
+    +'<br><b>2.</b> Calcule l\'aire totale de la fenêtre.'
+    +'<br><i>Rappel : π ≈ 3,14</i>';
+  var svgFenetre='<svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fenêtre composée">'
+    +'<rect x="80" y="100" width="140" height="130" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5"/>'
+    +'<path d="M 80 100 A 70 70 0 0 1 220 100" fill="#b0d8ef" stroke="#4FA3D1" stroke-width="2.5"/>'
+    +svgTxt(150,165,L+' m',14,'#E07A1F')
+    +svgTxt(46,165,H+' m',14,'#E07A1F')
+    +'<line x1="80" y1="100" x2="80" y2="230" stroke="#E07A1F" stroke-width="1.5" stroke-dasharray="4,3"/>'
+    +'<line x1="60" y1="100" x2="72" y2="100" stroke="#E07A1F" stroke-width="1.5"/>'
+    +'<line x1="60" y1="230" x2="72" y2="230" stroke="#E07A1F" stroke-width="1.5"/>'
+    +'<line x1="66" y1="100" x2="66" y2="230" stroke="#E07A1F" stroke-width="1.5"/>'
+    +svgTxt(150,245,'r = '+r+' m',12,'#4FA3D1')
+    +svgNonEchelle(300,260)+'</svg>';
+  var etapes=[
+    {
+      question:'Question 1 — Périmètre',
+      role:'Identifier les côtés du périmètre',
+      q:'Le périmètre comprend 2 côtés verticaux, la base du rectangle et la demi-circonférence. Calcule la demi-circonférence (π × r).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-demiCirc)<0.1;});},
+      aide:'Demi-circonférence = π × r = π × '+r+' ≈ '+fr(demiCirc)+' m',
+      solutionHTML:'π × '+r+' ≈ '+fr(demiCirc)+' m',
+      clavier:['\u00d7','\u03c0','=']
+    },
+    {
+      role:'Calculer le périmètre total',
+      q:'Périmètre = 2 × '+H+' + '+L+' + demi-circ. ('+fr(demiCirc)+' m). Calcule.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-perim)<0.2;});},
+      aide:'2 × '+H+' + '+L+' + '+fr(demiCirc)+' = '+fr(perim)+' m',
+      solutionHTML:'P = 2×'+H+' + '+L+' + '+fr(demiCirc)+' ≈ '+fr(perim)+' m',
+      clavier:['\u00d7','+','=']
+    },
+    {
+      question:'Question 2 — Aire totale',
+      role:'Calculer l\'aire du rectangle',
+      q:'Calcule l\'aire du rectangle ('+L+' × '+H+' m).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-aireRect)<0.1;});},
+      aide:L+' × '+H+' = '+aireRect+' m²',
+      solutionHTML:'A<sub>rect</sub> = '+L+' × '+H+' = '+aireRect+' m²',
+      clavier:['\u00d7','=']
+    },
+    {
+      role:'Calculer l\'aire du demi-cercle',
+      q:'L\'aire d\'un demi-cercle = (π × r²) ÷ 2. Calcule avec r = '+r+' m.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-aireDemi)<0.1;});},
+      aide:'(π × '+r+'²) ÷ 2 = (π × '+r*r+') ÷ 2 ≈ '+fr(aireDemi)+' m²',
+      solutionHTML:'A<sub>demi</sub> = π × '+r+'² ÷ 2 ≈ '+fr(aireDemi)+' m²',
+      clavier:['\u00d7','\u00f7','\u03c0','²','=']
+    },
+    {
+      role:'Calculer l\'aire totale',
+      q:'Additionne les deux aires : '+aireRect+' + '+fr(aireDemi)+' m².',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-aireTotal)<0.2;});},
+      aide:aireRect+' + '+fr(aireDemi)+' = '+fr(aireTotal)+' m²',
+      solutionHTML:'A<sub>totale</sub> = '+aireRect+' + '+fr(aireDemi)+' ≈ '+fr(aireTotal)+' m²',
+      clavier:['+','=']
+    }
+  ];
+  return {
+    titre:'Figure compos\u00e9e \u2014 aire et p\u00e9rim\u00e8tre',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){document.getElementById(id).innerHTML=svgFenetre;},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 9 : Vitesse — deux étapes de trajet --- */
+function genVitesseTrajet(){
+  var trajets=[
+    {
+      ctx:'Un voyageur fait Paris–Lyon.',
+      etape1:{lieu:'Paris–Dijon',dist:320,heures:2,min:0},
+      etape2:{lieu:'Dijon–Lyon',dist:195,heures:1,min:30}
+    },
+    {
+      ctx:'Un cycliste fait un circuit.',
+      etape1:{lieu:'Montée',dist:45,heures:1,min:30},
+      etape2:{lieu:'Descente',dist:45,heures:0,min:45}
+    },
+    {
+      ctx:'Une voiture fait un trajet de ville.',
+      etape1:{lieu:'Autoroute',dist:120,heures:1,min:0},
+      etape2:{lieu:'Ville',dist:30,heures:0,min:45}
+    }
+  ];
+  var tr=choix(trajets);
+  var e1=tr.etape1, e2=tr.etape2;
+  var t1_h=e1.heures+e1.min/60; // durée en heures
+  var t2_h=e2.heures+e2.min/60;
+  var v1=Math.round(e1.dist/t1_h*100)/100;
+  var v2=Math.round(e2.dist/t2_h*100)/100;
+  var dist_tot=e1.dist+e2.dist;
+  var t_tot=t1_h+t2_h;
+  var v_moy=Math.round(dist_tot/t_tot*100)/100;
+  // Conversion km/h → m/s de v_moy
+  var v_ms=Math.round(v_moy/3.6*100)/100;
+  var duree1Label=e1.heures>0?(e1.heures+'h'+(e1.min>0?' '+e1.min+'min':'')):(e1.min+'min');
+  var duree2Label=e2.heures>0?(e2.heures+'h'+(e2.min>0?' '+e2.min+'min':'')):(e2.min+'min');
+  var enonceHTML=tr.ctx
+    +'<br>Étape 1 — <b>'+e1.lieu+'</b> : '+e1.dist+' km en <b>'+duree1Label+'</b>.'
+    +'<br>Étape 2 — <b>'+e2.lieu+'</b> : '+e2.dist+' km en <b>'+duree2Label+'</b>.'
+    +'<br><b>1.</b> Calcule la vitesse moyenne de chaque étape (en km/h).'
+    +'<br><b>2.</b> Calcule la vitesse moyenne sur l\'ensemble du trajet.'
+    +'<br><b>3.</b> Convertis cette vitesse en m/s.';
+  var etapes=[
+    {
+      question:'Étape 1 — Vitesse v₁',
+      role:'Calculer la vitesse de l\'étape 1',
+      q:'Durée de l\'étape 1 : '+fr(t1_h)+' h. Calcule v₁ = '+e1.dist+' ÷ '+fr(t1_h)+' km/h.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v1)<1;});},
+      aide:e1.dist+' ÷ '+fr(t1_h)+' = '+fr(v1)+' km/h',
+      solutionHTML:'v₁ = '+fr(v1)+' km/h',
+      clavier:['\u00f7','=']
+    },
+    {
+      role:'Calculer la vitesse de l\'étape 2',
+      q:'Durée de l\'étape 2 : '+fr(t2_h)+' h. Calcule v₂ = '+e2.dist+' ÷ '+fr(t2_h)+' km/h.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v2)<1;});},
+      aide:e2.dist+' ÷ '+fr(t2_h)+' = '+fr(v2)+' km/h',
+      solutionHTML:'v₂ = '+fr(v2)+' km/h',
+      clavier:['\u00f7','=']
+    },
+    {
+      question:'Vitesse moyenne — trajet complet',
+      role:'Calculer la vitesse moyenne totale',
+      q:'Distance totale : '+dist_tot+' km. Durée totale : '+fr(t_tot)+' h. Calcule v_moy.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v_moy)<1;});},
+      aide:dist_tot+' ÷ '+fr(t_tot)+' ≈ '+fr(v_moy)+' km/h',
+      solutionHTML:'v<sub>moy</sub> = '+fr(v_moy)+' km/h',
+      clavier:['\u00f7','=']
+    },
+    {
+      question:'Conversion km/h → m/s',
+      role:'Convertir en m/s',
+      q:'Pour convertir km/h en m/s, on divise par 3,6. Calcule '+fr(v_moy)+' ÷ 3,6.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v_ms)<0.1;});},
+      aide:fr(v_moy)+' ÷ 3,6 ≈ '+fr(v_ms)+' m/s',
+      solutionHTML:fr(v_moy)+' ÷ 3,6 ≈ '+fr(v_ms)+' m/s',
+      clavier:['\u00f7','=']
+    }
+  ];
+  return {
+    titre:'Vitesse \u2014 trajet en deux \u00e9tapes',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){dessinerRoute(id,{distLabel:'d₁='+e1.dist+' km, d₂='+e2.dist+' km',vitLabel:'v₁='+fr(v1)+' km/h',dureeLabel:'t₁='+duree1Label});},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 10 : Masse volumique --- */
+function genMasseVol(){
+  var materiaux=[
+    {nom:'aluminium',rho:2.7,label:'aluminium',flotte:false},
+    {nom:'bois',rho:0.7,label:'bois',flotte:true},
+    {nom:'fer',rho:7.8,label:'fer',flotte:false},
+    {nom:'glace',rho:0.92,label:'glace',flotte:true}
+  ];
+  var volumes=[100,200,250,500]; // cm³
+  var mat=choix(materiaux);
+  var V=choix(volumes);
+  var masse=Math.round(mat.rho*V*10)/10;
+  var rho_calc=Math.round(masse/V*100)/100;
+  // 3 matériaux à identifier
+  var autres=materiaux.filter(function(m){return m.nom!==mat.nom;});
+  var prop=[mat,autres[0],autres[1]];
+  prop=prop.slice().sort(function(){return Math.random()-0.5;});
+  var flotteStr=mat.flotte?'flotte':'coule';
+  var enonceHTML='Un objet de masse <b>m = '+fr(masse)+' g</b> et de volume <b>V = '+V+' cm³</b> est plongé dans l\'eau (ρ<sub>eau</sub> = 1 g/cm³).'
+    +'<br><b>1.</b> Calcule sa masse volumique ρ = m ÷ V (en g/cm³).'
+    +'<br><b>2.</b> Parmi ces matériaux — '+prop.map(function(m){return m.label+' (ρ = '+fr(m.rho)+' g/cm³)';}).join(', ')+' — de quel matériau s\'agit-il ?'
+    +'<br><b>3.</b> Cet objet flotte-t-il dans l\'eau ? Justifie.';
+  var matNom=mat.nom;
+  var etapes=[
+    {
+      question:'Question 1 — Calcul de la masse volumique',
+      role:'Appliquer la formule ρ = m ÷ V',
+      q:'Calcule ρ = '+fr(masse)+' g ÷ '+V+' cm³.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rho_calc)<0.05;});},
+      aide:fr(masse)+' ÷ '+V+' = '+fr(rho_calc)+' g/cm³',
+      solutionHTML:'ρ = '+fr(masse)+' ÷ '+V+' = '+fr(rho_calc)+' g/cm³',
+      clavier:['\u00f7','=']
+    },
+    {
+      question:'Question 2 — Identification du matériau',
+      role:'Comparer avec les valeurs tabulées',
+      q:'Quelle masse volumique parmi les propositions est la plus proche de '+fr(rho_calc)+' g/cm³ ? Quel matériau est-ce ?',
+      verif:function(inp){var t=norm(inp);return t.includes(matNom.toLowerCase())||t.includes(matNom.slice(0,4).toLowerCase());},
+      aide:'ρ ≈ '+fr(rho_calc)+' g/cm³ correspond à '+mat.label+' (ρ = '+fr(mat.rho)+' g/cm³).',
+      solutionHTML:'L\'objet est en <b>'+mat.label+'</b> (ρ = '+fr(mat.rho)+' g/cm³).'
+    },
+    {
+      question:'Question 3 — Flottaison',
+      role:'Comparer ρ à celle de l\'eau',
+      q:'ρ<sub>eau</sub> = 1 g/cm³. Comme ρ<sub>objet</sub> = '+fr(rho_calc)+' g/cm³, compare et conclus : l\'objet flotte-t-il ?',
+      verif:function(inp){
+        var t=norm(inp);
+        return mat.flotte?(t.includes('flotte')||t.includes('inferieur')||t.includes('<')):
+          (t.includes('coule')||t.includes('superieur')||t.includes('>'));
+      },
+      aide:mat.flotte?''+fr(rho_calc)+' < 1 : l\'objet est moins dense que l\'eau → il flotte.':''+fr(rho_calc)+' > 1 : l\'objet est plus dense que l\'eau → il coule.',
+      solutionHTML:mat.flotte?'ρ = '+fr(rho_calc)+' g/cm³ < 1 g/cm³ → l\'objet <b>flotte</b>.':'ρ = '+fr(rho_calc)+' g/cm³ > 1 g/cm³ → l\'objet <b>coule</b>.',
+      clavier:['>','<','=']
+    }
+  ];
+  return {
+    titre:'Masse volumique \u2014 identification d\'un mat\u00e9riau',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 11 : Énergie électrique — facture --- */
+function genEnergie(){
+  var appareils=[
+    {nom:'radiateur électrique',P:1000},
+    {nom:'sèche-cheveux',P:1800},
+    {nom:'four électrique',P:2000},
+    {nom:'climatiseur',P:1500},
+    {nom:'aspirateur',P:800},
+    {nom:'bouilloire',P:2400}
+  ];
+  var ap=choix(appareils);
+  // Durée quotidienne en minutes : 30 à 240 (pas de 30)
+  var dureeMin=(Math.floor(Math.random()*7)+1)*30; // 30,60,90,...,210,240
+  var dureeH=Math.round(dureeMin/60*100)/100;
+  var jours=30;
+  var tarif=0.18; // €/kWh
+  // E (kWh) = P(W) × t(h) / 1000
+  var E_jour=Math.round(ap.P*dureeH/1000*1000)/1000;
+  var E_mois=Math.round(E_jour*jours*100)/100;
+  var cout_mois=Math.round(E_mois*tarif*100)/100;
+  var dureeLabel=dureeMin>=60?(Math.floor(dureeMin/60)+'h'+(dureeMin%60>0?' '+(dureeMin%60)+'min':'')):(dureeMin+'min');
+  var enonceHTML='Un <b>'+ap.nom+'</b> a une puissance de <b>P = '+ap.P+' W</b>. Il fonctionne <b>'+dureeLabel+' par jour</b> pendant <b>30 jours</b>.'
+    +'<br>Le tarif d\'électricité est <b>0,18 €/kWh</b>.'
+    +'<br><b>1.</b> Calcule l\'énergie consommée par jour en kWh.'
+    +'<br><b>2.</b> Calcule l\'énergie consommée sur 30 jours.'
+    +'<br><b>3.</b> Calcule le coût total en euros.'
+    +'<br><i>Rappel : E (kWh) = P (W) × t (h) ÷ 1000</i>';
+  var etapes=[
+    {
+      question:'Question 1 — Énergie par jour',
+      role:'Appliquer la formule E = P × t ÷ 1000',
+      q:'Calcule E = '+ap.P+' W × '+fr(dureeH)+' h ÷ 1000.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-E_jour)<0.005;});},
+      aide:ap.P+' × '+fr(dureeH)+' ÷ 1000 = '+fr(E_jour)+' kWh',
+      solutionHTML:'E<sub>jour</sub> = '+ap.P+' × '+fr(dureeH)+' ÷ 1000 = '+fr(E_jour)+' kWh',
+      clavier:['\u00d7','\u00f7','=']
+    },
+    {
+      question:'Question 2 — Énergie sur 30 jours',
+      role:'Multiplier par le nombre de jours',
+      q:'Calcule l\'énergie totale : '+fr(E_jour)+' kWh × '+jours+' jours.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-E_mois)<0.05;});},
+      aide:fr(E_jour)+' × '+jours+' = '+fr(E_mois)+' kWh',
+      solutionHTML:'E<sub>mois</sub> = '+fr(E_jour)+' × '+jours+' = '+fr(E_mois)+' kWh',
+      clavier:['\u00d7','=']
+    },
+    {
+      question:'Question 3 — Coût en euros',
+      role:'Calculer le coût (E × tarif)',
+      q:'Calcule le coût : '+fr(E_mois)+' kWh × 0,18 €/kWh.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cout_mois)<0.05;});},
+      aide:fr(E_mois)+' × 0,18 = '+fr(cout_mois)+' €',
+      solutionHTML:'Coût = '+fr(E_mois)+' × 0,18 = '+fr(cout_mois)+' €',
+      clavier:['\u00d7','=']
+    }
+  ];
+  return {
+    titre:'\u00c9nergie \u00e9lectrique \u2014 facture mensuelle',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 12 : Échelle et plan — terrain/salle --- */
+function genEchellePlan2(){
+  var scales=[200,500];
+  var echelle=choix(scales);
+  var lieux=[
+    {nom:'terrain de basket',mesL:14,mesW:10},
+    {nom:'cour de récréation',mesL:25,mesW:18},
+    {nom:'salle de classe',mesL:9,mesW:7},
+    {nom:'gymnase',mesL:30,mesW:20}
+  ];
+  var lieu=choix(lieux);
+  // Mesures réelles (m) → sur plan en cm : realM / echelle * 100
+  var planL=Math.round(lieu.mesL*100/echelle*10)/10; // cm sur plan
+  var planW=Math.round(lieu.mesW*100/echelle*10)/10;
+  var reelL_m=lieu.mesL;
+  var reelW_m=lieu.mesW;
+  var aireReelle=reelL_m*reelW_m;
+  var enonceHTML='Un plan d\'un '+lieu.nom+' est \u00e0 l\'\u00e9chelle <b>1/'+echelle+'</b>. Sur le plan, les dimensions sont <b>'+fr(planL)+' cm</b> de long et <b>'+fr(planW)+' cm</b> de large.'
+    +'<br><b>1.</b> Calcule la longueur r\u00e9elle du '+lieu.nom+' en cm puis en m\u00e8tres.'
+    +'<br><b>2.</b> Calcule la largeur r\u00e9elle en m\u00e8tres.'
+    +'<br><b>3.</b> Calcule l\'aire r\u00e9elle en m\u00b2.';
+  var reelL_cm=reelL_m*100;
+  var reelW_cm=reelW_m*100;
+  var etapes=[
+    {
+      question:'Question 1 — Longueur réelle',
+      role:'Appliquer l\'échelle à la longueur',
+      q:'Longueur sur plan : '+fr(planL)+' cm. Échelle 1/'+echelle+'. Calcule la longueur réelle en cm.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-reelL_cm)<1;});},
+      aide:fr(planL)+' × '+echelle+' = '+reelL_cm+' cm',
+      solutionHTML:fr(planL)+' cm × '+echelle+' = '+reelL_cm+' cm',
+      clavier:['\u00d7','=']
+    },
+    {
+      role:'Convertir en mètres',
+      q:'Convertis '+reelL_cm+' cm en mètres.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-reelL_m)<0.05;});},
+      aide:reelL_cm+' cm ÷ 100 = '+reelL_m+' m',
+      solutionHTML:reelL_cm+' cm = '+reelL_m+' m',
+      clavier:['\u00f7','=']
+    },
+    {
+      question:'Question 2 — Largeur réelle',
+      role:'Appliquer l\'échelle à la largeur',
+      q:'Largeur sur plan : '+fr(planW)+' cm. Calcule la largeur réelle en m.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-reelW_m)<0.05;});},
+      aide:fr(planW)+' × '+echelle+' ÷ 100 = '+reelW_m+' m',
+      solutionHTML:fr(planW)+' cm × '+echelle+' ÷ 100 = '+reelW_m+' m',
+      clavier:['\u00d7','\u00f7','=']
+    },
+    {
+      question:'Question 3 — Aire réelle',
+      role:'Calculer l\'aire en m²',
+      q:'Calcule l\'aire du '+lieu.nom+' : '+reelL_m+' m × '+reelW_m+' m.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-aireReelle)<0.5;});},
+      aide:reelL_m+' × '+reelW_m+' = '+aireReelle+' m²',
+      solutionHTML:'Aire = '+reelL_m+' × '+reelW_m+' = '+aireReelle+' m²',
+      clavier:['\u00d7','=']
+    }
+  ];
+  return {
+    titre:'\u00c9chelle et plan \u2014 '+lieu.nom,
+    enonceHTML:enonceHTML,
+    dessiner:function(id){dessinerPlan(id,{echelle:echelle,mesure_plan:planL,reel:reelL_cm});},
+    etapes:etapes
+  };
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'cylindre',gen:genReservoirCylindre},
@@ -900,7 +1260,12 @@ var BANQUE=[
   {notion:'conversions',gen:genConversions},
   {notion:'vitesse',gen:genVitesse},
   {notion:'pyramide',gen:genPyramide},
-  {notion:'echelle',gen:genEchellePlan}
+  {notion:'echelle',gen:genEchellePlan},
+  {notion:'airecomposee',gen:genAireComposee},
+  {notion:'vitesse2',gen:genVitesseTrajet},
+  {notion:'massevol',gen:genMasseVol},
+  {notion:'energie',gen:genEnergie},
+  {notion:'echelle2',gen:genEchellePlan2}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

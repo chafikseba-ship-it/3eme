@@ -790,6 +790,363 @@ function genProportion(){
   };
 }
 
+/* --- Situation 8 : Fractions — addition et multiplication --- */
+function genFractions(){
+  var configs=[
+    {a1:1,b1:3,a2:1,b2:4},
+    {a1:2,b1:5,a2:1,b2:3},
+    {a1:3,b1:4,a2:2,b2:5},
+    {a1:1,b1:6,a2:3,b2:8},
+    {a1:5,b1:6,a2:1,b2:4},
+    {a1:2,b1:3,a2:3,b2:7},
+    {a1:1,b1:2,a2:2,b2:9}
+  ];
+  var cfg=choix(configs);
+  var a1=cfg.a1,b1=cfg.b1,a2=cfg.a2,b2=cfg.b2;
+  // Trouver le PPCM pour l'addition
+  function pgcd(x,y){while(y){var t=y;y=x%y;x=t;}return x;}
+  function ppcm(x,y){return x*y/pgcd(x,y);}
+  var denom_commun=ppcm(b1,b2);
+  var num_somme=a1*(denom_commun/b1)+a2*(denom_commun/b2);
+  var g_somme=pgcd(Math.abs(num_somme),denom_commun);
+  var ns=num_somme/g_somme, ds=denom_commun/g_somme;
+  // Produit
+  var num_prod=a1*a2, den_prod=b1*b2;
+  var g_prod=pgcd(Math.abs(num_prod),den_prod);
+  var np=num_prod/g_prod, dp=den_prod/g_prod;
+  var enonceHTML='La cantine scolaire utilise <b>'+a1+'/'+b1+'</b> de litre de sirop pour un gâteau et <b>'+a2+'/'+b2+'</b> de litre pour une compote.'
+    +'<br><b>1.</b> Quelle quantité totale de sirop faut-il pour les deux recettes ? (calcule la somme)'
+    +'<br><b>2.</b> On double la recette du gâteau. Calcule '+'('+a1+'/'+b1+') × ('+a2+'/'+b2+').'
+    +'<br><i>Rappel : pour additionner des fractions, on cherche un dénominateur commun.</i>';
+  var etapes=[
+    {
+      question:'Question 1 — Additionner les deux fractions',
+      role:'Trouver le dénominateur commun',
+      q:'Quel est le dénominateur commun de '+b1+' et '+b2+' ? (Plus Petit Commun Multiple)',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-denom_commun)<0.5;});},
+      aide:'PPCM('+b1+', '+b2+') = '+denom_commun,
+      solutionHTML:'Dénominateur commun : '+denom_commun,
+      clavier:['\u00d7','+','=']
+    },
+    {
+      role:'Écrire les fractions au même dénominateur',
+      q:'Réécris '+a1+'/'+b1+' et '+a2+'/'+b2+' avec le dénominateur '+denom_commun+'.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-(a1*(denom_commun/b1)))<0.5;})
+          &&ns.some(function(x){return Math.abs(x-(a2*(denom_commun/b2)))<0.5;})
+          &&ns.some(function(x){return Math.abs(x-denom_commun)<0.5;});
+      },
+      aide:a1+'/'+b1+' = '+(a1*(denom_commun/b1))+'/'+denom_commun+' et '+a2+'/'+b2+' = '+(a2*(denom_commun/b2))+'/'+denom_commun,
+      solutionHTML:a1+'/'+b1+' = '+(a1*(denom_commun/b1))+'/'+denom_commun+' et '+a2+'/'+b2+' = '+(a2*(denom_commun/b2))+'/'+denom_commun,
+      clavier:['/','=']
+    },
+    {
+      role:'Calculer la somme',
+      q:'Calcule '+(a1*(denom_commun/b1))+'/'+denom_commun+' + '+(a2*(denom_commun/b2))+'/'+denom_commun+'. Simplifie si possible.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        if(g_somme>1){return ns.some(function(x){return Math.abs(x-ns_val)<0.5;})&&ns.some(function(x){return Math.abs(x-ds)<0.5;});}
+        return ns.some(function(x){return Math.abs(x-num_somme)<0.5;})&&ns.some(function(x){return Math.abs(x-denom_commun)<0.5;});
+      },
+      aide:''+a1+'/'+b1+' + '+a2+'/'+b2+' = '+num_somme+'/'+denom_commun+(g_somme>1?' = '+ns+'/'+ds:''),
+      solutionHTML:''+a1+'/'+b1+' + '+a2+'/'+b2+' = '+num_somme+'/'+denom_commun+(g_somme>1?' = '+ns+'/'+ds:''),
+      clavier:['+','=','/']
+    },
+    {
+      question:'Question 2 — Multiplier les deux fractions',
+      role:'Calculer le produit',
+      q:'Calcule ('+a1+'/'+b1+') × ('+a2+'/'+b2+'). Simplifie si possible.',
+      verif:function(inp){
+        var ns2=nbs(inp);
+        return ns2.some(function(x){return Math.abs(x-np)<0.5;})&&ns2.some(function(x){return Math.abs(x-dp)<0.5;});
+      },
+      aide:'Numérateur : '+a1+' × '+a2+' = '+num_prod+'. Dénominateur : '+b1+' × '+b2+' = '+den_prod+'.'+(g_prod>1?' Simplifié : '+np+'/'+dp:''),
+      solutionHTML:'('+a1+'/'+b1+') × ('+a2+'/'+b2+') = '+num_prod+'/'+den_prod+(g_prod>1?' = '+np+'/'+dp:''),
+      clavier:['\u00d7','=','/']
+    }
+  ];
+  var ns_val=ns;
+  return {
+    titre:'Fractions \u2014 addition et multiplication',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 9 : Pourcentages — réduction commerciale --- */
+function genPourcentages(){
+  var articles=['veste','manteau','sac de sport','paire de baskets','vélo','trottinette'];
+  var art=choix(articles);
+  var prixBase=50+Math.floor(Math.random()*19)*25; // 50 à 500 par pas de 25
+  var taux=10+Math.floor(Math.random()*7)*5; // 10, 15, 20, 25, 30, 35, 40
+  var montantReduc=Math.round(prixBase*taux/100*100)/100;
+  var prixFinal=Math.round((prixBase-montantReduc)*100)/100;
+  var coefMult=Math.round((1-taux/100)*100)/100;
+  var enonceHTML='Lors des soldes, une boutique propose une réduction de <b>'+taux+'&nbsp;%</b> sur une '+art+' affichée à <b>'+fr(prixBase)+'&nbsp;€</b>.'
+    +'<br><b>1.</b> Calcule le montant de la réduction.'
+    +'<br><b>2.</b> Quel est le prix final après réduction ?'
+    +'<br><b>3.</b> Quelle est le coefficient multiplicateur correspondant à cette réduction ?';
+  var etapes=[
+    {
+      question:'Question 1 — Montant de la réduction',
+      role:'Calculer la réduction',
+      q:'Calcule '+taux+'&nbsp;% de '+fr(prixBase)+'&nbsp;€.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-montantReduc)<0.05;});},
+      aide:fr(prixBase)+' × '+taux+' ÷ 100 = '+fr(montantReduc)+' €',
+      solutionHTML:fr(prixBase)+' × '+taux+'/100 = '+fr(montantReduc)+' €',
+      clavier:['\u00d7','\u00f7','%','=']
+    },
+    {
+      question:'Question 2 — Prix final',
+      role:'Calculer le prix après réduction',
+      q:'Soustrait la réduction : '+fr(prixBase)+' − '+fr(montantReduc)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-prixFinal)<0.05;});},
+      aide:fr(prixBase)+' − '+fr(montantReduc)+' = '+fr(prixFinal)+' €',
+      solutionHTML:fr(prixBase)+' − '+fr(montantReduc)+' = '+fr(prixFinal)+' €',
+      clavier:['-','=']
+    },
+    {
+      question:'Question 3 — Coefficient multiplicateur',
+      role:'Méthode directe',
+      q:'On peut calculer le prix final en une seule multiplication. Quel coefficient faut-il appliquer à '+fr(prixBase)+' € pour obtenir directement '+fr(prixFinal)+' € ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-coefMult)<0.01;});},
+      aide:'Coefficient = 1 − '+taux+'/100 = 1 − '+fr(taux/100)+' = '+fr(coefMult),
+      solutionHTML:'Coefficient multiplicateur = '+fr(coefMult)+' (car '+fr(prixBase)+' × '+fr(coefMult)+' = '+fr(prixFinal)+' €)',
+      clavier:['-','\u00d7','=']
+    }
+  ];
+  return {
+    titre:'Pourcentages \u2014 r\u00e9duction commerciale',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 10 : Puissances et notation scientifique (NEW) --- */
+function genPuissancesNew(){
+  var scenarios=[
+    {
+      contexte:'bact\u00e9rie',
+      nom:'une bact\u00e9rie Escherichia coli',
+      labelVal:'0,000\u00a0002\u00a0m',
+      valeur:0.000002,
+      coeff:2,
+      exp:-6,
+      unite:'m',
+      facteur2:500,
+      coeff2:1,
+      exp2:-3,
+      descProd:'La distance parcourue par 500 bact\u00e9ries mises bout \u00e0 bout'
+    },
+    {
+      contexte:'globule',
+      nom:'un globule rouge',
+      labelVal:'0,000\u00a0008\u00a0m',
+      valeur:0.000008,
+      coeff:8,
+      exp:-6,
+      unite:'m',
+      facteur2:1000,
+      coeff2:8,
+      exp2:-3,
+      descProd:'La taille de 1\u00a0000 globules mis bout \u00e0 bout'
+    },
+    {
+      contexte:'atome',
+      nom:'un atome de carbone',
+      labelVal:'0,000\u00a0000\u00a0000\u00a0154\u00a0m',
+      valeur:1.54e-10,
+      coeff:1.54,
+      exp:-10,
+      unite:'m',
+      facteur2:1000000,
+      coeff2:1.54,
+      exp2:-4,
+      descProd:'La longueur de 10\u2076 liaisons C\u2013C mis bout \u00e0 bout'
+    }
+  ];
+  var sc=choix(scenarios);
+  var enonceHTML='La taille de '+sc.nom+' est environ <b>'+sc.labelVal+'</b>.'
+    +'<br><b>1.</b> \u00c9cris cette longueur en notation scientifique (a \u00d7 10<sup>n</sup>).'
+    +'<br><b>2.</b> '+sc.descProd+' vaut <b>'+sc.facteur2+' \u00d7 '+sc.labelVal+'</b>. Calcule ce produit en notation scientifique.'
+    +'<br><b>3.</b> V\u00e9rifie en utilisant les r\u00e8gles de calcul sur les puissances (a<sup>m</sup> \u00d7 a<sup>n</sup> = a<sup>m+n</sup>).';
+  var sc_coeff=sc.coeff, sc_exp=sc.exp, sc_coeff2=sc.coeff2, sc_exp2=sc.exp2;
+  var facteur2=sc.facteur2;
+  // facteur2 en notation scientifique
+  var log_f=Math.round(Math.log10(facteur2));
+  var coeff_f=Math.round(facteur2/Math.pow(10,log_f)*1000)/1000;
+  var etapes=[
+    {
+      question:'Question 1 \u2014 Notation scientifique',
+      role:'\u00c9crire en notation scientifique',
+      q:'\u00c9cris '+sc.labelVal+' sous la forme a \u00d7 10<sup>n</sup> avec 1 \u2264 a < 10.',
+      verif:function(inp){
+        var t=norm(inp);
+        var hasCoeff=nbs(inp).some(function(x){return Math.abs(x-sc_coeff)<0.01;});
+        var hasExp=t.includes('10^'+sc_exp)||t.includes('e'+sc_exp)||t.includes('10'+sc_exp)
+          ||t.includes('10^('+sc_exp+')')||t.includes('10-'+Math.abs(sc_exp));
+        return hasCoeff&&hasExp;
+      },
+      aide:'D\u00e9place la virgule pour avoir un seul chiffre avant : '+fr(sc_coeff)+' \u00d7 10<sup>'+sc_exp+'</sup>',
+      solutionHTML:fr(sc_coeff)+' \u00d7 10<sup>'+sc_exp+'</sup> '+sc.unite,
+      clavier:['\u00d7','10^','=']
+    },
+    {
+      question:'Question 2 \u2014 Produit en notation scientifique',
+      role:'Calculer le produit',
+      q:'Calcule '+facteur2+' \u00d7 ('+fr(sc_coeff)+' \u00d7 10<sup>'+sc_exp+'</sup>). Donne le r\u00e9sultat en notation scientifique.',
+      verif:function(inp){
+        var t=norm(inp);
+        var hasCoeff2=nbs(inp).some(function(x){return Math.abs(x-sc_coeff2)<0.05;});
+        var expTarget=sc_exp2;
+        var hasExp2=t.includes('10^'+expTarget)||t.includes('e'+expTarget)||t.includes('10'+expTarget)
+          ||t.includes('10^('+expTarget+')')||t.includes('10-'+Math.abs(expTarget));
+        return hasCoeff2&&hasExp2;
+      },
+      aide:facteur2+' = '+fr(coeff_f)+' \u00d7 10<sup>'+log_f+'</sup>. Produit des coeffs : '+fr(coeff_f)+' \u00d7 '+fr(sc_coeff)+'.',
+      solutionHTML:fr(sc_coeff2)+' \u00d7 10<sup>'+sc_exp2+'</sup> '+sc.unite,
+      clavier:['\u00d7','10^','=']
+    },
+    {
+      question:'Question 3 \u2014 R\u00e8gle des exposants',
+      role:'Justifier avec a<sup>m</sup> \u00d7 a<sup>n</sup> = a<sup>m+n</sup>',
+      q:'Pour multiplier 10<sup>'+log_f+'</sup> \u00d7 10<sup>'+sc_exp+'</sup>, on additionne les exposants. Calcule '+log_f+' + ('+sc_exp+').',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Math.abs(sc_exp2))<0.5;});},
+      aide:log_f+' + ('+sc_exp+') = '+(log_f+sc_exp)+' donc 10<sup>'+log_f+'</sup> \u00d7 10<sup>'+sc_exp+'</sup> = 10<sup>'+(log_f+sc_exp)+'</sup>',
+      solutionHTML:'10<sup>'+log_f+'</sup> \u00d7 10<sup>'+sc_exp+'</sup> = 10<sup>'+(log_f+sc_exp)+'</sup> = 10<sup>'+sc_exp2+'</sup>',
+      clavier:['+','-','=']
+    }
+  ];
+  return {
+    titre:'Notation scientifique \u2014 tailles microscopiques',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 11 : PGCD et fractions irréductibles --- */
+function genPGCD(){
+  // paires dont le pgcd est non trivial et les nombres entre 12-120
+  var paires=[
+    {a:48,b:36,pg:12},{a:60,b:84,pg:12},{a:72,b:90,pg:18},
+    {a:56,b:84,pg:28},{a:45,b:75,pg:15},{a:96,b:80,pg:16},
+    {a:120,b:90,pg:30},{a:63,b:42,pg:21},{a:52,b:78,pg:26}
+  ];
+  var p=choix(paires);
+  var a=p.a,b=p.b,pg=p.pg;
+  var na=a/pg, nb=b/pg;
+  // Algorithme d'Euclide : liste des étapes
+  var etapesEuclide=[];
+  var x=Math.max(a,b),y=Math.min(a,b);
+  while(y>0){var r=x%y;etapesEuclide.push({div:x,dvs:y,quot:Math.floor(x/y),reste:r});x=y;y=r;}
+  var premDiv=etapesEuclide[0];
+  var enonceHTML='Un groupe de <b>'+a+' gar\u00e7ons</b> et <b>'+b+' filles</b> participe \u00e0 un tournoi. On veut former des \u00e9quipes mixtes <b>identiques</b>, chacune ayant le m\u00eame nombre de gar\u00e7ons et de filles.'
+    +'<br><b>1.</b> Quel est le nombre maximum d\u2019\u00e9quipes ? (calcule PGCD('+a+','+b+'))'
+    +'<br><b>2.</b> Simplifie la fraction '+a+'/'+b+' pour l\u2019exprimer sous forme irr\u00e9ductible.';
+  var etapes=[
+    {
+      question:'Question 1 \u2014 Premi\u00e8re division (Euclide)',
+      role:'Appliquer l\u2019algorithme d\u2019Euclide',
+      q:'Effectue la division euclidienne : '+premDiv.div+' = '+premDiv.dvs+' × ? + reste',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-premDiv.quot)<0.5;})
+          &&ns.some(function(x){return Math.abs(x-premDiv.reste)<0.5;});
+      },
+      aide:premDiv.div+' = '+premDiv.dvs+' × '+premDiv.quot+' + '+premDiv.reste,
+      solutionHTML:premDiv.div+' = '+premDiv.dvs+' × '+premDiv.quot+' + '+premDiv.reste,
+      clavier:['\u00d7','+','-','=']
+    },
+    {
+      role:'Continuer jusqu\u2019au reste nul',
+      q:'Continue l\u2019algorithme : maintenant divise '+premDiv.dvs+' par '+premDiv.reste+'. Quel est le PGCD de '+a+' et '+b+' ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-pg)<0.5;});},
+      aide:'On continue les divisions jusqu\u2019\u00e0 obtenir reste = 0. Le dernier diviseur est PGCD('+a+', '+b+') = '+pg+'.',
+      solutionHTML:'PGCD('+a+', '+b+') = '+pg,
+      clavier:['\u00f7','-','=']
+    },
+    {
+      question:'Question 2 \u2014 Fraction irr\u00e9ductible',
+      role:'Simplifier la fraction',
+      q:'Divise num\u00e9rateur et d\u00e9nominateur de '+a+'/'+b+' par leur PGCD = '+pg+'. \u00c9cris la fraction simplifi\u00e9e.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-na)<0.5;})&&ns.some(function(x){return Math.abs(x-nb)<0.5;});
+      },
+      aide:a+' \u00f7 '+pg+' = '+na+' et '+b+' \u00f7 '+pg+' = '+nb+'. Fraction irr\u00e9ductible : '+na+'/'+nb+'.',
+      solutionHTML:a+'/'+b+' = '+na+'/'+nb+' (fraction irr\u00e9ductible)',
+      clavier:['\u00f7','=','/']
+    }
+  ];
+  return {
+    titre:'PGCD \u2014 fractions irr\u00e9ductibles',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 12 : Nombres relatifs — bilan financier --- */
+function genRelatifsFinance(){
+  var prenoms=['Amina','Lucas','Sonia','Tom','Inès','Rayan'];
+  var prenom=choix(prenoms);
+  var soldeInit=-(Math.floor(Math.random()*8+1)*10); // -10 à -80
+  var recette1=Math.floor(Math.random()*10+6)*20; // 120 à 300
+  var recette2=Math.floor(Math.random()*5+1)*15; // 15 à 90
+  var depense1=Math.floor(Math.random()*8+3)*15; // 45 à 165
+  var depense2=Math.floor(Math.random()*5+2)*12; // 24 à 84
+  var solde=soldeInit+recette1+recette2-depense1-depense2;
+  var seuilDecouvert=-50;
+  var aDecouvert=solde<0;
+  var enonceHTML='Le compte de <b>'+prenom+'</b> est \u00e0 <b>'+soldeInit+'&nbsp;\u20ac</b> (d\u00e9couvert). Le mois, '+prenom+' re\u00e7oit <b>+'+recette1+'&nbsp;\u20ac</b> (salaire) et <b>+'+recette2+'&nbsp;\u20ac</b> (remboursement), puis paie <b>'+depense1+'&nbsp;\u20ac</b> de loyer et <b>'+depense2+'&nbsp;\u20ac</b> de courses.'
+    +'<br><b>1.</b> Calcule le solde final du compte.'
+    +'<br><b>2.</b> Le compte est-il \u00e0 d\u00e9couvert ? Justifie.'
+    +'<br><b>3.</b> Quel ordre de grandeur des d\u00e9penses permettrait d\u2019\u00e9viter le d\u00e9couvert ?';
+  var etapes=[
+    {
+      question:'Question 1 \u2014 Calcul du solde final',
+      role:'Poser le calcul avec les relatifs',
+      q:'Effectue le calcul : '+soldeInit+' + '+recette1+' + '+recette2+' \u2212 '+depense1+' \u2212 '+depense2+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-Math.abs(solde))<0.5;});},
+      aide:'Recettes : '+recette1+' + '+recette2+' = '+(recette1+recette2)+'. D\u00e9penses : '+depense1+' + '+depense2+' = '+(depense1+depense2)+'. Bilan : '+soldeInit+' + '+(recette1+recette2)+' \u2212 '+(depense1+depense2)+' = '+fr(solde)+' \u20ac',
+      solutionHTML:soldeInit+' + '+recette1+' + '+recette2+' \u2212 '+depense1+' \u2212 '+depense2+' = '+fr(solde)+' \u20ac',
+      clavier:['+','-','=']
+    },
+    {
+      question:'Question 2 \u2014 D\u00e9couvert ?',
+      role:'Interpr\u00e9ter le signe du solde',
+      q:'Le solde est '+fr(solde)+'&nbsp;\u20ac. Ce compte est-il \u00e0 d\u00e9couvert ? R\u00e9ponds par oui ou non et justifie.',
+      verif:function(inp){
+        var t=norm(inp);
+        return aDecouvert?(t.includes('oui')||t.includes('negatif')||t.includes('inf')&&t.includes('0')):
+          (t.includes('non')||t.includes('positif')||nbs(inp).some(function(x){return x>0&&Math.abs(x-solde)<0.5;}));
+      },
+      aide:aDecouvert?'Le solde '+fr(solde)+' < 0 : le compte est à découvert.':'Le solde '+fr(solde)+' > 0 : pas de découvert.',
+      solutionHTML:aDecouvert?'Oui, '+fr(solde)+' \u20ac < 0 : compte \u00e0 d\u00e9couvert.':'Non, '+fr(solde)+' \u20ac > 0 : pas de d\u00e9couvert.',
+      clavier:['>','<','=']
+    },
+    {
+      question:'Question 3 \u2014 Seuil des d\u00e9penses',
+      role:'Raisonner sur une condition',
+      q:'Pour avoir un solde positif, les d\u00e9penses totales doivent \u00eatre strictement inf\u00e9rieures \u00e0 quoi ? (recettes totales = '+(soldeInit+recette1+recette2)+'&nbsp;\u20ac)',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-(soldeInit+recette1+recette2))<1;});},
+      aide:'Solde > 0 si ('+soldeInit+' + recettes) > d\u00e9penses. Recettes nettes = '+(soldeInit+recette1+recette2)+' \u20ac.',
+      solutionHTML:'D\u00e9penses < '+(soldeInit+recette1+recette2)+' \u20ac (recettes nettes)',
+      clavier:['+','-','>','<','=']
+    }
+  ];
+  return {
+    titre:'Nombres relatifs \u2014 bilan financier',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'boulangerie', gen:genBoulangerie},
@@ -798,7 +1155,12 @@ var BANQUE=[
   {notion:'puissances',  gen:genPuissances},
   {notion:'racines',     gen:genRacines},
   {notion:'relatifs',    gen:genRelatifs},
-  {notion:'proportion',  gen:genProportion}
+  {notion:'proportion',  gen:genProportion},
+  {notion:'fractions',   gen:genFractions},
+  {notion:'pourcentages',gen:genPourcentages},
+  {notion:'puissances2', gen:genPuissancesNew},
+  {notion:'pgcd',        gen:genPGCD},
+  {notion:'relatifs2',   gen:genRelatifsFinance}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

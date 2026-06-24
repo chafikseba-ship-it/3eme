@@ -865,6 +865,429 @@ function genImageAntecedent(){
   return {titre:'Images et antecedents — fonction affine',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
 }
 
+/* ===== SITUATION : Tableau de proportionnalite ===== */
+function genProportion(){
+  var contextes=[
+    {sujet:'une recette de gateau',unite1:'portions',unite2:'farine (g)',coeff:150,vals:[2,4,6]},
+    {sujet:'une recette de crepes',unite1:'personnes',unite2:'farine (g)',coeff:80,vals:[3,6,9]},
+    {sujet:'un trajet en voiture',unite1:'distance (km)',unite2:'carburant (L)',coeff:0.07,vals:[100,200,300]},
+    {sujet:'une recette de sirop',unite1:'litres de sirop',unite2:'sucre (g)',coeff:800,vals:[1,2,3]}
+  ];
+  var ctx=choix(contextes);
+  var coeff=ctx.coeff;
+  var x1=ctx.vals[0],x2=ctx.vals[1],x3=ctx.vals[2];
+  var y1=Math.round(coeff*x1*100)/100;
+  var y2=Math.round(coeff*x2*100)/100;
+  var y3=Math.round(coeff*x3*100)/100;
+  var masqueIdx=rnd(2)+1;
+  var xManquant=masqueIdx===1?x2:x3;
+  var yManquant=masqueIdx===1?y2:y3;
+  var xConnu=masqueIdx===1?x1:x1;
+  var yConnu=masqueIdx===1?y1:y1;
+  var enonceHTML='Dans le contexte de <b>'+ctx.sujet+'</b>, voici un tableau de proportionnalite :<br><br>'
+    +'<table style="border-collapse:collapse;margin:10px 0;font-size:16px"><thead><tr>'
+    +'<th style="background:#FFC93C;padding:8px 14px;border:2px solid #E0A415">'+ctx.unite1+'</th>'
+    +'<th style="background:#FFC93C;padding:8px 14px;border:2px solid #E0A415">'+x1+'</th>'
+    +'<th style="background:#FFE7B0;padding:8px 14px;border:2px solid #E0A415"><b>?</b></th>'
+    +'<th style="background:#FFF6E6;padding:8px 14px;border:2px solid #E0A415">'+x3+'</th>'
+    +'</tr><tr>'
+    +'<th style="background:#FFC93C;padding:8px 14px;border:2px solid #E0A415">'+ctx.unite2+'</th>'
+    +'<td style="background:#FFF6E6;padding:8px 14px;border:2px solid #E0A415;text-align:center">'+fr(y1)+'</td>'
+    +'<td style="background:#FFE7B0;padding:8px 14px;border:2px solid #E0A415;text-align:center">'+fr(yManquant)+'</td>'
+    +'<td style="background:#FFF6E6;padding:8px 14px;border:2px solid #E0A415;text-align:center">'+fr(y3)+'</td>'
+    +'</tr></table>'
+    +'1. Calcule le coefficient de proportionnalite.<br>'
+    +'2. Trouve la valeur manquante <b>?</b> pour '+fr(yManquant)+' '+ctx.unite2+'.<br>'
+    +'3. Verifie que le tableau est bien proportionnel.';
+
+  function dessiner(cibleId){
+    var W=430,H=170;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    var cols=[['',ctx.unite1,ctx.unite2],['x',x1,y1],[masqueIdx===1?'?':x2,masqueIdx===1?'?':x2,masqueIdx===1?y2:y2],[masqueIdx===2?'?':x3,x3,y3]];
+    var colW=110,rowH=40,x0=5,y0=15;
+    var headers=[ctx.unite1,x1,(masqueIdx===1?'?':x2),x3];
+    var row2=[ctx.unite2,fr(y1),(masqueIdx===1?fr(yManquant):fr(y2)),(masqueIdx===2?fr(y3):fr(y3))];
+    for(var c=0;c<4;c++){
+      var bg=c===0?'#FFC93C':'#FFE7B0';
+      svg+='<rect x="'+(x0+c*colW)+'" y="'+y0+'" width="'+colW+'" height="'+rowH+'" fill="'+bg+'" stroke="#E0A415" stroke-width="1.5"/>';
+      svg+=svgTxt(x0+c*colW+colW/2,y0+rowH/2,headers[c],13,'#5A4A2F');
+    }
+    for(var c2=0;c2<4;c2++){
+      var bg2=c2===0?'#FFC93C':(c2===masqueIdx?'#FFD98A':'#FFF6E6');
+      svg+='<rect x="'+(x0+c2*colW)+'" y="'+(y0+rowH)+'" width="'+colW+'" height="'+rowH+'" fill="'+bg2+'" stroke="#E0A415" stroke-width="1.5"/>';
+      svg+=svgTxt(x0+c2*colW+colW/2,y0+rowH+rowH/2,row2[c2],13,c2===masqueIdx?'#E07A1F':'#5A4A2F');
+    }
+    svg+='<text x="'+(x0+colW/2)+'" y="'+(y0+2*rowH+22)+'" font-family="Fredoka" font-weight="600" font-size="12" fill="#6FA52A" text-anchor="middle">coeff = '+fr(coeff)+'</text>';
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  var etapes=[
+    {
+      question:'Question 1 - Coefficient de proportionnalite',
+      role:'Calculer le coefficient',
+      q:'Divise '+fr(y1)+' par '+x1+' pour trouver le coefficient de proportionnalite.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-coeff)<0.05;});},
+      aide:'coefficient = '+fr(y1)+' / '+x1+' = '+fr(coeff),
+      solutionHTML:'k = '+fr(y1)+' / '+x1+' = '+fr(coeff)
+    },
+    {
+      role:'Trouver la valeur manquante',
+      q:'Calcule la valeur manquante : '+xManquant+' x '+fr(coeff)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-yManquant)<0.05;});},
+      aide:xManquant+' x '+fr(coeff)+' = '+fr(yManquant),
+      solutionHTML:xManquant+' x '+fr(coeff)+' = '+fr(yManquant)
+    },
+    {
+      role:'Verifier la proportionnalite',
+      q:'Calcule aussi '+fr(y3)+' / '+x3+'. Obtient-on le meme coefficient ? Conclus.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-coeff)<0.05;});},
+      aide:fr(y3)+' / '+x3+' = '+fr(coeff)+' = k. Le tableau est bien proportionnel.',
+      solutionHTML:fr(y3)+' / '+x3+' = '+fr(coeff)+'. Meme coefficient : tableau proportionnel.'
+    }
+  ];
+  return {titre:'Tableau de proportionnalite',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Probabilites — urne avec/sans remise ===== */
+function genProba(){
+  var rouges=2+rnd(4),bleues=2+rnd(4),vertes=2+rnd(4);
+  var tot=rouges+bleues+vertes;
+  function pgcd(a,b){return b===0?a:pgcd(b,a%b);}
+  function simplif(n,d){var g=pgcd(n,d);return {n:n/g,d:d/g};}
+  var pR=simplif(rouges,tot);
+  var pNonB=simplif(tot-bleues,tot);
+  var pRR=simplif(rouges*rouges,tot*tot);
+  var enonceHTML='Une urne contient <b>'+rouges+' boules rouges</b>, <b>'+bleues+' boules bleues</b> et <b>'+vertes+' boules vertes</b>, soit <b>'+tot+' boules</b> en tout. On tire une boule au hasard, on note sa couleur, on la remet, puis on tire une seconde boule.<br><br>'
+    +'1. Calcule P(rouge) lors du premier tirage.<br>'
+    +'2. Calcule P(non bleue) lors du premier tirage.<br>'
+    +'3. Calcule P(deux rouges de suite) avec remise.';
+
+  function dessiner(cibleId){
+    var W=400,H=200;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    svg+='<ellipse cx="200" cy="110" rx="150" ry="65" fill="#E7D9B8" stroke="#C9A24A" stroke-width="3"/>';
+    svg+='<ellipse cx="200" cy="93" rx="150" ry="55" fill="#F5EDD6" stroke="#C9A24A" stroke-width="2"/>';
+    var colors=[{c:'#E76F51',n:rouges,lbl:'rouge'},{c:'#4FA3D1',n:bleues,lbl:'bleue'},{c:'#9FD356',n:vertes,lbl:'verte'}];
+    var xi=[95,200,305];
+    for(var i=0;i<3;i++){
+      svg+='<circle cx="'+xi[i]+'" cy="90" r="24" fill="'+colors[i].c+'" stroke="#fff" stroke-width="2"/>';
+      svg+=svgTxt(xi[i],90,''+colors[i].n,18,'#fff');
+      svg+=svgTxt(xi[i],125,colors[i].lbl,12,'#5A4A2F');
+    }
+    svg+=svgTxt(200,165,'Total : '+tot+' boules',14,'#8A744C');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  var etapes=[
+    {
+      question:'Question 1 - P(rouge)',
+      role:'Calculer P(rouge)',
+      clavier:['/'],
+      q:'Il y a '+rouges+' boules rouges sur '+tot+'. Donne P(rouge) sous forme de fraction simplifiee.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-rouges/tot)<0.02;}) || (ns.some(function(x){return x===pR.n;})&&ns.some(function(x){return x===pR.d;}));
+      },
+      aide:'P(rouge) = '+rouges+'/'+tot+' = '+pR.n+'/'+pR.d,
+      solutionHTML:'P(rouge) = '+rouges+'/'+tot+' = '+pR.n+'/'+pR.d
+    },
+    {
+      question:'Question 2 - P(non bleue)',
+      role:'Calculer P(non bleue)',
+      clavier:['/'],
+      q:'Les boules non bleues sont les rouges et les vertes : '+rouges+'+'+vertes+'='+(rouges+vertes)+'. Donne P(non bleue).',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-(tot-bleues)/tot)<0.02;}) || (ns.some(function(x){return x===pNonB.n;})&&ns.some(function(x){return x===pNonB.d;}));
+      },
+      aide:'P(non bleue) = '+(tot-bleues)+'/'+tot+' = '+pNonB.n+'/'+pNonB.d,
+      solutionHTML:'P(non bleue) = '+(tot-bleues)+'/'+tot+' = '+pNonB.n+'/'+pNonB.d
+    },
+    {
+      question:'Question 3 - P(deux rouges avec remise)',
+      role:'Multiplier les probabilites',
+      clavier:['/','+','*'],
+      q:'Avec remise, les tirages sont independants. Calcule P(R1) x P(R2) = ('+rouges+'/'+tot+') x ('+rouges+'/'+tot+').',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rouges*rouges/(tot*tot))<0.02;});},
+      aide:'P(R,R) = '+rouges+'/'+tot+' x '+rouges+'/'+tot+' = '+rouges*rouges+'/'+tot*tot+' = '+pRR.n+'/'+pRR.d,
+      solutionHTML:'P(R,R) = ('+rouges+'/'+tot+')^2 = '+pRR.n+'/'+pRR.d
+    }
+  ];
+  return {titre:'Probabilites — tirage avec remise',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Statistiques — serie de notes ===== */
+function genStats(){
+  var n=8+rnd(3);
+  var notes=[];
+  for(var i=0;i<n;i++){notes.push(5+rnd(16));}
+  var sorted=notes.slice().sort(function(a,b){return a-b;});
+  var somme=notes.reduce(function(s,v){return s+v;},0);
+  var moy=Math.round(somme/n*100)/100;
+  var med;
+  if(n%2===0){med=(sorted[n/2-1]+sorted[n/2])/2;}
+  else{med=sorted[Math.floor(n/2)];}
+  var etendue=sorted[n-1]-sorted[0];
+  var modeMap={};
+  notes.forEach(function(v){modeMap[v]=(modeMap[v]||0)+1;});
+  var maxFreq=Math.max.apply(null,Object.values(modeMap));
+  var modes=Object.keys(modeMap).filter(function(k){return modeMap[k]===maxFreq;}).map(Number).sort(function(a,b){return a-b;});
+  var prenoms=['Classe A','Classe B','Classe C'];
+  var prenom=choix(prenoms);
+  var enonceHTML='Voici les notes obtenues par les eleves de la <b>'+prenom+'</b> lors d\'un controle :<br><br>'
+    +'<table style="border-collapse:collapse;margin:10px 0;font-size:15px;width:100%"><tr>';
+  for(var j=0;j<notes.length;j++){
+    enonceHTML+='<td style="background:#FFE7B0;padding:8px;border:2px solid #E0A415;text-align:center;font-weight:700">'+notes[j]+'</td>';
+  }
+  enonceHTML+='</tr></table><br>'
+    +'1. Calcule la moyenne de cette serie.<br>'
+    +'2. Determine la mediane.<br>'
+    +'3. Donne l\'etendue et le(s) mode(s).';
+
+  function dessiner(cibleId){
+    var W=420,H=180;
+    var minN=sorted[0]-1,maxN=sorted[n-1]+1;
+    var axY=100,axX0=30,axX1=W-20;
+    function toX(v){return Math.round(axX0+(v-minN)/(maxN-minN)*(axX1-axX0));}
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    svg+='<line x1="'+axX0+'" y1="'+axY+'" x2="'+axX1+'" y2="'+axY+'" stroke="#8A744C" stroke-width="2"/>';
+    for(var t=minN+1;t<=maxN-1;t+=2){
+      var tx=toX(t);
+      svg+='<line x1="'+tx+'" y1="'+(axY-4)+'" x2="'+tx+'" y2="'+(axY+4)+'" stroke="#8A744C" stroke-width="1"/>';
+      svg+=svgTxt(tx,axY+14,''+t,10,'#8A744C');
+    }
+    sorted.forEach(function(v){
+      var px=toX(v);
+      svg+='<circle cx="'+px+'" cy="'+axY+'" r="7" fill="#E07A1F" opacity="0.8"/>';
+      svg+=svgTxt(px,axY-18,''+v,10,'#E07A1F');
+    });
+    var medX=toX(med);
+    svg+='<line x1="'+medX+'" y1="'+(axY-16)+'" x2="'+medX+'" y2="'+(axY+16)+'" stroke="#6FA52A" stroke-width="2.5"/>';
+    svg+=svgTxt(medX,axY-30,'med='+fr(med),11,'#6FA52A');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  var etapes=[
+    {
+      question:'Question 1 - Moyenne',
+      role:'Calculer la somme',
+      q:'Calcule la somme de toutes les notes : '+notes.join('+')+'= ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-somme)<0.5;});},
+      aide:'Somme = '+somme,
+      solutionHTML:'Somme = '+somme
+    },
+    {
+      role:'Calculer la moyenne',
+      q:'Divise la somme ('+somme+') par le nombre de notes ('+n+') pour obtenir la moyenne.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-moy)<0.15;});},
+      aide:'Moyenne = '+somme+' / '+n+' = '+fr(moy),
+      solutionHTML:'Moyenne = '+somme+' / '+n+' = '+fr(moy)
+    },
+    {
+      question:'Question 2 - Mediane',
+      role:'Ranger et trouver la valeur centrale',
+      q:'Range les notes dans l\'ordre croissant. Donne la mediane de cette serie de '+n+' valeurs.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-med)<0.5;});},
+      aide:'Triee : '+sorted.join(' ; ')+'. Mediane = '+fr(med),
+      solutionHTML:'Serie triee : '+sorted.join(' ; ')+'<br>Mediane = '+fr(med)
+    },
+    {
+      question:'Question 3 - Etendue et mode',
+      role:'Calculer etendue et mode',
+      q:'Calcule l\'etendue (max - min). Puis identifie le mode (valeur la plus frequente).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-etendue)<0.5;});},
+      aide:'Etendue = '+sorted[n-1]+' - '+sorted[0]+' = '+etendue+'. Mode(s) : '+modes.join(' et '),
+      solutionHTML:'Etendue = '+etendue+' ; Mode(s) = '+modes.join(' et ')
+    }
+  ];
+  return {titre:'Statistiques — serie de notes',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Graphique — fonction affine ===== */
+function genGraphiqueAffine(){
+  var configs=[
+    {a:2,b:1},{a:3,b:-2},{a:1,b:4},{a:2,b:-3},{a:0.5,b:2},{a:3,b:1}
+  ];
+  var cfg=choix(configs);
+  var a=cfg.a,b=cfg.b;
+  var fStr='f(x) = '+fr(a)+'x'+(b>=0?' + ':' ')+(b<0?fr(b):'+ '+fr(b));
+  if(b===0)fStr='f(x) = '+fr(a)+'x';
+  var tabX=[-2,-1,0,1,2,3];
+  var tabY=tabX.map(function(x){return Math.round((a*x+b)*100)/100;});
+  var interrogeIdx=1+rnd(4);
+  var xQ=tabX[interrogeIdx];
+  var yQ=tabY[interrogeIdx];
+  var imgQ=Math.round((a*3+b)*100)/100;
+  var antQ=b!==0?Math.round((-b/a)*100)/100:0;
+
+  var tableHTML='<table style="border-collapse:collapse;margin:10px 0;font-size:15px"><tr>'
+    +'<td style="background:#FFC93C;padding:7px 12px;border:2px solid #E0A415;font-weight:700">x</td>';
+  tabX.forEach(function(x){tableHTML+='<td style="background:#FFE7B0;padding:7px 12px;border:2px solid #E0A415;text-align:center">'+x+'</td>';});
+  tableHTML+='</tr><tr><td style="background:#FFC93C;padding:7px 12px;border:2px solid #E0A415;font-weight:700">f(x)</td>';
+  tabX.forEach(function(x,i){
+    var isQ=i===interrogeIdx;
+    tableHTML+='<td style="background:'+(isQ?'#FFD98A':'#FFF6E6')+';padding:7px 12px;border:2px solid #E0A415;text-align:center;font-weight:'+(isQ?'700':'400')+';">'+(isQ?'<b>?</b>':fr(tabY[i]))+'</td>';
+  });
+  tableHTML+='</tr></table>';
+
+  var enonceHTML='Soit la fonction affine <b>'+fStr+'</b>.<br><br>'+tableHTML
+    +'1. Complete le tableau de valeurs pour x = '+xQ+'.<br>'
+    +'2. Quelle est l\'image de x = 3 par f ?<br>'
+    +'3. Quel est l\'antecedent de 0 par f (intersection avec l\'axe des abscisses) ?';
+
+  function dessiner(cibleId){
+    var xmin=-3,xmax=4,ymin=Math.min.apply(null,tabY)-2,ymax=Math.max.apply(null,tabY)+2;
+    var W=300,H=240,ox=52;
+    var sx=Math.round((W-ox-20)/(xmax-xmin));
+    var sy=Math.round((H-50)/(ymax-ymin));
+    function px(x){return ox+(x-xmin)*sx;}
+    function py(y){return H-30-(y-ymin)*sy;}
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+    svg+='<rect width="'+W+'" height="'+H+'" fill="#FFF6E6" rx="10"/>';
+    for(var gx=xmin;gx<=xmax;gx++){var ppx=px(gx);svg+='<line x1="'+ppx+'" y1="10" x2="'+ppx+'" y2="'+(H-20)+'" stroke="#E0D0B0" stroke-width="1"/>';svg+='<text x="'+ppx+'" y="'+(H-8)+'" font-family="Fredoka" font-size="13" fill="#A08B6E" text-anchor="middle">'+gx+'</text>';}
+    for(var gy=Math.ceil(ymin);gy<=Math.floor(ymax);gy++){var ppy=py(gy);svg+='<line x1="'+ox+'" y1="'+ppy+'" x2="'+(W-10)+'" y2="'+ppy+'" stroke="#E0D0B0" stroke-width="1"/>';svg+='<text x="'+(ox-8)+'" y="'+ppy+'" font-family="Fredoka" font-size="13" fill="#A08B6E" text-anchor="end" dominant-baseline="middle">'+gy+'</text>';}
+    svg+='<line x1="'+ox+'" y1="8" x2="'+ox+'" y2="'+(H-20)+'" stroke="#5A4A2F" stroke-width="2.5"/>';
+    svg+='<line x1="'+(ox-8)+'" y1="'+py(0)+'" x2="'+(W-8)+'" y2="'+py(0)+'" stroke="#5A4A2F" stroke-width="2.5"/>';
+    var pts=[];
+    for(var xi=xmin;xi<=xmax;xi+=0.1){var yi=a*xi+b;if(yi>=ymin-0.5&&yi<=ymax+0.5)pts.push(px(xi)+','+py(yi));}
+    if(pts.length>1)svg+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="#4FA3D1" stroke-width="2.5"/>';
+    svg+='<text x="'+(W/2)+'" y="'+(H-1)+'" font-family="Fredoka" font-size="11" fill="#A08B6E" text-anchor="middle">'+fStr+'</text>';
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  var etapes=[
+    {
+      question:'Question 1 - Completer le tableau',
+      role:'Calculer f('+xQ+')',
+      q:'Calcule f('+xQ+') = '+fr(a)+' x ('+xQ+') + ('+fr(b)+').',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-yQ)<0.1;});},
+      aide:'f('+xQ+') = '+fr(a)+'x'+xQ+(b>=0?'+':'')+fr(b)+' = '+fr(yQ),
+      solutionHTML:'f('+xQ+') = '+fr(a)+' x '+xQ+' + ('+fr(b)+') = '+fr(yQ)
+    },
+    {
+      question:'Question 2 - Image de 3',
+      role:'Calculer f(3)',
+      q:'Calcule f(3) = '+fr(a)+' x 3 + ('+fr(b)+').',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-imgQ)<0.1;});},
+      aide:'f(3) = '+fr(a*3)+' + ('+fr(b)+') = '+fr(imgQ),
+      solutionHTML:'f(3) = '+fr(imgQ)
+    },
+    {
+      question:"Question 3 - Intersection avec l'axe des abscisses",
+      role:'Resoudre f(x) = 0',
+      q:'Resous l\'equation '+fr(a)+'x + ('+fr(b)+') = 0 pour trouver l\'antecedent de 0.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-antQ)<0.1;});},
+      aide:fr(a)+'x = '+fr(-b)+' donc x = '+fr(-b)+' / '+fr(a)+' = '+fr(antQ),
+      solutionHTML:'x = '+fr(antQ)+' (le graphe coupe l\'axe des abscisses en x = '+fr(antQ)+')'
+    }
+  ];
+  return {titre:'Graphique et tableau de valeurs',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Budget familial — pourcentages ===== */
+function genBudget(){
+  var revenu=1500+rnd(16)*100;
+  var postes=[
+    {nom:'Loyer',taux:30},
+    {nom:'Alimentation',taux:20},
+    {nom:'Transport',taux:15},
+    {nom:'Loisirs',taux:10}
+  ];
+  var somme=postes.reduce(function(s,p){return s+p.taux;},0);
+  postes.push({nom:'Epargne',taux:100-somme});
+  var montants=postes.map(function(p){return Math.round(revenu*p.taux/100);});
+  var maxIdx=montants.indexOf(Math.max.apply(null,montants));
+  var interrogeIdx=1+rnd(3);
+  var interroge=postes[interrogeIdx];
+  var montantInterroge=montants[interrogeIdx];
+
+  var enonceHTML='La famille Moreau a un revenu mensuel de <b>'+revenu+' €</b>. Voici la repartition du budget :<br><br>'
+    +'<table style="border-collapse:collapse;margin:10px 0;font-size:15px;width:100%"><thead><tr>'
+    +'<th style="background:#FFC93C;padding:8px;border:2px solid #E0A415">Poste</th>'
+    +'<th style="background:#FFC93C;padding:8px;border:2px solid #E0A415">Pourcentage</th>'
+    +'<th style="background:#FFC93C;padding:8px;border:2px solid #E0A415">Montant (€)</th>'
+    +'</tr></thead><tbody>';
+  postes.forEach(function(p,i){
+    var isQ=i===interrogeIdx;
+    enonceHTML+='<tr><td style="padding:7px;border:1px solid #E0A415">'+p.nom+'</td>'
+      +'<td style="padding:7px;border:1px solid #E0A415;text-align:center">'+p.taux+'%</td>'
+      +'<td style="padding:7px;border:1px solid #E0A415;text-align:center;background:'+(isQ?'#FFD98A':'#FFF6E6')+';">'+(isQ?'<b>?</b>':montants[i]+' €')+'</td></tr>';
+  });
+  enonceHTML+='</tbody></table>'
+    +'1. Calcule le montant consacre a "'+interroge.nom+'" ('+interroge.taux+'%).<br>'
+    +'2. Quel est le poste de depense le plus important ?<br>'
+    +'3. Quelle somme reste-t-il apres loyer, alimentation et transport ?';
+
+  var resteApresTrois=revenu-montants[0]-montants[1]-montants[2];
+
+  function dessiner(cibleId){
+    var W=400,H=220;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    var cx=160,cy=100,R=80;
+    var colors=['#E76F51','#4FA3D1','#9FD356','#FFC93C','#FF9F45'];
+    var debut=0;
+    postes.forEach(function(p,i){
+      var frac=p.taux/100;
+      var fin=debut+frac*2*Math.PI;
+      var x1=cx+R*Math.cos(debut-Math.PI/2);
+      var y1=cy+R*Math.sin(debut-Math.PI/2);
+      var x2=cx+R*Math.cos(fin-Math.PI/2);
+      var y2=cy+R*Math.sin(fin-Math.PI/2);
+      var large=frac>0.5?1:0;
+      svg+='<path d="M'+cx+','+cy+' L'+Math.round(x1)+','+Math.round(y1)+' A'+R+','+R+' 0 '+large+',1 '+Math.round(x2)+','+Math.round(y2)+' Z" fill="'+colors[i]+'" stroke="#fff" stroke-width="2" opacity="0.85"/>';
+      var midA=debut+(fin-debut)/2-Math.PI/2;
+      svg+=svgTxt(Math.round(cx+(R*0.65)*Math.cos(midA)),Math.round(cy+(R*0.65)*Math.sin(midA)),p.taux+'%',11,'#fff');
+      debut=fin;
+    });
+    var lx=270,ly=30;
+    postes.forEach(function(p,i){
+      svg+='<rect x="'+lx+'" y="'+(ly+i*26)+'" width="14" height="14" rx="2" fill="'+colors[i]+'"/>';
+      svg+=svgTxt(lx+44,ly+7+i*26,p.nom,12,'#5A4A2F');
+    });
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  var etapes=[
+    {
+      question:'Question 1 - Montant de '+interroge.nom,
+      role:'Calculer '+interroge.taux+'% de '+revenu+' €',
+      q:'Calcule '+interroge.taux+'% de '+revenu+' € pour obtenir le budget '+interroge.nom+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-montantInterroge)<1;});},
+      aide:interroge.taux+'% de '+revenu+' = '+revenu+' x '+interroge.taux+' / 100 = '+montantInterroge+' €',
+      solutionHTML:revenu+' x '+interroge.taux+' / 100 = '+montantInterroge+' €'
+    },
+    {
+      question:'Question 2 - Poste le plus important',
+      role:'Comparer les montants',
+      q:'Quel poste de depense correspond au pourcentage le plus eleve ? Quel est son montant ?',
+      verif:function(inp){
+        var t=norm(inp);
+        return t.includes(postes[maxIdx].nom.toLowerCase().replace('é','e').replace('è','e'))&&nbs(inp).some(function(x){return Math.abs(x-montants[maxIdx])<5;});
+      },
+      aide:'Le plus grand pourcentage est '+postes[maxIdx].taux+'% pour "'+postes[maxIdx].nom+'" soit '+montants[maxIdx]+' €.',
+      solutionHTML:'Poste le plus important : '+postes[maxIdx].nom+' ('+postes[maxIdx].taux+'% = '+montants[maxIdx]+' €)'
+    },
+    {
+      question:'Question 3 - Reste apres trois postes',
+      role:'Calculer par soustraction',
+      q:'Apres loyer ('+montants[0]+' €), alimentation ('+montants[1]+' €) et transport ('+montants[2]+' €), combien reste-t-il ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-resteApresTrois)<2;});},
+      aide:revenu+' - '+montants[0]+' - '+montants[1]+' - '+montants[2]+' = '+resteApresTrois+' €',
+      solutionHTML:revenu+' - ('+montants[0]+'+'+montants[1]+'+'+montants[2]+') = '+resteApresTrois+' €'
+    }
+  ];
+  return {titre:'Budget familial et pourcentages',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'moyenne',gen:genMoyenne},
@@ -874,7 +1297,12 @@ var BANQUE=[
   {notion:'transport',gen:genTransport},
   {notion:'mediane',gen:genMediane},
   {notion:'graphique',gen:genLectureGraphique},
-  {notion:'fonctionAffine',gen:genImageAntecedent}
+  {notion:'fonctionAffine',gen:genImageAntecedent},
+  {notion:'proportion',gen:genProportion},
+  {notion:'probaUrne',gen:genProba},
+  {notion:'statsNotes',gen:genStats},
+  {notion:'graphiqueAffine',gen:genGraphiqueAffine},
+  {notion:'budget',gen:genBudget}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

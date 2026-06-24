@@ -1177,6 +1177,316 @@ function genStade(){
   };
 }
 
+/* ===== SITUATION : Pythagore triangle rectangle ===== */
+function genPythagore(){
+  const configs=[
+    {a:6,b:8,hyp:10},{a:5,b:12,hyp:13},{a:9,b:12,hyp:15},{a:8,b:15,hyp:17},
+    {a:3,b:4,hyp:5},{a:7,b:24,hyp:25}
+  ];
+  const cfg=choix(configs);
+  const [lA,lB,lC]=lettresDistinctes(3);
+  // cas 1 : hypotenuse manquante, cas 2 : un cote manquant
+  const casManquant=rnd(2);
+  let enonceHTML,etapes,dessinerFn;
+  if(casManquant===0){
+    // calculer l'hypotenuse
+    enonceHTML=`Le triangle <b>${lA}${lB}${lC}</b> est rectangle en <b>${lB}</b>. On sait que <b>${lA}${lB} = ${cfg.a} cm</b> et <b>${lB}${lC} = ${cfg.b} cm</b>. Calcule la longueur de l'hypotenuse <b>${lA}${lC}</b>.`;
+    const segHyp=seg(lA,lC),segC1=seg(lA,lB),segC2=seg(lB,lC);
+    etapes=[
+      {question:'Question 1 — Justification',role:'Justifier Pythagore',
+       q:`Le triangle ${lA}${lB}${lC} est rectangle en ${lB}. Quelle egalite de Pythagore peut-on ecrire ?`,
+       verif:inp=>norm(inp).includes('rectangle')&&norm(inp).includes(lB.toLowerCase()),
+       aide:`Dis que le triangle est rectangle en ${lB}.`,
+       solutionHTML:`Le triangle ${lA}${lB}${lC} est rectangle en ${lB}.`},
+      {role:"Ecrire Pythagore",clavier:[lA,lB,lC,'²','+','='],
+       q:`Ecris : hypotenuse² = cote² + cote².`,
+       verif:inp=>{const g=norm(inp).split('=');if(g.length<2)return false;const G=segsCarres(g[0]),D=segsCarres(g.slice(1).join('='));return G.length===1&&G[0]===segHyp&&D.length===2&&memeEnsemble(D,[segC1,segC2]);},
+       aide:`${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`,
+       solutionHTML:`${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`},
+      {role:'Remplacer les valeurs',clavier:['²','+','='],
+       q:`Remplace ${lA}${lB} par ${cfg.a} et ${lB}${lC} par ${cfg.b}.`,
+       verif:inp=>nbsCarres(inp).some(x=>Math.abs(x-cfg.a)<0.01)&&nbsCarres(inp).some(x=>Math.abs(x-cfg.b)<0.01),
+       aide:`${lA}${lC}² = ${cfg.a}² + ${cfg.b}² = ${cfg.a*cfg.a} + ${cfg.b*cfg.b} = ${cfg.a*cfg.a+cfg.b*cfg.b}`,
+       solutionHTML:`${lA}${lC}² = ${cfg.a}² + ${cfg.b}² = ${cfg.a*cfg.a+cfg.b*cfg.b}`},
+      {role:"Calculer l'hypotenuse",clavier:['√','='],
+       q:`Prends la racine carree pour obtenir ${lA}${lC}.`,
+       verif:inp=>nbs(inp).some(x=>Math.abs(x-cfg.hyp)<=0.05),
+       aide:`${lA}${lC} = √${cfg.a*cfg.a+cfg.b*cfg.b} = ${cfg.hyp} cm`,
+       solutionHTML:`${lA}${lC} = √${cfg.a*cfg.a+cfg.b*cfg.b} = ${cfg.hyp} cm`}
+    ];
+    dessinerFn=(id)=>dessinerTriangleRectangle(id,{droit:lB,s1:lA,s2:lC,cote1Label:`${cfg.a} cm`,cote2Label:`${cfg.b} cm`,hypLabel:'?'});
+  } else {
+    // calculer un cote a partir de l'hypotenuse
+    enonceHTML=`Le triangle <b>${lA}${lB}${lC}</b> est rectangle en <b>${lB}</b>. On sait que <b>${lA}${lC} = ${cfg.hyp} cm</b> (hypotenuse) et <b>${lA}${lB} = ${cfg.a} cm</b>. Calcule la longueur du cote <b>${lB}${lC}</b>.`;
+    const segHyp=seg(lA,lC),segC1=seg(lA,lB),segC2=seg(lB,lC);
+    etapes=[
+      {question:'Question 1 — Justification',role:'Justifier Pythagore',
+       q:`Justifie l'utilisation du theoreme de Pythagore.`,
+       verif:inp=>norm(inp).includes('rectangle')&&norm(inp).includes(lB.toLowerCase()),
+       aide:`Le triangle ${lA}${lB}${lC} est rectangle en ${lB}.`,
+       solutionHTML:`Le triangle ${lA}${lB}${lC} est rectangle en ${lB}.`},
+      {role:'Ecrire Pythagore',clavier:[lA,lB,lC,'²','+','='],
+       q:`Ecris l'egalite de Pythagore avec ${lA}${lC} comme hypotenuse.`,
+       verif:inp=>{const g=norm(inp).split('=');if(g.length<2)return false;const G=segsCarres(g[0]),D=segsCarres(g.slice(1).join('='));return G.length===1&&G[0]===segHyp&&D.length===2&&memeEnsemble(D,[segC1,segC2]);},
+       aide:`${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`,
+       solutionHTML:`${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`},
+      {role:'Isoler le cote inconnu',clavier:['²','-','='],
+       q:`Deduis ${lB}${lC}² = ${lA}${lC}² - ${lA}${lB}². Calcule numeriquement.`,
+       verif:inp=>nbs(inp).some(x=>Math.abs(x-cfg.b*cfg.b)<=0.1),
+       aide:`${lB}${lC}² = ${cfg.hyp}² - ${cfg.a}² = ${cfg.hyp*cfg.hyp} - ${cfg.a*cfg.a} = ${cfg.b*cfg.b}`,
+       solutionHTML:`${lB}${lC}² = ${cfg.hyp}² - ${cfg.a}² = ${cfg.b*cfg.b}`},
+      {role:'Calculer le cote',clavier:['√','='],
+       q:`Calcule ${lB}${lC} = √${cfg.b*cfg.b}.`,
+       verif:inp=>nbs(inp).some(x=>Math.abs(x-cfg.b)<=0.05),
+       aide:`${lB}${lC} = √${cfg.b*cfg.b} = ${cfg.b} cm`,
+       solutionHTML:`${lB}${lC} = ${cfg.b} cm`}
+    ];
+    dessinerFn=(id)=>dessinerTriangleRectangle(id,{droit:lB,s1:lA,s2:lC,cote1Label:`${cfg.a} cm`,cote2Label:'?',hypLabel:`${cfg.hyp} cm`});
+  }
+  return {titre:'Theoreme de Pythagore',enonceHTML,dessiner:dessinerFn,etapes};
+}
+
+/* ===== SITUATION : Thales — longueur inconnue avec figure ===== */
+function genThalesOmbre(){
+  const configs=[
+    {hObj:1.8,lOmbre:2.4,hPal:5,contexte:'arbre',unitObj:'un poteau',unitOmbre:'l\'ombre du poteau',unitCible:'la hauteur de l\'arbre',lOmbreCible:6.0},
+    {hObj:1.6,lOmbre:2.0,hPal:4,contexte:'lampadaire',unitObj:'une personne',unitOmbre:'l\'ombre de la personne',unitCible:'la hauteur du lampadaire',lOmbreCible:5.0},
+    {hObj:2.0,lOmbre:3.0,hPal:6,contexte:'pylone',unitObj:'un poteau de 2 m',unitOmbre:'l\'ombre du poteau',unitCible:'la hauteur du pylone',lOmbreCible:9.0}
+  ];
+  const cfg=choix(configs);
+  const hObj=cfg.hObj,lOmbre=cfg.lOmbre,hPal=cfg.hPal,lOmbreCible=cfg.lOmbreCible;
+  const [lO,lM,lN,lA,lB]=lettresDistinctes(5);
+  // verifier : hPal/hObj = lOmbreCible/lOmbre
+  const nb=Math.round(lOmbreCible*hPal/lOmbre*10)/10;
+  // On utilise hPal comme inconnue a trouver (simplification : on donne lOmbre et hObj)
+  // En realite : hPal = hObj * lOmbreCible / lOmbre
+  const hPalCalc=Math.round(hObj*lOmbreCible/lOmbre*10)/10;
+  const enonceHTML=`Un beau jour ensoleille, ${cfg.unitObj} de <b>${hObj} m</b> projette une ombre de <b>${lOmbre} m</b>. Au meme moment, un ${cfg.contexte} projette une ombre de <b>${lOmbreCible} m</b>. Calcule la hauteur du ${cfg.contexte}.<br>Les rayons du soleil sont paralleles.`;
+  const etapes=[
+    {question:'Question 1 — Justification de Thales',
+     consigneQ:'Pourquoi peut-on appliquer le theoreme de Thales ?',
+     role:'Identifier la configuration',
+     q:`Explique la configuration : quelles droites sont paralleles, quelles droites sont secantes ?`,
+     verif:inp=>(norm(inp).includes('parall')||norm(inp).includes('soleil'))&&(norm(inp).includes('secan')||norm(inp).includes('rayon')||norm(inp).includes('coup')),
+     aide:`Les rayons du soleil sont paralleles. Ils coupent deux droites secantes (le poteau et le ${cfg.contexte}).`,
+     solutionHTML:`Les rayons du soleil (paralleles) coupent les deux secantes. On peut appliquer le theoreme de Thales.`},
+    {question:'Question 2 — Egalite des rapports',
+     role:'Ecrire la proportion',
+     clavier:['/','='],
+     q:`Ecris l'egalite : hauteur poteau / ombre poteau = hauteur ${cfg.contexte} / ombre ${cfg.contexte}.`,
+     verif:inp=>{const ns=nbs(inp);return ns.some(x=>Math.abs(x-hObj)<0.01)&&ns.some(x=>Math.abs(x-lOmbre)<0.01);},
+     aide:`${hObj}/${lOmbre} = x/${lOmbreCible}`,
+     solutionHTML:`${hObj}/${lOmbre} = x/${lOmbreCible}`},
+    {role:'Calculer la hauteur',
+     q:`Deduis la hauteur du ${cfg.contexte} : x = ${hObj} x ${lOmbreCible} / ${lOmbre}.`,
+     verif:inp=>nbs(inp).some(x=>Math.abs(x-hPalCalc)<=0.1),
+     aide:`x = ${hObj} x ${lOmbreCible} / ${lOmbre} = ${hPalCalc} m`,
+     solutionHTML:`Hauteur du ${cfg.contexte} = ${hObj} × ${lOmbreCible} ÷ ${lOmbre} = ${hPalCalc} m`}
+  ];
+  return {
+    titre:'Thales et les ombres',
+    enonceHTML,
+    dessiner:(id)=>dessinerThales(id,{O:lO,M:lM,N:lN,A:lA,B:lB,om:hObj,on:hPalCalc,ma:lOmbre,nb:lOmbreCible}),
+    etapes
+  };
+}
+
+/* ===== SITUATION : Trigonometrie — angle ou cote ===== */
+function genTrigono(){
+  const angles=[25,30,35,40,45,50,55,60];
+  const angle=choix(angles);
+  const contextes=[
+    {nom:'Rampe de skatepark',typeCote:'hypotenuse',longueur:choix([8,10,12,15]),rapport:'sin'},
+    {nom:'Pente d\'un toit',typeCote:'hypotenuse',longueur:choix([6,8,10]),rapport:'sin'},
+    {nom:'Chemin en montagne',typeCote:'hypotenuse',longueur:choix([100,120,150]),rapport:'sin'},
+    {nom:'Corde d\'escalade',typeCote:'adjacent',longueur:choix([5,8,10]),rapport:'cos'}
+  ];
+  const ctx=choix(contextes);
+  const [lA,lB,lC]=lettresDistinctes(3);
+  let coteInc,formuleTrig,enonceHTML,etapes,dessinerFn;
+  if(ctx.rapport==='sin'){
+    // hyp donne, trouver le cote oppose
+    const hyp=ctx.longueur;
+    coteInc=Math.round(sind(angle)*hyp*100)/100;
+    enonceHTML=`${ctx.nom} : le triangle ${lA}${lB}${lC} est rectangle en ${lB}. L'angle en ${lA} vaut <b>${angle}°</b> et l'hypotenuse <b>${lA}${lC} = ${hyp} m</b>. Calcule le cote oppose <b>${lB}${lC}</b>.`;
+    const segOpp=seg(lB,lC),segHyp=seg(lA,lC);
+    etapes=[
+      {question:'Question 1 — Identifier le rapport',role:'Choisir sin, cos ou tan',
+       q:`Par rapport a l'angle en ${lA}, ${lB}${lC} est oppose et ${lA}${lC} est l'hypotenuse. Quel rapport trigonometrique utilises-tu ?`,
+       verif:inp=>norm(inp).includes('sin')&&!norm(inp).includes('cos')&&!norm(inp).includes('tan'),
+       aide:`Cote oppose / hypotenuse => c'est le SINUS.`,
+       solutionHTML:`sinus : sin(${lA}) = ${lB}${lC} / ${lA}${lC}`},
+      {question:'Question 2 — Ecrire la formule',role:'Formule avec lettres',
+       clavier:[lA,lB,lC,'/','='],
+       q:`Ecris sin(${lA}) = ${lB}${lC} / ${lA}${lC}.`,
+       verif:inp=>{const t=norm(inp);return t.includes('sin')&&(t.includes(segOpp)||t.includes(seg(lC,lB)))&&(t.includes(segHyp)||t.includes(seg(lC,lA)));},
+       aide:`sin(${lA}) = ${lB}${lC} / ${lA}${lC}`,
+       solutionHTML:`sin(${lA}) = ${lB}${lC} / ${lA}${lC}`},
+      {question:'Question 3 — Calculer le cote',role:'Calculer '+lB+lC,
+       q:`Deduis ${lB}${lC} = sin(${angle}°) × ${hyp}.`,
+       verif:inp=>nbs(inp).some(x=>Math.abs(x-coteInc)<=0.1),
+       aide:`${lB}${lC} = sin(${angle}°) × ${hyp} ≈ ${fr(coteInc)} m`,
+       solutionHTML:`${lB}${lC} = sin(${angle}°) × ${hyp} ≈ ${fr(coteInc)} m`}
+    ];
+    dessinerFn=(id)=>dessinerPente(id,{pied:lA,bas:lB,haut:lC,lLabel:hyp,hLabel:undefined,angleVal:angle});
+  } else {
+    // hyp et angle donnes, trouver adjacent
+    const hyp=ctx.longueur;
+    coteInc=Math.round(cosd(angle)*hyp*100)/100;
+    enonceHTML=`${ctx.nom} : le triangle ${lA}${lB}${lC} est rectangle en ${lB}. L'angle en ${lA} vaut <b>${angle}°</b> et l'hypotenuse <b>${lA}${lC} = ${hyp} m</b>. Calcule le cote adjacent <b>${lA}${lB}</b>.`;
+    const segAdj=seg(lA,lB),segHyp=seg(lA,lC);
+    etapes=[
+      {question:'Question 1 — Identifier le rapport',role:'Choisir sin, cos ou tan',
+       q:`Par rapport a l'angle en ${lA}, ${lA}${lB} est adjacent et ${lA}${lC} est l'hypotenuse. Quel rapport trigonometrique utilises-tu ?`,
+       verif:inp=>norm(inp).includes('cos')&&!norm(inp).includes('sin')&&!norm(inp).includes('tan'),
+       aide:`Cote adjacent / hypotenuse => c'est le COSINUS.`,
+       solutionHTML:`cosinus : cos(${lA}) = ${lA}${lB} / ${lA}${lC}`},
+      {question:'Question 2 — Ecrire la formule',role:'Formule avec lettres',
+       clavier:[lA,lB,lC,'/','='],
+       q:`Ecris cos(${lA}) = ${lA}${lB} / ${lA}${lC}.`,
+       verif:inp=>{const t=norm(inp);return t.includes('cos')&&(t.includes(segAdj)||t.includes(seg(lB,lA)))&&(t.includes(segHyp)||t.includes(seg(lC,lA)));},
+       aide:`cos(${lA}) = ${lA}${lB} / ${lA}${lC}`,
+       solutionHTML:`cos(${lA}) = ${lA}${lB} / ${lA}${lC}`},
+      {question:'Question 3 — Calculer le cote',role:'Calculer '+lA+lB,
+       q:`Deduis ${lA}${lB} = cos(${angle}°) × ${hyp}.`,
+       verif:inp=>nbs(inp).some(x=>Math.abs(x-coteInc)<=0.1),
+       aide:`${lA}${lB} = cos(${angle}°) × ${hyp} ≈ ${fr(coteInc)} m`,
+       solutionHTML:`${lA}${lB} = cos(${angle}°) × ${hyp} ≈ ${fr(coteInc)} m`}
+    ];
+    dessinerFn=(id)=>dessinerRampe(id,{a:lA,b:lB,c:lC,dLabel:'?',hLabel:undefined,rampLabel:`${hyp} m`,orient:0});
+  }
+  return {titre:'Trigonometrie dans le triangle rectangle',enonceHTML,dessiner:dessinerFn,etapes};
+}
+
+/* ===== SITUATION : Symetries et transformations ===== */
+function genTransfo(){
+  // Triangle avec coordonnees aleatoires, symetrie par rapport a un axe
+  const x1=1+rnd(4),y1=1+rnd(4);
+  const x2=x1+1+rnd(3),y2=1+rnd(4);
+  const x3=x1+rnd(3),y3=y1+1+rnd(3);
+  const axes=[
+    {nom:'l\'axe des abscisses (axe x)',fn:(x,y)=>({x,y:-y}),label:"axe des abscisses"},
+    {nom:'l\'axe des ordonnees (axe y)',fn:(x,y)=>({x:-x,y}),label:"axe des ordonnees"}
+  ];
+  const axe=choix(axes);
+  const A={x:x1,y:y1},B={x:x2,y:y2},C={x:x3,y:y3};
+  const Ap=axe.fn(x1,y1),Bp=axe.fn(x2,y2),Cp=axe.fn(x3,y3);
+  const [lA,lB,lC]=lettresDistinctes(3);
+  const enonceHTML=`Le triangle <b>${lA}${lB}${lC}</b> a pour sommets :<br>`
+    +`&bull; ${lA}(${A.x} ; ${A.y})<br>&bull; ${lB}(${B.x} ; ${B.y})<br>&bull; ${lC}(${C.x} ; ${C.y})<br><br>`
+    +`Construis le symetrique de ce triangle par rapport a <b>${axe.nom}</b>.<br>`
+    +`1. Donne les coordonnees de ${lA}', ${lB}' et ${lC}'.<br>`
+    +`2. Quelle est la nature du quadrilatere forme par ${lA}, ${lB}, ${lB}', ${lA}' ?`;
+  const quadNature=(A.y===B.y)?'rectangle':'parallelogramme';
+
+  function dessiner(cibleId){
+    const W=340,H=300,ox=50,oy=150,sc=28;
+    function px(x){return ox+x*sc;}
+    function py(y){return oy-y*sc;}
+    let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+    svg+=`<rect width="${W}" height="${H}" fill="#FFF6E6" rx="10"/>`;
+    // Grille
+    for(let x=-1;x<=7;x++){svg+=`<line x1="${px(x)}" y1="10" x2="${px(x)}" y2="${H-10}" stroke="#E0D0B0" stroke-width="1"/>`;svg+=`<text x="${px(x)}" y="${py(0)+18}" font-family="Fredoka" font-size="12" fill="#A08B6E" text-anchor="middle">${x}</text>`;}
+    for(let y=-4;y<=5;y++){svg+=`<line x1="${ox-10}" y1="${py(y)}" x2="${W-10}" y2="${py(y)}" stroke="#E0D0B0" stroke-width="1"/>`;if(y!==0)svg+=`<text x="${ox-6}" y="${py(y)}" font-family="Fredoka" font-size="12" fill="#A08B6E" text-anchor="end" dominant-baseline="middle">${y}</text>`;}
+    // Axes
+    svg+=`<line x1="${ox-10}" y1="${py(0)}" x2="${W-10}" y2="${py(0)}" stroke="#5A4A2F" stroke-width="2.5"/>`;
+    svg+=`<line x1="${px(0)}" y1="10" x2="${px(0)}" y2="${H-10}" stroke="#5A4A2F" stroke-width="2.5"/>`;
+    // Triangle original (orange)
+    svg+=`<polygon points="${px(A.x)},${py(A.y)} ${px(B.x)},${py(B.y)} ${px(C.x)},${py(C.y)}" fill="#FFE7B0" fill-opacity="0.7" stroke="#E07A1F" stroke-width="2.5"/>`;
+    svg+=svgTxt(px(A.x)-14,py(A.y)-8,lA,14,'#E07A1F')+svgTxt(px(B.x)+12,py(B.y)-8,lB,14,'#E07A1F')+svgTxt(px(C.x)+12,py(C.y)+14,lC,14,'#E07A1F');
+    // Triangle symetrique (bleu pointille)
+    svg+=`<polygon points="${px(Ap.x)},${py(Ap.y)} ${px(Bp.x)},${py(Bp.y)} ${px(Cp.x)},${py(Cp.y)}" fill="#C8E8F5" fill-opacity="0.5" stroke="#4FA3D1" stroke-width="2" stroke-dasharray="5,3"/>`;
+    svg+=svgTxt(px(Ap.x)-14,py(Ap.y)+16,lA+"'",14,'#4FA3D1')+svgTxt(px(Bp.x)+12,py(Bp.y)+16,lB+"'",14,'#4FA3D1')+svgTxt(px(Cp.x)+12,py(Cp.y)-12,lC+"'",14,'#4FA3D1');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  const etapes=[
+    {question:`Question 1 — Coordonnees de ${lA}'`,role:'Transformer les coordonnees',
+     q:`Par symetrie par rapport a ${axe.label}, donne les coordonnees de ${lA}'(${A.x} ; ${A.y}).`,
+     verif:inp=>{const ns=nbs(inp);return ns.some(x=>Math.abs(x-Math.abs(Ap.x))<=0.05)&&ns.some(x=>Math.abs(x-Math.abs(Ap.y))<=0.05);},
+     aide:`Par rapport a ${axe.label} : x reste, y change de signe (ou inversement). ${lA}'(${Ap.x} ; ${Ap.y})`,
+     solutionHTML:`${lA}'(${Ap.x} ; ${Ap.y})`},
+    {question:`Question 2 — Coordonnees de ${lB}' et ${lC}'`,role:'Appliquer la meme transformation',
+     q:`Donne les coordonnees de ${lB}'(${B.x} ; ${B.y}) et ${lC}'(${C.x} ; ${C.y}).`,
+     verif:inp=>{const ns=nbs(inp);return ns.some(x=>Math.abs(x-Math.abs(Bp.x))<=0.05)||ns.some(x=>Math.abs(x-Math.abs(Cp.y))<=0.05);},
+     aide:`${lB}'(${Bp.x} ; ${Bp.y}) et ${lC}'(${Cp.x} ; ${Cp.y})`,
+     solutionHTML:`${lB}'(${Bp.x} ; ${Bp.y}) ; ${lC}'(${Cp.x} ; ${Cp.y})`},
+    {question:`Question 3 — Nature du quadrilatere`,role:'Identifier la figure',
+     q:`Que remarques-tu sur le quadrilatere ${lA}${lB}${lB}'${lA}' ? Quelle est sa nature ?`,
+     verif:inp=>{const t=norm(inp);return t.includes('rectangle')||t.includes('parallelogramme')||t.includes('symet');},
+     aide:`Les cotes ${lA}${lA}' et ${lB}${lB}' sont perpendiculaires a l'axe de symetrie et egaux.`,
+     solutionHTML:`Le quadrilatere ${lA}${lB}${lB}'${lA}' est un rectangle (cotes paralleles et perpendiculaires a l'axe).`}
+  ];
+  return {titre:'Symetrie axiale et coordonnees',enonceHTML,dessiner,etapes};
+}
+
+/* ===== SITUATION : Pave droit — volume et aire ===== */
+function genSolide(){
+  const L=2+rnd(8),l=2+rnd(6),h=2+rnd(5);
+  const volume=L*l*h;
+  const aire=2*(L*l+L*h+l*h);
+  const diag=Math.round(Math.sqrt(L*L+l*l+h*h)*100)/100;
+  const contextes=[
+    {sujet:'une boite de rangement',mat:'carton',unite:'cm'},
+    {sujet:'un aquarium',mat:'verre',unite:'cm'},
+    {sujet:'une caisse en bois',mat:'bois',unite:'cm'}
+  ];
+  const ctx=choix(contextes);
+  const enonceHTML=`On fabrique ${ctx.sujet} en forme de pave droit (rectangle). Ses dimensions sont :`
+    +`<br>&bull; Longueur : <b>${L} ${ctx.unite}</b><br>&bull; Largeur : <b>${l} ${ctx.unite}</b><br>&bull; Hauteur : <b>${h} ${ctx.unite}</b><br><br>`
+    +`1. Calcule le volume du pave droit.<br>`
+    +`2. Calcule l'aire totale (somme des 6 faces).<br>`
+    +`3. On veut peindre la surface exterieure avec un pot de peinture couvrant <b>500 ${ctx.unite}²</b>. Est-ce suffisant ?`;
+
+  function dessiner(cibleId){
+    const W=360,H=260;
+    // Dessin axonometrique du pave droit
+    const ox=60,oy=180,dx=L*16,dy=l*10,dz=h*14;
+    const off=0.6;
+    const ax=ox+off*l*8,ay=oy-off*l*6;
+    let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+    svg+=`<rect width="${W}" height="${H}" fill="#FFF6E6" rx="10"/>`;
+    // Face de face (bas)
+    svg+=`<polygon points="${ox},${oy} ${ox+dx},${oy} ${ox+dx},${oy-dz} ${ox},${oy-dz}" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>`;
+    // Face de cote (droite)
+    svg+=`<polygon points="${ox+dx},${oy} ${ox+dx+ax-ox},${oy-(ay-oy)} ${ox+dx+ax-ox},${oy-dz-(ay-oy)} ${ox+dx},${oy-dz}" fill="#FFD98A" stroke="#E0A415" stroke-width="2"/>`;
+    // Face du haut
+    svg+=`<polygon points="${ox},${oy-dz} ${ox+dx},${oy-dz} ${ox+dx+ax-ox},${oy-dz-(ay-oy)} ${ax},${ay-dz}" fill="#FFC93C" fill-opacity="0.7" stroke="#E0A415" stroke-width="2"/>`;
+    // Cotes en pointilles (arriere)
+    svg+=`<line x1="${ox}" y1="${oy}" x2="${ax}" y2="${ay}" stroke="#C9A24A" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg+=`<line x1="${ax}" y1="${ay}" x2="${ox+dx+ax-ox}" y2="${ay}" stroke="#C9A24A" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg+=`<line x1="${ax}" y1="${ay}" x2="${ax}" y2="${ay-dz}" stroke="#C9A24A" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    // Etiquettes dimensions
+    svg+=svgTxt(ox+dx/2,oy+16,L+' '+ctx.unite,14,'#E07A1F');
+    svg+=svgTxt(ox-20,oy-dz/2,h+' '+ctx.unite,14,'#E07A1F');
+    svg+=svgTxt(ox+dx+(ax-ox)/2+20,oy-(ay-oy)/2+6,l+' '+ctx.unite,13,'#E07A1F');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+
+  const etapes=[
+    {question:'Question 1 — Volume du pave droit',role:'Appliquer la formule',
+     q:`Ecris la formule du volume d'un pave droit : V = longueur × largeur × hauteur. Calcule numeriquement.`,
+     verif:inp=>{const t=norm(inp);return nbs(inp).some(x=>Math.abs(x-volume)<=0.1)||(t.includes('l')&&t.includes('h')&&t.includes('='));},
+     aide:`V = ${L} × ${l} × ${h} = ${volume} ${ctx.unite}³`,
+     solutionHTML:`V = ${L} × ${l} × ${h} = ${volume} ${ctx.unite}³`},
+    {question:"Question 2 — Aire totale (6 faces)",role:'Calculer l\'aire',
+     q:`Le pave a 3 paires de faces rectangulaires. Calcule l'aire totale : 2×(L×l + L×h + l×h).`,
+     verif:inp=>nbs(inp).some(x=>Math.abs(x-aire)<=0.5),
+     aide:`Aire = 2×(${L}×${l} + ${L}×${h} + ${l}×${h}) = 2×(${L*l}+${L*h}+${l*h}) = 2×${L*l+L*h+l*h} = ${aire} ${ctx.unite}²`,
+     solutionHTML:`Aire = 2×(${L*l}+${L*h}+${l*h}) = ${aire} ${ctx.unite}²`},
+    {question:'Question 3 — Suffisance du pot de peinture',role:'Comparer a 500 cm²',
+     q:`L'aire totale est de ${aire} cm². Un pot couvre 500 cm². Est-ce suffisant pour peindre la boite ?`,
+     verif:inp=>{const t=norm(inp);const hasSuffisant=t.includes('oui')||t.includes('suffi')||t.includes('non')||t.includes('insuffi');const hasVal=nbs(inp).some(x=>Math.abs(x-aire)<=1);return hasSuffisant&&hasVal;},
+     aide:`Aire = ${aire} cm². Comparer avec 500 cm². ${aire<=500?'500 ≥ '+aire+', donc c\'est suffisant.':'500 < '+aire+', donc c\'est insuffisant.'}`,
+     solutionHTML:aire<=500?`${aire} cm² ≤ 500 cm² : un pot suffit.`:`${aire} cm² > 500 cm² : un pot ne suffit pas (il en faut ${Math.ceil(aire/500)}).`}
+  ];
+  return {titre:'Pave droit — volume et aire',enonceHTML,dessiner,etapes};
+}
+
 /* ===== BANQUE ===== */
 const BANQUE=[
   {notion:'rampe',gen:genRampe},
@@ -1188,6 +1498,11 @@ const BANQUE=[
   {notion:'sinus',gen:genSinus},
   {notion:'angles',gen:genVoieAngles},
   {notion:'stade',gen:genStade},
+  {notion:'pythagore',gen:genPythagore},
+  {notion:'thalesOmbre',gen:genThalesOmbre},
+  {notion:'trigono',gen:genTrigono},
+  {notion:'transfo',gen:genTransfo},
+  {notion:'solide',gen:genSolide}
 ];
 
 let SUJET=[],ecrans=[],ecranActuel=0;
