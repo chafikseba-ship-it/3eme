@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>try{if(!localStorage.getItem('kc_eleve')||!localStorage.getItem('kc_classe'))location.replace('index.html');}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mélanges & solutions — 3ème</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --or:#FFC93C;--or-bas:#E0A41E;--vert:#8BC34A;--vert-bas:#5E9426;
+  --orange:#FF8A4C;--orange-bas:#E0672E;--teal:#46BECB;--teal-bas:#2E8A98;
+  --violet:#A78BC4;--violet-bas:#7E61A1;--rouge:#EF5D60;--rouge-bas:#c43e41;
+  --bleu:#4FA3D1;--bleu-bas:#2f7ba8;
+  --bois:#5C3D2E;--bois-clair:#8a6650;--creme:#FFF4DC;--blanc:#FFFDF6;
+  --ombre:0 8px 0 rgba(92,61,46,.18),0 14px 22px rgba(92,61,46,.12);
+  --acc:#46BECB;--acc-bas:#2E8A98;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--bois);
+  background:linear-gradient(160deg,#EAF6FF 0%,#D0EEFF 55%,#B8E4FF 100%);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,.fr{font-family:'Fredoka',sans-serif;font-weight:700}
+.wrap{max-width:880px;margin:0 auto;padding:18px 16px 100px;position:relative;z-index:1}
+.blob{position:fixed;border-radius:50%;filter:blur(2px);opacity:.4;z-index:0}
+.b1{width:180px;height:180px;background:#A8D8FF;top:-40px;left:-50px}
+.b2{width:140px;height:140px;background:#FFD0A0;bottom:40px;right:-40px}
+.b3{width:120px;height:120px;background:#BCE29A;top:40%;left:-50px}
+.screen{display:none;animation:pop .35s ease}
+.screen.active{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;color:#fff;border:none;border-radius:18px;
+  padding:14px 22px;cursor:pointer;background:var(--acc);box-shadow:0 6px 0 var(--acc-bas);
+  transition:transform .08s,box-shadow .08s;display:inline-flex;align-items:center;gap:8px}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--acc-bas)}
+.btn.vert{background:var(--vert);box-shadow:0 6px 0 var(--vert-bas)}
+.btn.orange{background:var(--orange);box-shadow:0 6px 0 var(--orange-bas)}
+.btn.teal{background:var(--teal);box-shadow:0 6px 0 var(--teal-bas)}
+.btn.violet{background:var(--violet);box-shadow:0 6px 0 var(--violet-bas)}
+.btn.bleu{background:var(--bleu);box-shadow:0 6px 0 var(--bleu-bas)}
+.btn.or{background:var(--or);color:var(--bois);box-shadow:0 6px 0 var(--or-bas)}
+.btn.rouge{background:var(--rouge);box-shadow:0 6px 0 var(--rouge-bas)}
+.btn.fant{background:var(--blanc);color:var(--bois);box-shadow:0 6px 0 #e7d3a8}
+.btn:focus-visible{outline:4px solid #2e8a98aa;outline-offset:3px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.back{background:var(--blanc);color:var(--bois);border:none;border-radius:14px;width:48px;height:48px;
+  font-size:1.5rem;cursor:pointer;box-shadow:0 5px 0 #e7d3a8;font-family:'Fredoka'}
+.back:active{transform:translateY(4px);box-shadow:0 1px 0 #e7d3a8}
+.card{background:var(--blanc);border-radius:26px;padding:22px;box-shadow:var(--ombre);margin:16px 0}
+.tag{display:inline-block;font-family:'Fredoka';font-weight:600;color:#fff;padding:5px 14px;border-radius:30px;font-size:.85rem;margin-bottom:8px}
+.hero{text-align:center;padding:26px 16px 8px}
+.hero h1{font-size:2.5rem;line-height:1.05;margin:.1em 0;color:var(--bois)}
+.hero .sub{font-size:1.1rem;color:var(--bois-clair);font-weight:700;max-width:560px;margin:6px auto 0}
+.coin{font-size:3.4rem;line-height:1;filter:drop-shadow(0 6px 0 rgba(92,61,46,.15))}
+.map{display:grid;gap:16px;margin-top:8px}
+.etape{display:flex;align-items:center;gap:16px;background:var(--blanc);border-radius:24px;padding:16px 18px;
+  box-shadow:var(--ombre);cursor:pointer;border:4px solid transparent;transition:transform .12s}
+.etape:hover{transform:translateY(-3px)}
+.etape:active{transform:translateY(1px)}
+.etape .num{flex:0 0 60px;height:60px;border-radius:18px;display:grid;place-items:center;font-family:'Fredoka';font-weight:700;font-size:1.7rem;color:#fff}
+.etape .txt h3{margin:0 0 2px;font-size:1.16rem}
+.etape .txt p{margin:0;color:var(--bois-clair);font-weight:700;font-size:.92rem}
+.etape .status{margin-left:auto;font-size:1.5rem}
+.e1 .num{background:var(--teal);box-shadow:0 5px 0 var(--teal-bas)}
+.e2 .num{background:var(--violet);box-shadow:0 5px 0 var(--violet-bas)}
+.e3 .num{background:var(--orange);box-shadow:0 5px 0 var(--orange-bas)}
+.e4 .num{background:var(--vert);box-shadow:0 5px 0 var(--vert-bas)}
+.lead{font-size:1.08rem;color:var(--bois);font-weight:700;line-height:1.5}
+.mid{text-align:center;margin:16px 0}
+.encadre{border-left:5px solid var(--teal);background:var(--creme);border-radius:0 14px 14px 0;
+  padding:12px 14px;margin:12px 0;font-family:'Fredoka';font-weight:700;font-size:1.05rem;
+  color:var(--bois);line-height:1.5}
+.encadre.violet{border-left-color:var(--violet)}
+.encadre.orange{border-left-color:var(--orange)}
+.encadre.vert{border-left-color:var(--vert)}
+.encadre.or{border-left-color:var(--or)}
+.note{font-size:.95rem;color:var(--bois-clair);font-weight:700;text-align:center;margin-top:10px}
+.lecon-anim{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:14px 0}
+.lecon-bloc{background:var(--teal);color:#fff;font-family:'Fredoka';font-weight:700;font-size:1.2rem;padding:10px 16px;border-radius:14px;box-shadow:0 5px 0 var(--teal-bas)}
+.lecon-op{font-family:'Fredoka';font-weight:700;font-size:1.4rem;color:var(--bois)}
+.lecon-res{background:var(--vert);color:#fff;font-family:'Fredoka';font-weight:700;font-size:1.3rem;padding:10px 18px;border-radius:14px;box-shadow:0 5px 0 var(--vert-bas)}
+.tableau{width:100%;border-collapse:separate;border-spacing:0 6px;margin:10px 0}
+.tableau th{font-family:'Fredoka';font-weight:700;color:var(--bois-clair);font-size:.95rem;padding:6px 12px;text-align:center}
+.tableau td{background:var(--blanc);font-family:'Fredoka';font-weight:700;color:var(--bois);padding:10px 14px;text-align:center;border-radius:10px}
+.tableau tr:nth-child(odd) td{background:var(--creme)}
+.formule-box{display:inline-flex;align-items:center;background:var(--creme);border:2px dashed var(--teal-bas);
+  border-radius:14px;padding:10px 18px;font-family:'Fredoka';font-weight:700;font-size:1.2rem;
+  color:var(--bois);gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;line-height:1.1}
+.fnum,.fden{display:block;text-align:center;padding:2px 8px;font-family:'Fredoka';font-weight:700}
+.fbar{height:3px;background:var(--bois);align-self:stretch;border-radius:2px;margin:2px 0}
+/* Entraînement */
+.serieprog{font-family:'Fredoka';font-weight:700;color:var(--bois-clair);text-align:center;margin-bottom:8px;font-size:1.05rem}
+.qcard{text-align:center}
+.qcat{font-family:'Fredoka';font-weight:700;color:var(--bois-clair);margin-bottom:4px}
+.helpnote{font-size:.95rem;color:var(--bois-clair);font-weight:700;margin:6px 0 4px;background:var(--creme);border-radius:10px;padding:8px 12px}
+.question{font-family:'Fredoka';font-weight:700;font-size:1.32rem;margin:8px 0 4px;line-height:1.45}
+.ansrow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px 0}
+.ansrow input{font-family:'Fredoka';font-weight:700;font-size:1.4rem;text-align:center;
+  border:3px solid #f0dca8;border-radius:16px;padding:12px;width:180px;color:var(--bois)}
+.ansrow input:focus{outline:none;border-color:var(--teal-bas)}
+.opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:16px 0}
+.opt{font-family:'Fredoka';font-weight:700;font-size:1.05rem;border:3px solid #e7d3a8;background:var(--blanc);
+  color:var(--bois);border-radius:16px;padding:12px 20px;cursor:pointer;box-shadow:0 5px 0 #e7d3a8}
+.opt:active{transform:translateY(3px);box-shadow:0 1px 0 #e7d3a8}
+.opt.good{background:var(--vert);color:#fff;border-color:var(--vert-bas);box-shadow:0 5px 0 var(--vert-bas)}
+.opt.bad{background:var(--orange);color:#fff;border-color:var(--orange-bas);box-shadow:0 5px 0 var(--orange-bas)}
+.feedback{min-height:2.2em;font-family:'Fredoka';font-weight:700;font-size:1.1rem;margin-top:6px;line-height:1.4}
+.feedback.ok{color:var(--vert-bas)}
+.feedback.no{color:var(--orange-bas)}
+.stars{font-size:1.5rem;letter-spacing:3px;margin-top:8px;min-height:1.6em}
+.mathpad{min-height:10px}
+.brouillon-lab{font-family:'Nunito';font-weight:800;font-size:.88rem;color:var(--bois-clair);margin:14px 0 4px}
+.brouillon{width:100%;border:2px solid #e7d3a8;border-radius:14px;padding:10px 12px;font-family:'Nunito';
+  font-weight:700;font-size:1rem;color:var(--bois);resize:vertical;background:var(--blanc)}
+.brouillon:focus{outline:none;border-color:var(--teal-bas)}
+.conf{position:fixed;width:12px;height:12px;top:-20px;z-index:50;border-radius:3px;pointer-events:none}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.result{text-align:center}
+.result .big{font-family:'Fredoka';font-weight:700;font-size:3.2rem;line-height:1;margin:6px 0}
+.result .big.ok{color:var(--vert-bas)}.result .big.no{color:var(--orange-bas)}
+.result .msg{font-weight:700;color:var(--bois);margin:10px auto;max-width:430px;line-height:1.5}
+.rbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+/* CASCADE */
+.cascade{margin:6px 0 2px;text-align:left}
+.cstep{display:none;background:var(--creme);border-radius:16px;padding:14px 16px;margin:10px 0;animation:pop .3s ease}
+.cstep.on{display:block}
+.cprompt{font-family:'Fredoka';font-weight:700;color:var(--bois);font-size:1.05rem;margin-bottom:10px;line-height:1.35}
+.cbody{display:flex;flex-direction:column;gap:8px}
+.cfeed{font-family:'Nunito';font-weight:800;font-size:.92rem;margin-top:8px;min-height:1em;line-height:1.35}
+.cfeed.ok{color:var(--vert-bas)}.cfeed.no{color:var(--orange-bas)}
+.cline{font-family:'Fredoka';font-weight:700;font-size:1.12rem;color:var(--bois);line-height:2.6;
+  display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.cblank{font-family:'Fredoka';font-weight:700;font-size:1.05rem;text-align:center;border:none;
+  border-bottom:3px solid var(--teal-bas);background:#fff;border-radius:8px 8px 0 0;padding:6px;color:var(--bois)}
+.cblank:focus{outline:3px solid var(--teal-bas);outline-offset:1px;background:#f0fbff}
+.cblank.cbok{border-bottom-color:var(--vert-bas);background:#eef8e3;color:var(--vert-bas)}
+.cblank.cbno{border-bottom-color:var(--orange-bas);background:#fff0e2;color:var(--orange-bas)}
+.cverify{margin-top:10px}
+.cfrac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 5px}
+.cfnum,.cfden{display:block;text-align:center;padding:2px 6px}
+.cfbar{height:3px;background:var(--bois);align-self:stretch;border-radius:2px;margin:2px 0}
+.figbox{margin:8px auto 4px;text-align:center}
+.menulink{display:inline-flex;align-items:center;gap:6px;font-family:'Fredoka';font-weight:600;font-size:.85rem;
+  color:var(--bois-clair);background:var(--blanc);border:none;border-radius:30px;padding:7px 14px;
+  box-shadow:0 3px 0 rgba(92,61,46,.14);cursor:pointer;margin-bottom:6px}
+/* ===== CALCULATRICE ===== */
+.kc-fab{position:fixed;right:18px;bottom:18px;z-index:60;width:58px;height:58px;border:none;border-radius:50%;
+  background:var(--teal);color:#fff;font-size:1.6rem;cursor:pointer;
+  box-shadow:0 6px 0 var(--teal-bas),0 10px 18px rgba(92,61,46,.2);transition:transform .1s}
+.kc-fab:active{transform:translateY(4px)}
+.kc-panel{position:fixed;right:18px;bottom:86px;z-index:60;width:min(330px,calc(100vw - 32px));
+  background:var(--blanc);border-radius:22px;padding:14px;
+  box-shadow:0 12px 0 rgba(92,61,46,.12),0 18px 34px rgba(92,61,46,.25);animation:kcpop .25s ease}
+.kc-panel[hidden]{display:none}
+@keyframes kcpop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.kc-head{display:flex;align-items:center;justify-content:space-between;font-family:'Fredoka';font-weight:700;
+  color:var(--bois);margin:2px 4px 10px;font-size:1.05rem}
+.kc-x{border:none;background:var(--creme);color:var(--bois);width:32px;height:32px;border-radius:10px;
+  font-size:1rem;cursor:pointer;font-family:'Fredoka';box-shadow:0 3px 0 #e7d3a8}
+.kc-x:active{transform:translateY(2px);box-shadow:0 1px 0 #e7d3a8}
+.kc-screen{background:#2b2b2b;border-radius:14px;padding:10px 14px;text-align:right;margin-bottom:12px;
+  min-height:74px;display:flex;flex-direction:column;justify-content:center}
+.kc-expr{font-family:'Fredoka';font-weight:600;color:#cfe6ee;font-size:1rem;min-height:1.2em;word-break:break-all;line-height:1.25}
+.kc-res{font-family:'Fredoka';font-weight:700;color:#fff;font-size:1.7rem;line-height:1.1;margin-top:2px}
+.kc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kc-key{border:none;border-radius:14px;padding:14px 0;font-family:'Fredoka';font-weight:700;
+  font-size:1.15rem;cursor:pointer;background:var(--blanc);color:var(--bois);box-shadow:0 4px 0 #e7d3a8}
+.kc-key:active{transform:translateY(3px);box-shadow:0 1px 0 #e7d3a8}
+.kc-key.op{background:var(--creme);color:var(--orange-bas)}
+.kc-key.fn{background:#eef6f8;color:var(--teal-bas);font-size:1rem}
+.kc-key.act{background:var(--rouge);color:#fff;box-shadow:0 4px 0 var(--rouge-bas)}
+.kc-key.eq{background:var(--vert);color:#fff;box-shadow:0 4px 0 var(--vert-bas)}
+.kc-send{width:100%;margin-top:8px;border:none;border-radius:14px;padding:12px;font-family:'Fredoka';
+  font-weight:700;font-size:1rem;background:var(--teal);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--teal-bas)}
+.kc-send:active{transform:translateY(3px);box-shadow:0 1px 0 var(--teal-bas)}
+button,input,textarea{touch-action:manipulation}
+@media(max-width:480px){
+  .wrap{padding:14px 12px 90px}
+  .hero h1{font-size:2rem}.coin{font-size:2.8rem}
+  .card{padding:16px;border-radius:20px}
+  .etape{gap:12px;padding:13px 14px}
+  .etape .num{flex:0 0 50px;height:50px;font-size:1.4rem}
+  .question{font-size:1.18rem}
+  .ansrow input{width:60%;max-width:200px}
+  .btn{font-size:1rem;padding:13px 18px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="wrap">
+
+<!-- ========== ACCUEIL ========== -->
+<section id="accueil" class="screen active">
+  <div class="mid"><button class="menulink" onclick="location.href='index.html'">🏠 Menu principal</button></div>
+  <div class="hero">
+    <div class="coin">🧪🥤🔬</div>
+    <h1>Mélanges &amp; solutions</h1>
+    <p class="sub">4 étapes guidées — lis la leçon, puis entraîne-toi ! 💪</p>
+  </div>
+  <div class="map">
+    <div class="etape e1" id="mapMelanges" onclick="tapTheme('melanges')">
+      <div class="num">🧪</div>
+      <div class="txt"><h3>1 · Corps pur et mélanges</h3><p>Homogène, hétérogène — comment les reconnaître ?</p></div>
+      <div class="status" id="stMelanges">▶</div>
+    </div>
+    <div class="etape e2" id="mapSolution" onclick="tapTheme('solution')">
+      <div class="num">🥤</div>
+      <div class="txt"><h3>2 · La solution aqueuse</h3><p>Soluté, solvant, dissolution dans l'eau</p></div>
+      <div class="status" id="stSolution">▶</div>
+    </div>
+    <div class="etape e3" id="mapMasse" onclick="tapTheme('masse')">
+      <div class="num">⚖️</div>
+      <div class="txt"><h3>3 · Conservation de la masse</h3><p>m<sub>solution</sub> = m<sub>soluté</sub> + m<sub>solvant</sub></p></div>
+      <div class="status" id="stMasse">▶</div>
+    </div>
+    <div class="etape e4" id="mapConcentration" onclick="tapTheme('concentration')">
+      <div class="num">📊</div>
+      <div class="txt"><h3>4 · Concentration en masse</h3><p>Calcule t = m / V en g/L</p></div>
+      <div class="status" id="stConcentration">▶</div>
+    </div>
+  </div>
+  <div class="mid" style="margin-top:20px">
+    <button class="btn teal" onclick="go('arene')">🏟️ Arène libre — mélange tout !</button>
+  </div>
+</section>
+
+<!-- ========== LEÇON 1 : MÉLANGES ========== -->
+<section id="expMelanges" class="screen">
+  <div class="topbar">
+    <button class="back" onclick="go('accueil')">←</button>
+    <h2>🧪 Corps pur et mélanges</h2>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--teal)">🔑 Corps pur vs mélange</span>
+    <p class="lead">Un <b>corps pur</b> est une substance composée d'un seul type de molécules.<br>
+    Un <b>mélange</b> contient plusieurs substances différentes.</p>
+    <div class="lecon-anim">
+      <div class="lecon-bloc">💧 Eau pure</div>
+      <div class="lecon-op">≠</div>
+      <div class="lecon-bloc" style="background:var(--violet);box-shadow:0 5px 0 var(--violet-bas)">🥛 Lait</div>
+    </div>
+    <div class="encadre">
+      💧 <b>Eau distillée</b> = corps pur (H₂O uniquement)<br>
+      🥛 <b>Lait</b> = mélange (eau + matières grasses + protéines + sucres…)<br>
+      🧂 <b>Sel de table</b> = corps pur (NaCl)<br>
+      🌊 <b>Eau de mer</b> = mélange (eau + sel dissous + autres)
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">🔍 Mélange homogène vs hétérogène</span>
+    <p class="lead">Un mélange peut être de deux types :</p>
+    <table class="tableau">
+      <thead><tr><th>Type</th><th>Aspect</th><th>Exemples</th></tr></thead>
+      <tbody>
+        <tr><td>🟰 <b>Homogène</b></td><td>Uniforme — on ne distingue pas les composants à l'œil nu</td><td>Eau sucrée, vinaigre, air, solution de sel</td></tr>
+        <tr><td>✌️ <b>Hétérogène</b></td><td>On voit plusieurs parties distinctes</td><td>Vinaigrette, jus d'orange avec pulpe, sable dans l'eau</td></tr>
+      </tbody>
+    </table>
+    <div class="encadre vert">
+      💡 <b>Astuce :</b> Regarde le mélange sans le secouer. Si tout est pareil = homogène. Si tu vois deux phases (couches, dépôt…) = hétérogène.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--orange)">🧪 Exemples du quotidien</span>
+    <div class="encadre orange">
+      <b>Homogènes :</b> eau + sucre dissolus, café sans marc, sirop de menthe<br>
+      <b>Hétérogènes :</b> salade, béton, huile + eau (ne se mélangent pas !), granit
+    </div>
+    <p class="note">🫙 La vinaigrette est hétérogène : l'huile remonte toujours au-dessus du vinaigre !</p>
+  </div>
+
+  <div class="mid"><button class="btn teal" onclick="startTrain('melanges')">Je m'entraîne ! 💪</button></div>
+</section>
+
+<!-- ========== LEÇON 2 : SOLUTION ========== -->
+<section id="expSolution" class="screen">
+  <div class="topbar">
+    <button class="back" onclick="go('accueil')">←</button>
+    <h2>🥤 La solution aqueuse</h2>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--violet)">💧 C'est quoi une solution aqueuse ?</span>
+    <p class="lead">Une <b>solution aqueuse</b> est un mélange homogène dans lequel le solvant est l'<b>eau</b>.</p>
+    <div class="lecon-anim">
+      <div class="lecon-bloc" style="background:var(--violet);box-shadow:0 5px 0 var(--violet-bas)">🧂 Soluté</div>
+      <div class="lecon-op">+</div>
+      <div class="lecon-bloc">💧 Solvant (eau)</div>
+      <div class="lecon-op">→</div>
+      <div class="lecon-res">🥤 Solution</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--teal)">📖 Vocabulaire à connaître</span>
+    <table class="tableau">
+      <thead><tr><th>Terme</th><th>Définition</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>🧂 <b>Soluté</b></td><td>La substance qui se dissout</td><td>Sel, sucre, sirop</td></tr>
+        <tr><td>💧 <b>Solvant</b></td><td>La substance qui dissout (ici l'eau)</td><td>Eau</td></tr>
+        <tr><td>🥤 <b>Solution</b></td><td>Le mélange homogène obtenu</td><td>Eau salée, eau sucrée</td></tr>
+        <tr><td>🌀 <b>Dissolution</b></td><td>L'action de dissoudre le soluté dans le solvant</td><td>Mettre du sel dans l'eau et remuer</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--orange)">⚗️ Exemples concrets</span>
+    <div class="encadre orange">
+      <b>Eau salée :</b> soluté = sel (NaCl), solvant = eau<br>
+      <b>Eau sucrée :</b> soluté = sucre, solvant = eau<br>
+      <b>Sirop de grenadine dilué :</b> soluté = sirop, solvant = eau<br>
+      <b>Eau gazeuse :</b> soluté = CO₂ (gaz dissous), solvant = eau
+    </div>
+    <div class="encadre vert">
+      💡 <b>À retenir :</b> Dans une solution aqueuse, le solvant est <b>toujours l'eau</b>.<br>
+      Le soluté peut être un solide (sel, sucre), un liquide (sirop) ou un gaz (CO₂).
+    </div>
+  </div>
+
+  <div class="mid"><button class="btn violet" onclick="startTrain('solution')">Je m'entraîne ! 💪</button></div>
+</section>
+
+<!-- ========== LEÇON 3 : CONSERVATION DE LA MASSE ========== -->
+<section id="expMasse" class="screen">
+  <div class="topbar">
+    <button class="back" onclick="go('accueil')">←</button>
+    <h2>⚖️ Conservation de la masse</h2>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--orange)">⚖️ La loi fondamentale</span>
+    <p class="lead">Quand on dissout un soluté dans un solvant, la <b>masse totale se conserve</b>.<br>
+    Rien ne se perd, rien ne se crée !</p>
+    <div style="text-align:center;margin:14px 0">
+      <div class="formule-box">
+        m<sub>solution</sub> = m<sub>soluté</sub> + m<sub>solvant</sub>
+      </div>
+    </div>
+    <div class="encadre or">
+      📌 <b>Exemple :</b> On dissout 5 g de sel dans 200 g d'eau.<br>
+      → m<sub>solution</sub> = 5 + 200 = <b>205 g</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--teal)">📐 Comment calculer ?</span>
+    <p class="lead">La formule peut s'utiliser dans les deux sens :</p>
+    <table class="tableau">
+      <thead><tr><th>Je cherche</th><th>Formule</th></tr></thead>
+      <tbody>
+        <tr><td>🎯 m<sub>solution</sub></td><td>m<sub>soluté</sub> + m<sub>solvant</sub></td></tr>
+        <tr><td>🧂 m<sub>soluté</sub></td><td>m<sub>solution</sub> − m<sub>solvant</sub></td></tr>
+        <tr><td>💧 m<sub>solvant</sub></td><td>m<sub>solution</sub> − m<sub>soluté</sub></td></tr>
+      </tbody>
+    </table>
+    <div class="encadre vert">
+      🔬 <b>Expérience :</b> Tu pèses 20 g de sucre et 180 g d'eau avant de mélanger.<br>
+      Après dissolution, la balance affiche bien <b>200 g</b> — la masse est conservée !
+    </div>
+  </div>
+
+  <div class="mid"><button class="btn orange" onclick="startTrain('masse')">Je m'entraîne ! 💪</button></div>
+</section>
+
+<!-- ========== LEÇON 4 : CONCENTRATION ========== -->
+<section id="expConcentration" class="screen">
+  <div class="topbar">
+    <button class="back" onclick="go('accueil')">←</button>
+    <h2>📊 Concentration en masse</h2>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--vert)">📊 Définition</span>
+    <p class="lead">La <b>concentration en masse</b> indique la masse de soluté dissoute dans 1 litre de solution.</p>
+    <div style="text-align:center;margin:14px 0">
+      <div class="formule-box">
+        t = <span class="frac"><span class="fnum">m<sub>soluté</sub></span><span class="fbar"></span><span class="fden">V<sub>solution</sub></span></span>
+      </div>
+    </div>
+    <table class="tableau">
+      <thead><tr><th>Symbole</th><th>Grandeur</th><th>Unité</th></tr></thead>
+      <tbody>
+        <tr><td><b>t</b></td><td>Concentration en masse</td><td>g/L</td></tr>
+        <tr><td><b>m</b></td><td>Masse du soluté</td><td>g</td></tr>
+        <tr><td><b>V</b></td><td>Volume de la solution</td><td>L</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--vert)">📐 Exemple guidé</span>
+    <p class="lead">On dissout <b>15 g</b> de sel dans de l'eau. Le volume total de la solution est <b>0,5 L</b>.<br>
+    Quelle est la concentration ?</p>
+    <div class="encadre vert">
+      = t = <span class="frac"><span class="fnum">m<sub>soluté</sub></span><span class="fbar"></span><span class="fden">V<sub>solution</sub></span></span><br>
+      = t = <span class="frac"><span class="fnum">15</span><span class="fbar"></span><span class="fden">0,5</span></span><br>
+      = t = <b>30 g/L</b>
+    </div>
+    <div class="encadre or">
+      💡 <b>Unités :</b> masse en <b>g</b>, volume en <b>L</b> → concentration en <b>g/L</b>.<br>
+      Attention : si le volume est en mL, divise par 1000 pour obtenir des L !
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag" style="background:var(--teal)">🔄 Retrouver m ou V</span>
+    <table class="tableau">
+      <thead><tr><th>Je cherche</th><th>Formule</th></tr></thead>
+      <tbody>
+        <tr><td><b>t</b> (g/L)</td><td>t = m ÷ V</td></tr>
+        <tr><td><b>m</b> (g)</td><td>m = t × V</td></tr>
+        <tr><td><b>V</b> (L)</td><td>V = m ÷ t</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mid"><button class="btn vert" onclick="startTrain('concentration')">Je m'entraîne ! 💪</button></div>
+</section>
+
+<!-- ========== ENTRAÎNEMENT ========== -->
+<section id="ecranTrain" class="screen">
+  <div class="topbar"><button class="back" onclick="go(EXP[currentTheme]||'accueil')">←</button><h2 id="trainTitle">Entraînement</h2></div>
+  <div class="card" id="tq_card">
+    <div class="serieprog" id="tq_prog"></div>
+    <div class="helpnote" id="tq_help"></div>
+    <div class="qcard">
+      <div class="qcat" id="tq_cat"></div>
+      <div class="figbox" id="tq_viz" style="display:none"></div>
+      <div class="question" id="tq_text"></div>
+      <div class="opts" id="tq_opts" style="display:none"></div>
+      <div class="ansrow" id="tq_ansrow">
+        <input id="tq_input" inputmode="decimal" placeholder="ta réponse" autocomplete="off">
+        <button class="btn vert" id="tq_valid" onclick="quizValidate()">Valider</button>
+      </div>
+      <div class="cascade" id="tq_casc" style="display:none"></div>
+      <div id="tq_work">
+        <div class="mathpad" id="tq_pad"></div>
+        <div class="brouillon-lab">✏️ Brouillon (facultatif)</div>
+        <textarea id="tq_brouillon" class="brouillon" rows="3" placeholder="Écris tes étapes ici…"></textarea>
+      </div>
+      <div class="feedback" id="tq_feed"></div>
+      <div class="stars" id="tq_stars"></div>
+      <div class="mid" style="margin-top:14px"><button class="btn orange" id="tq_next" style="display:none" onclick="quizNext()">Suivant →</button></div>
+    </div>
+  </div>
+  <div class="card result" id="tq_result" style="display:none">
+    <div class="big" id="tq_rbig">0 / 8</div>
+    <div class="msg" id="tq_rmsg"></div>
+    <div class="rbtns" id="tq_rbtns"></div>
+  </div>
+</section>
+
+<!-- ========== ARÈNE ========== -->
+<section id="arene" class="screen">
+  <div class="topbar">
+    <button class="back" onclick="go('accueil')">←</button>
+    <h2>🏟️ Arène libre</h2>
+  </div>
+  <div id="areneMenu">
+    <div class="card">
+      <p class="lead">Entraînement libre — toutes les questions mélangées. Aucune limite !</p>
+      <div class="mid"><button class="btn teal" onclick="startArene()">C'est parti ! 🚀</button></div>
+    </div>
+  </div>
+  <div id="areneJeu" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:10px;font-family:'Fredoka';font-weight:700">
+        <div style="background:var(--creme);border-radius:14px;padding:8px 16px;box-shadow:0 4px 0 #e7d3a8">✅ <span id="aq_corr">0</span> / <span id="aq_tot">0</span></div>
+        <div style="background:var(--creme);border-radius:14px;padding:8px 16px;box-shadow:0 4px 0 #e7d3a8">🔥 série : <span id="aq_streak">0</span></div>
+      </div>
+      <div class="qcat" id="aq_cat"></div>
+      <div class="figbox" id="aq_viz" style="display:none"></div>
+      <div class="question" id="aq_text"></div>
+      <div class="opts" id="aq_opts" style="display:none"></div>
+      <div class="ansrow" id="aq_ansrow">
+        <input id="aq_input" inputmode="decimal" placeholder="ta réponse" autocomplete="off">
+        <button class="btn vert" id="aq_valid" onclick="quizValidate()">Valider</button>
+      </div>
+      <div class="cascade" id="aq_casc" style="display:none"></div>
+      <div class="feedback" id="aq_feed"></div>
+      <div class="stars" id="aq_stars"></div>
+      <div class="mid" style="margin-top:14px">
+        <button class="btn orange" id="aq_next" style="display:none" onclick="quizNext()">Suivant →</button>
+      </div>
+    </div>
+    <div class="mid"><button class="btn fant" onclick="finArene()">⬅ Retour arène</button></div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<!-- Calculatrice flottante -->
+<button class="kc-fab" onclick="kcToggle()" title="Calculatrice">🧮</button>
+<div class="kc-panel" id="kcPanel" hidden>
+  <div class="kc-head">🧮 Calc <span style="font-size:.85rem;color:var(--bois-clair)">Collège +</span><button class="kc-x" onclick="kcToggle()">✕</button></div>
+  <div class="kc-screen">
+    <div class="kc-expr" id="kcExpr"></div>
+    <div class="kc-res" id="kcRes">0</div>
+  </div>
+  <div class="kc-keys" id="kcKeys"></div>
+  <button class="kc-send" onclick="kcSend()">📥 Mettre le résultat dans ma réponse</button>
+</div>
+
+<script>
+/* ===== SUIVI ===== */
+var SUIVI={
+  url:'https://docs.google.com/forms/d/e/1FAIpQLSeQlar3Raf4exyvvOEVt4iszwhz_L_9v4Be_a2RdYbHmcPlNw/formResponse',
+  nom:'Mélanges & solutions 3ème',
+  f:{classe:'entry.1138929909',eleve:'entry.1204022914',parcours:'entry.666753399',
+     statut:'entry.35147014',score:'entry.504264542',total:'entry.80923322'}
+};
+function suiviEnvoi(statut,score,total){
+  try{
+    var e=localStorage.getItem('kc_eleve')||'',c=localStorage.getItem('kc_classe')||'';
+    var fd=new FormData();
+    fd.append(SUIVI.f.classe,c);fd.append(SUIVI.f.eleve,e);
+    fd.append(SUIVI.f.parcours,SUIVI.nom);fd.append(SUIVI.f.statut,statut);
+    fd.append(SUIVI.f.score,score);fd.append(SUIVI.f.total,total);
+    fetch(SUIVI.url,{method:'POST',mode:'no-cors',body:fd});
+  }catch(_){}
+}
+
+/* ===== VARIABLES ===== */
+var EXP={melanges:'expMelanges',solution:'expSolution',masse:'expMasse',concentration:'expConcentration'};
+var MAPID={melanges:'mapMelanges',solution:'mapSolution',masse:'mapMasse',concentration:'mapConcentration'};
+var TITLE={
+  melanges:'Corps pur et mélanges',
+  solution:'La solution aqueuse',
+  masse:'Conservation de la masse',
+  concentration:'Concentration en masse'
+};
+var ORDER=['melanges','solution','masse','concentration'];
+var HELP={
+  melanges:'Corps pur = 1 seule substance. Mélange homogène = uniforme à l\'œil nu. Mélange hétérogène = on voit plusieurs phases.',
+  solution:'Soluté = ce qui se dissout. Solvant = ce dans quoi on dissout (eau). Solution = résultat homogène.',
+  masse:'Conservation de la masse : m_solution = m_soluté + m_solvant.',
+  concentration:'t = m_soluté / V_solution (g/L). m en g, V en L.'
+};
+var BRIQUE={
+  melanges:      {serie:8,seuil:6},
+  solution:      {serie:8,seuil:6},
+  masse:         {serie:8,seuil:6},
+  concentration: {serie:8,seuil:6}
+};
+var THEME_CATS={melanges:['melanges'],solution:['solution'],masse:['masse'],concentration:['concentration']};
+var CATNOM={
+  melanges:'Corps pur & mélanges',
+  solution:'Solution aqueuse',
+  masse:'Conservation masse',
+  concentration:'Concentration'
+};
+var unlocked={melanges:true,solution:true,masse:true,concentration:true,arene:true};
+var themeDone={melanges:false,solution:false,masse:false,concentration:false};
+var currentTheme='melanges';
+
+/* ===== UTILITAIRES ===== */
+function gid(x){return document.getElementById(x);}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;var v=parseFloat(s);return isFinite(v)?v:null;}
+function serieLen(){return BRIQUE[currentTheme].serie;}
+function seuilFor(){return BRIQUE[currentTheme].seuil;}
+function rnd(n){return Math.floor(Math.random()*n);}
+function rint(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function round2(v){return Math.round(v*100)/100;}
+function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});setTimeout((function(el){return function(){el.remove();};})(d),fall);}}
+
+/* ===== NAVIGATION ===== */
+function go(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  gid(id).classList.add('active');window.scrollTo(0,0);
+  if(id==='arene')finArene();
+  if(id!=='accueil'){try{history.pushState({screen:id},'','');}catch(_){}}
+}
+window.addEventListener('popstate',function(){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  gid('accueil').classList.add('active');window.scrollTo(0,0);
+});
+function tapTheme(t){currentTheme=t;go(EXP[t]);}
+function updateMap(){
+  ORDER.forEach(function(t){
+    var key='st'+t.charAt(0).toUpperCase()+t.slice(1);
+    var el=gid(key);if(el)el.textContent=themeDone[t]?'✅':'▶';
+  });
+}
+
+/* ===== DONNÉES ===== */
+var EXEMPLES_MELANGES=[
+  {sub:'Eau distillée',type:'corps pur',expl:'H₂O uniquement — une seule substance'},
+  {sub:'Sel (NaCl)',type:'corps pur',expl:'NaCl uniquement — une seule substance'},
+  {sub:'Eau de mer',type:'mélange homogène',expl:'eau + sel dissous — uniforme à l\'œil nu'},
+  {sub:'Eau sucrée',type:'mélange homogène',expl:'eau + sucre dissous — on ne voit qu\'une phase'},
+  {sub:'Vinaigrette',type:'mélange hétérogène',expl:'huile + vinaigre — deux phases visibles'},
+  {sub:'Jus d\'orange avec pulpe',type:'mélange hétérogène',expl:'on voit des morceaux de pulpe'},
+  {sub:'Sable + eau',type:'mélange hétérogène',expl:'le sable se dépose au fond'},
+  {sub:'Air (sans fumée)',type:'mélange homogène',expl:'azote + oxygène + autres gaz — uniforme'},
+  {sub:'Lait',type:'mélange homogène',expl:'eau + graisses + protéines — semble uniforme'},
+  {sub:'Sirop de menthe dilué',type:'mélange homogène',expl:'eau + sirop dissous — une seule phase'},
+  {sub:'Béton',type:'mélange hétérogène',expl:'sable + gravier + ciment — on voit les grains'},
+  {sub:'Fer',type:'corps pur',expl:'atomes de fer uniquement — une seule substance'}
+];
+
+var EXEMPLES_SOLUTION=[
+  {sub:'Sucre',role:'soluté',solvant:'eau',soln:'eau sucrée'},
+  {sub:'Sel',role:'soluté',solvant:'eau',soln:'eau salée'},
+  {sub:'Sirop de grenadine',role:'soluté',solvant:'eau',soln:'boisson à la grenadine'},
+  {sub:'CO₂',role:'soluté',solvant:'eau',soln:'eau gazeuse'},
+  {sub:'Alcool',role:'soluté',solvant:'eau',soln:'solution hydroalcoolique'},
+  {sub:'Eau',role:'solvant',solvant:'eau',soln:'toute solution aqueuse'}
+];
+
+/* ===== GÉNÉRATEUR 1 : MÉLANGES ===== */
+function genMelanges(){
+  var mode=pick(['qcm_type','qcm_homo_hetero','qcm_exemple_type']);
+
+  if(mode==='qcm_type'){
+    var pools=[
+      {t:'Un corps pur est…',o:['une substance composée d\'un seul type de molécules','un mélange de deux substances identiques','un liquide qui ne se mélange pas','une substance toujours solide'],c:0,e:'Corps pur = une seule sorte de molécules (ex : eau distillée, sel pur).'},
+      {t:'Un mélange homogène…',o:['est uniforme — on ne distingue pas les composants à l\'œil nu','contient des particules visibles','a toujours deux couches','ne peut contenir que des solides'],c:0,e:'Homogène = uniforme à l\'œil nu. Exemple : eau salée.'},
+      {t:'Un mélange hétérogène…',o:['présente des parties distinctes visibles','est toujours liquide','a une seule phase','se dissout toujours dans l\'eau'],c:0,e:'Hétérogène = on voit plusieurs phases. Exemple : vinaigrette.'},
+      {t:'Quelle différence entre mélange homogène et hétérogène ?',o:['Dans le mélange homogène, on ne distingue pas les composants à l\'œil nu','Le mélange homogène contient plus de substances','Le mélange hétérogène est toujours gazeux','Il n\'y a aucune différence'],c:0,e:'Homogène = une seule phase visible. Hétérogène = plusieurs phases visibles.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Corps pur & mélanges',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+
+  if(mode==='qcm_homo_hetero'){
+    var ex=pick(EXEMPLES_MELANGES);
+    var types=['corps pur','mélange homogène','mélange hétérogène'];
+    var wrong=types.filter(function(t){return t!==ex.type;});
+    var opts=shuffle([ex.type,wrong[0],wrong[1]]);
+    return {
+      type:'qcm',cat:'Corps pur & mélanges',
+      text:'🔬 <b>'+ex.sub+'</b> — de quel type est cette substance ?',
+      options:opts,correct:opts.indexOf(ex.type),
+      explain:ex.sub+' est un <b>'+ex.type+'</b> : '+ex.expl+'.'
+    };
+  }
+
+  /* qcm_exemple_type */
+  var pools2=[
+    {t:'Parmi ces exemples, lequel est un corps pur ?',o:['Eau distillée (H₂O)','Eau de mer','Jus de fruit','Vinaigrette'],c:0,e:'L\'eau distillée est composée uniquement de molécules H₂O — c\'est un corps pur !'},
+    {t:'Parmi ces exemples, lequel est un mélange hétérogène ?',o:['Sable dans l\'eau 🏖️','Eau sucrée 🍬','Air 💨','Eau salée 🧂'],c:0,e:'Le sable ne se dissout pas — on voit deux phases. C\'est hétérogène !'},
+    {t:'Parmi ces exemples, lequel est un mélange homogène ?',o:['Eau sucrée 🍬','Vinaigrette 🫙','Béton 🧱','Jus d\'orange avec pulpe 🍊'],c:0,e:'L\'eau sucrée est uniforme — on ne voit qu\'une seule phase. C\'est homogène !'},
+    {t:'L\'eau de mer est…',o:['un mélange homogène','un corps pur','un mélange hétérogène','un gaz dissous'],c:0,e:'L\'eau de mer contient eau + sel dissous. Elle est uniforme → mélange homogène.'},
+    {t:'La vinaigrette est…',o:['un mélange hétérogène','un corps pur','un mélange homogène','une solution aqueuse'],c:0,e:'L\'huile et le vinaigre ne se mélangent pas — deux couches visibles → hétérogène !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Corps pur & mélanges',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 2 : SOLUTION ===== */
+function genSolution(){
+  var mode=pick(['qcm_vocab','qcm_identification','qcm_exemple']);
+
+  if(mode==='qcm_vocab'){
+    var pools=[
+      {t:'Le <b>soluté</b> est…',o:['la substance qui se dissout dans le solvant','la substance dans laquelle on dissout','le résultat du mélange','le liquide qui coule'],c:0,e:'Le soluté se dissout. Le solvant dissout. Exemple : sel (soluté) + eau (solvant).'},
+      {t:'Le <b>solvant</b> est…',o:['la substance dans laquelle on dissout le soluté','la substance qui se dissout','la solution finale obtenue','un gaz dissous'],c:0,e:'Le solvant "accueille" le soluté. Dans une solution aqueuse, le solvant est l\'eau.'},
+      {t:'Une <b>solution aqueuse</b> est…',o:['un mélange homogène dont le solvant est l\'eau','un mélange hétérogène de deux liquides','une substance chimique pure','n\'importe quel liquide'],c:0,e:'Aqueuse = avec de l\'eau. Solution = homogène. Solvant = eau.'},
+      {t:'La <b>dissolution</b> est…',o:['l\'action de dissoudre un soluté dans un solvant','le résultat final de la solution','une réaction chimique violente','un type de mélange hétérogène'],c:0,e:'Dissoudre = faire disparaître le soluté dans le solvant pour obtenir une solution homogène.'},
+      {t:'Dans de l\'eau sucrée, le sucre est…',o:['le soluté','le solvant','la solution','un corps pur'],c:0,e:'Le sucre SE DISSOUT dans l\'eau → le sucre est le soluté. L\'eau est le solvant.'},
+      {t:'Dans une solution de sirop de menthe, l\'eau est…',o:['le solvant','le soluté','la solution','un mélange hétérogène'],c:0,e:'L\'eau est le solvant (ce dans quoi on dissout). Le sirop est le soluté.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Solution aqueuse',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+
+  if(mode==='qcm_identification'){
+    var ex=pick(EXEMPLES_SOLUTION.filter(function(x){return x.role==='soluté';}));
+    var wrongs=['eau','sel','sucre','sirop','CO₂','alcool'].filter(function(w){return w!==ex.sub&&w!==ex.solvant;});
+    var opts=shuffle([ex.sub,wrongs[0],ex.solvant,wrongs[1]]);
+    return {
+      type:'qcm',cat:'Solution aqueuse',
+      text:'Dans <b>'+ex.soln+'</b>, quel est le <b>soluté</b> ?',
+      options:opts,correct:opts.indexOf(ex.sub),
+      explain:'Dans '+ex.soln+' : soluté = <b>'+ex.sub+'</b>, solvant = <b>'+ex.solvant+'</b>.'
+    };
+  }
+
+  /* qcm_exemple */
+  var pools2=[
+    {t:'L\'eau gazeuse est une solution aqueuse car…',o:['le CO₂ (gaz) est dissous dans l\'eau','l\'eau est un gaz','elle contient de l\'air','elle est hétérogène'],c:0,e:'CO₂ dissous dans l\'eau → solution aqueuse. Soluté = CO₂, solvant = eau.'},
+    {t:'Parmi ces exemples, lequel n\'est PAS une solution aqueuse ?',o:['Vinaigrette (huile + vinaigre) 🫙','Eau sucrée 🍬','Eau salée 🧂','Sirop dilué dans l\'eau 🥤'],c:0,e:'La vinaigrette est hétérogène (deux couches). Une solution doit être homogène !'},
+    {t:'Peut-on avoir un soluté gazeux dans une solution aqueuse ?',o:['Oui ! Le CO₂ se dissout dans l\'eau (eau gazeuse)','Non, un gaz ne peut pas se dissoudre','Seulement si le gaz est chaud','Un gaz ne peut être soluté que dans de l\'alcool'],c:0,e:'Oui ! Le CO₂ (dioxyde de carbone) se dissout très bien dans l\'eau → eau gazeuse.'},
+    {t:'Une solution aqueuse est toujours…',o:['un mélange homogène','un mélange hétérogène','un corps pur','un solide dissous'],c:0,e:'Solution = mélange homogène (une seule phase visible). Aqueuse = solvant eau.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Solution aqueuse',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 3 : MASSE ===== */
+function genMasse(){
+  var mode=pick(['calc_solution','calc_solute','calc_solvant','qcm_loi']);
+
+  if(mode==='calc_solution'){
+    var mSolute=rint(2,50);
+    var mSolvant=pick([50,100,150,200,250,300,400,500]);
+    var mSol=mSolute+mSolvant;
+    return {
+      type:'num',cat:'Conservation masse',
+      answer:mSol,tol:0,
+      text:'On dissout <b>'+mSolute+' g</b> de soluté dans <b>'+mSolvant+' g</b> d\'eau.<br>Quelle est la masse de la solution obtenue (en g) ?',
+      explain:'m<sub>solution</sub> = m<sub>soluté</sub> + m<sub>solvant</sub> = '+mSolute+' + '+mSolvant+' = <b>'+mSol+' g</b>.'
+    };
+  }
+
+  if(mode==='calc_solute'){
+    var mSolute=rint(5,40);
+    var mSolvant=pick([100,150,200,250,300,400]);
+    var mSol=mSolute+mSolvant;
+    return {
+      type:'num',cat:'Conservation masse',
+      answer:mSolute,tol:0,
+      text:'La masse d\'une solution est <b>'+mSol+' g</b>. La masse d\'eau utilisée est <b>'+mSolvant+' g</b>.<br>Quelle est la masse de soluté dissous (en g) ?',
+      explain:'m<sub>soluté</sub> = m<sub>solution</sub> − m<sub>solvant</sub> = '+mSol+' − '+mSolvant+' = <b>'+mSolute+' g</b>.'
+    };
+  }
+
+  if(mode==='calc_solvant'){
+    var mSolute=rint(5,30);
+    var mSolvant=pick([100,150,200,250,300]);
+    var mSol=mSolute+mSolvant;
+    return {
+      type:'num',cat:'Conservation masse',
+      answer:mSolvant,tol:0,
+      text:'La masse d\'une solution est <b>'+mSol+' g</b>. La masse de soluté dissous est <b>'+mSolute+' g</b>.<br>Quelle est la masse d\'eau utilisée (en g) ?',
+      explain:'m<sub>solvant</sub> = m<sub>solution</sub> − m<sub>soluté</sub> = '+mSol+' − '+mSolute+' = <b>'+mSolvant+' g</b>.'
+    };
+  }
+
+  /* qcm_loi */
+  var pools=[
+    {t:'Lors de la dissolution du sucre dans l\'eau, la masse…',o:['se conserve : m_solution = m_sucre + m_eau','augmente légèrement','diminue car le sucre disparaît','double'],c:0,e:'La masse se conserve ! Le sucre "disparaît" à l\'œil mais ses molécules sont toujours là.'},
+    {t:'On dissout 10 g de sel dans 90 g d\'eau. La masse de la solution est…',o:['100 g','90 g','80 g','10 g'],c:0,e:'m_solution = 10 + 90 = 100 g. La masse se conserve !'},
+    {t:'La loi de conservation de la masse lors d\'une dissolution signifie que…',o:['rien ne se perd, rien ne se crée','le soluté disparaît définitivement','le volume de la solution double','la masse de la solution est inférieure à celle du solvant'],c:0,e:'Les molécules du soluté se dispersent dans le solvant mais ne disparaissent pas.'},
+    {t:'Une solution a une masse de 250 g. Le soluté pèse 25 g. Le solvant (eau) pèse…',o:['225 g','275 g','250 g','25 g'],c:0,e:'m_eau = m_solution − m_soluté = 250 − 25 = 225 g.'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Conservation masse',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 4 : CONCENTRATION ===== */
+function genConcentration(){
+  var mode=pick(['cascade_t','calc_m','calc_v','qcm_concept']);
+
+  if(mode==='cascade_t'){
+    /* t = m / V, valeurs entières */
+    var vVals=[0.5,1,1.5,2,2.5];
+    var V=pick(vVals);
+    var t=pick([10,20,30,40,50,60,80,100]);
+    var m=t*V;
+    var mStr=Number.isInteger(m)?String(m):String(round2(m));
+    var VStr=String(V).replace('.',',');
+    return {
+      type:'cascade',cat:'Concentration',
+      sig:'CT'+t+'V'+V,
+      text:'On dissout <b>'+mStr+' g</b> de soluté dans de l\'eau. Le volume de la solution est <b>'+VStr+' L</b>.<br>Calcule la concentration en masse <b>t</b> (en g/L).',
+      steps:[
+        {
+          prompt:'Écris la formule de la concentration en masse :',
+          lines:[
+            {pre:'t =',blank:true,ans:'m / V',accept:['m/V','m / V','m÷V','m soluté/V','m soluté / V'],unit:'',hint:'t = m_soluté ÷ V_solution'}
+          ]
+        },
+        {
+          prompt:'Substitue les valeurs (m = '+mStr+' g, V = '+VStr+' L) :',
+          lines:[
+            {pre:'t =',blank:true,ans:mStr+' / '+VStr,accept:[mStr+'/'+VStr,mStr+' / '+String(V),mStr+'/'+String(V)],unit:'',hint:'Remplace m par '+mStr+' et V par '+VStr}
+          ]
+        },
+        {
+          prompt:'Calcule :',
+          lines:[
+            {pre:'t =',blank:true,ans:String(t),accept:[String(t)],unit:'g/L',hint:'Utilise la calculatrice : '+mStr+' ÷ '+VStr+' = ?'}
+          ]
+        }
+      ],
+      finalMsg:'Concentration t = <b>'+t+' g/L</b> ✅'
+    };
+  }
+
+  if(mode==='calc_m'){
+    /* m = t × V */
+    var vVals=[0.5,1,1.5,2,2.5];
+    var V=pick(vVals);
+    var t=pick([10,20,30,40,50]);
+    var m=t*V;
+    var mStr=Number.isInteger(m)?String(m):String(round2(m));
+    var VStr=String(V).replace('.',',');
+    return {
+      type:'num',cat:'Concentration',
+      answer:m,tol:0.01,
+      text:'La concentration d\'une solution est <b>t = '+t+' g/L</b>.<br>Le volume de la solution est <b>V = '+VStr+' L</b>.<br>Quelle est la masse de soluté dissous (en g) ?',
+      explain:'m = t × V = '+t+' × '+VStr+' = <b>'+mStr+' g</b>.'
+    };
+  }
+
+  if(mode==='calc_v'){
+    /* V = m / t */
+    var mVals=[20,30,40,50,60,80,100];
+    var m=pick(mVals);
+    var t=pick([10,20,40,50,100]);
+    var V=round2(m/t);
+    var VStr=String(V).replace('.',',');
+    return {
+      type:'num',cat:'Concentration',
+      answer:V,tol:0.01,
+      text:'La concentration d\'une solution est <b>t = '+t+' g/L</b>.<br>La masse de soluté dissous est <b>m = '+m+' g</b>.<br>Quel est le volume de la solution (en L) ?',
+      explain:'V = m ÷ t = '+m+' ÷ '+t+' = <b>'+VStr+' L</b>.'
+    };
+  }
+
+  /* qcm_concept */
+  var pools=[
+    {t:'La concentration en masse t s\'exprime en…',o:['g/L','g/mL','kg/m²','L/g'],c:0,e:'t = m_soluté / V_solution → unité g/L (gramme par litre).'},
+    {t:'La formule de la concentration en masse est…',o:['t = m_soluté / V_solution','t = V / m','t = m_solution / V','t = m_solvant / V'],c:0,e:'t = masse du soluté ÷ volume de la solution (en g/L).'},
+    {t:'Une solution a une concentration de 50 g/L. Cela signifie que…',o:['il y a 50 g de soluté dans 1 L de solution','il y a 1 g de soluté dans 50 L','la solution pèse 50 g','il y a 50 L de solution'],c:0,e:'g/L = grammes par litre. 50 g/L = 50 g de soluté pour chaque litre de solution.'},
+    {t:'Si on double le volume d\'une solution en ajoutant de l\'eau, la concentration…',o:['diminue de moitié','double','reste la même','devient nulle'],c:0,e:'t = m/V. Si V×2 et m reste constant → t÷2. On appelle ça diluer la solution !'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Concentration',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== DISPATCH GEN ===== */
+var GEN={melanges:genMelanges,solution:genSolution,masse:genMasse,concentration:genConcentration};
+
+/* ===== MOTEUR QUIZ ===== */
+var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};
+var IS_ARENE=false;
+
+function elsTrain(){
+  return {
+    prog:gid('tq_prog'),help:gid('tq_help'),cat:gid('tq_cat'),viz:gid('tq_viz'),
+    text:gid('tq_text'),opts:gid('tq_opts'),ansrow:gid('tq_ansrow'),
+    inp:gid('tq_input'),valid:gid('tq_valid'),casc:gid('tq_casc'),
+    work:gid('tq_work'),feed:gid('tq_feed'),stars:gid('tq_stars'),
+    next:gid('tq_next'),card:gid('tq_card'),result:gid('tq_result')
+  };
+}
+function elsArene(){
+  return {
+    cat:gid('aq_cat'),viz:gid('aq_viz'),text:gid('aq_text'),opts:gid('aq_opts'),
+    ansrow:gid('aq_ansrow'),inp:gid('aq_input'),valid:gid('aq_valid'),
+    casc:gid('aq_casc'),feed:gid('aq_feed'),stars:gid('aq_stars'),next:gid('aq_next')
+  };
+}
+function els(){return IS_ARENE?elsArene():elsTrain();}
+
+function startTrain(t){
+  currentTheme=t;IS_ARENE=false;
+  quizState={mode:'train',q:null,idx:0,score:0,total:serieLen(),tries:0,cascStep:0,cascTries:0};
+  var e=elsTrain();
+  e.card.style.display='';e.result.style.display='none';
+  gid('trainTitle').textContent=TITLE[t]+' — Entraînement';
+  go('ecranTrain');
+  quizNext();
+}
+function startArene(){
+  IS_ARENE=true;
+  quizState={mode:'arene',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};
+  gid('areneJeu').style.display='';
+  gid('areneMenu').style.display='none';
+  quizNext();
+}
+function finArene(){
+  gid('areneJeu').style.display='none';
+  gid('areneMenu').style.display='';
+}
+
+function quizPick(){
+  if(IS_ARENE){
+    var cats=[];
+    ORDER.forEach(function(t){cats=cats.concat(THEME_CATS[t]);});
+    var cat=pick(cats);
+    var t=ORDER.filter(function(t){return THEME_CATS[t].indexOf(cat)>=0;})[0]||ORDER[0];
+    var prev=currentTheme;currentTheme=t;
+    var q=GEN[cat]();currentTheme=prev;
+    return q;
+  }
+  return GEN[currentTheme]();
+}
+
+function quizNext(){
+  var e=els();
+  var sl=IS_ARENE?999:serieLen();
+  if(!IS_ARENE&&quizState.idx>=sl){quizResult();return;}
+  quizState.q=quizPick();
+  quizState.tries=0;quizState.cascStep=0;quizState.cascTries=0;
+  quizRender();
+}
+
+function quizRender(){
+  var e=els();var cur=quizState.q;
+  if(!IS_ARENE){
+    e.prog.textContent='Question '+(quizState.idx+1)+' / '+serieLen();
+    e.help.textContent=HELP[currentTheme]||'';
+    e.help.style.display=HELP[currentTheme]?'':'none';
+  }
+  e.cat.textContent=CATNOM[cur.cat]||cur.cat||'';
+  e.text.innerHTML=cur.text;
+  e.feed.textContent='';e.feed.className='feedback';
+  e.stars.textContent='';
+  e.viz.style.display='none';e.viz.innerHTML='';
+  if(cur.viz){e.viz.innerHTML=cur.viz;e.viz.style.display='';}
+  if(e.next)e.next.style.display='none';
+
+  if(cur.type==='qcm'){
+    e.ansrow.style.display='none';
+    e.casc.style.display='none';
+    e.opts.style.display='';
+    e.opts.innerHTML='';
+    cur.options.forEach(function(opt,i){
+      var b=document.createElement('button');
+      b.className='opt';b.innerHTML=opt;
+      b.onclick=(function(idx){return function(){qcmChoose(idx);};})(i);
+      e.opts.appendChild(b);
+    });
+    if(e.work)e.work.style.display='none';
+  } else if(cur.type==='cascade'){
+    e.ansrow.style.display='none';
+    e.opts.style.display='none';
+    if(e.work)e.work.style.display='none';
+    cascRender();
+  } else {
+    e.ansrow.style.display='';
+    e.opts.style.display='none';
+    e.casc.style.display='none';
+    if(e.work)e.work.style.display='';
+    e.inp.value='';
+    setTimeout(function(){try{e.inp.focus();}catch(_){}},80);
+  }
+}
+
+function qcmChoose(idx){
+  var e=els();var cur=quizState.q;
+  var btns=e.opts.querySelectorAll('.opt');
+  btns.forEach(function(b){b.onclick=null;b.style.pointerEvents='none';});
+  var ok=(idx===cur.correct);
+  btns[idx].classList.add(ok?'good':'bad');
+  if(!ok&&cur.correct<btns.length)btns[cur.correct].classList.add('good');
+  e.feed.className='feedback '+(ok?'ok':'no');
+  e.feed.innerHTML=ok?'✅ '+cur.explain:'❌ '+cur.explain;
+  e.stars.textContent=ok?'⭐⭐⭐':'';
+  if(!IS_ARENE){
+    if(ok)quizState.score++;
+    quizState.idx++;
+  } else {
+    if(ok){quizState.score++;gid('aq_corr').textContent=quizState.score;}
+    quizState.total++;gid('aq_tot').textContent=quizState.total;
+    var streak=ok?(parseInt(gid('aq_streak').textContent||'0')+1):0;
+    gid('aq_streak').textContent=streak;
+  }
+  if(e.next)e.next.style.display='';
+}
+
+function quizValidate(){
+  var e=els();var cur=quizState.q;
+  if(cur.type==='qcm')return;
+  if(cur.type==='cascade'){cascValidate();return;}
+  var raw=e.inp.value;
+  var v=parseNum(raw);
+  if(v===null){e.inp.classList.add('shake');setTimeout(function(){e.inp.classList.remove('shake');},400);return;}
+  var ok=Math.abs(v-(cur.answer||0))<=(cur.tol||0.01);
+  quizState.tries++;
+  if(ok){
+    e.feed.className='feedback ok';
+    e.feed.innerHTML='✅ '+(cur.explain||'Bravo !');
+    e.stars.textContent='⭐⭐⭐';
+    e.inp.disabled=true;
+    if(e.valid)e.valid.disabled=true;
+    if(!IS_ARENE){quizState.score++;quizState.idx++;}
+    else{quizState.score++;gid('aq_corr').textContent=quizState.score;quizState.total++;gid('aq_tot').textContent=quizState.total;var s=parseInt(gid('aq_streak').textContent||'0')+1;gid('aq_streak').textContent=s;}
+    if(e.next)e.next.style.display='';
+  } else {
+    if(quizState.tries===1){e.feed.className='feedback no';e.feed.textContent='Pas tout à fait… Réessaie !';}
+    else if(quizState.tries===2){e.feed.className='feedback no';e.feed.innerHTML='💡 Aide : '+(cur.explain||HELP[currentTheme]||'');}
+    else{
+      e.feed.className='feedback no';
+      e.feed.innerHTML='La réponse était <b>'+(cur.answer)+'</b>'+(cur.unit?' '+cur.unit:'')+'.<br>'+(cur.explain||'');
+      e.inp.disabled=true;if(e.valid)e.valid.disabled=true;
+      if(!IS_ARENE)quizState.idx++;
+      else{quizState.total++;gid('aq_tot').textContent=quizState.total;gid('aq_streak').textContent=0;}
+      if(e.next)e.next.style.display='';
+    }
+    e.inp.classList.add('shake');setTimeout(function(){e.inp.classList.remove('shake');},400);
+  }
+}
+
+/* ===== CASCADE ===== */
+function cascRender(){
+  var e=els();var cur=quizState.q;
+  e.casc.style.display='';e.casc.innerHTML='';
+  var step=cur.steps[quizState.cascStep];
+  var div=document.createElement('div');div.className='cstep on';
+  var html='<div class="cprompt">'+step.prompt+'</div><div class="cbody">';
+  step.lines.forEach(function(ln,li){
+    html+='<div class="cline">'+ln.pre+' ';
+    if(ln.blank){
+      html+='<input class="cblank" id="cblank_'+li+'" type="text" inputmode="decimal" autocomplete="off" style="width:140px">';
+    } else {
+      html+='<span>'+ln.ans+'</span>';
+    }
+    if(ln.unit)html+=' <span>'+ln.unit+'</span>';
+    html+='</div>';
+  });
+  html+='<div class="cfeed" id="cfeed"></div>';
+  html+='<div class="cverify"><button class="btn vert" onclick="cascValidate()">Vérifier</button></div>';
+  html+='</div>';
+  div.innerHTML=html;
+  e.casc.appendChild(div);
+  setTimeout(function(){var b=div.querySelector('.cblank');if(b)try{b.focus();}catch(_){}},80);
+}
+
+function normTxt(s){return String(s).trim().toLowerCase().replace(/\s+/g,' ').replace(',','.');}
+
+function cascValidate(){
+  var e=els();var cur=quizState.q;
+  var step=cur.steps[quizState.cascStep];
+  var allOk=true;
+  step.lines.forEach(function(ln,li){
+    if(!ln.blank)return;
+    var inp=gid('cblank_'+li);if(!inp)return;
+    var val=normTxt(inp.value);
+    var correct=false;
+    var accepts=ln.accept||[ln.ans];
+    accepts.forEach(function(a){if(normTxt(a)===val)correct=true;});
+    /* tolérance numérique */
+    if(!correct){
+      var vn=parseNum(val);var an=parseNum(ln.ans);
+      if(vn!==null&&an!==null&&Math.abs(vn-an)<=0.01)correct=true;
+    }
+    if(correct){inp.classList.add('cbok');inp.classList.remove('cbno');}
+    else{inp.classList.add('cbno');inp.classList.remove('cbok');allOk=false;}
+    inp.disabled=true;
+  });
+  var cfeed=gid('cfeed');
+  quizState.cascTries++;
+  if(allOk){
+    if(cfeed)cfeed.innerHTML='✅ Parfait !';
+    var cverify=e.casc.querySelector('.cverify');if(cverify)cverify.style.display='none';
+    /* Étape suivante ou fin */
+    quizState.cascStep++;
+    if(quizState.cascStep<cur.steps.length){
+      setTimeout(function(){cascRender();},500);
+    } else {
+      /* cascade terminée */
+      var fe=e.feed;fe.className='feedback ok';
+      fe.innerHTML='✅ '+(cur.finalMsg||'Bravo ! Cascade complète.');
+      e.stars.textContent='⭐⭐⭐';
+      if(!IS_ARENE){quizState.score++;quizState.idx++;}
+      else{quizState.score++;gid('aq_corr').textContent=quizState.score;quizState.total++;gid('aq_tot').textContent=quizState.total;var s=parseInt(gid('aq_streak').textContent||'0')+1;gid('aq_streak').textContent=s;}
+      if(e.next)e.next.style.display='';
+    }
+  } else {
+    /* Réactivation pour correction */
+    step.lines.forEach(function(ln,li){
+      if(!ln.blank)return;
+      var inp=gid('cblank_'+li);if(!inp)return;
+      if(inp.classList.contains('cbno')){inp.disabled=false;inp.value='';}
+    });
+    if(quizState.cascTries===1){if(cfeed)cfeed.innerHTML='<span class="cfeed no">Pas tout à fait… Réessaie !</span>';}
+    else if(quizState.cascTries===2){if(cfeed)cfeed.innerHTML='<span class="cfeed no">💡 Indice : '+step.lines.map(function(l){return l.hint||'';}).join(' ')+'</span>';}
+    else{
+      /* afficher réponses */
+      step.lines.forEach(function(ln,li){
+        if(!ln.blank)return;
+        var inp=gid('cblank_'+li);if(!inp)return;
+        inp.value=ln.ans;inp.disabled=true;inp.classList.add('cbok');inp.classList.remove('cbno');
+      });
+      if(cfeed)cfeed.innerHTML='<span class="cfeed no">Réponse affichée. Passe à la suite !</span>';
+      var cverify=e.casc.querySelector('.cverify');if(cverify)cverify.style.display='none';
+      quizState.cascStep++;
+      if(quizState.cascStep<cur.steps.length){
+        setTimeout(function(){cascRender();},800);
+      } else {
+        var fe=e.feed;fe.className='feedback no';
+        fe.innerHTML='💪 Continue ! Regarde bien les étapes pour la prochaine fois.';
+        if(!IS_ARENE)quizState.idx++;
+        else{quizState.total++;gid('aq_tot').textContent=quizState.total;gid('aq_streak').textContent=0;}
+        if(e.next)e.next.style.display='';
+      }
+    }
+  }
+}
+
+function quizResult(){
+  var e=elsTrain();
+  var sc=quizState.score,tot=serieLen(),seuil=seuilFor();
+  e.card.style.display='none';
+  e.result.style.display='';
+  var ok=sc>=seuil;
+  gid('tq_rbig').textContent=sc+' / '+tot;
+  gid('tq_rbig').className='big '+(ok?'ok':'no');
+  gid('tq_rmsg').textContent=ok?'Excellent ! Tu maîtrises ce thème 🎉':'Continue ! Relis la leçon et réessaie 💪';
+  var btns=gid('tq_rbtns');btns.innerHTML='';
+  var b1=document.createElement('button');
+  b1.className='btn teal';b1.textContent='⟳ Recommencer';
+  b1.onclick=function(){startTrain(currentTheme);};btns.appendChild(b1);
+  var b2=document.createElement('button');
+  b2.className='btn fant';b2.textContent='← Carte';
+  b2.onclick=function(){go('accueil');};btns.appendChild(b2);
+  if(ok){
+    confettis();
+    themeDone[currentTheme]=true;
+    progSave();updateMap();
+    suiviEnvoi('terminé',sc,tot);
+  } else {
+    suiviEnvoi('incomplet',sc,tot);
+  }
+}
+
+/* ===== PROG ===== */
+function _progKey(){var e='';try{e=localStorage.getItem('kc_eleve')||'';}catch(_){}return 'prog_'+e+'_'+SUIVI.nom;}
+function progSave(){try{localStorage.setItem(_progKey(),JSON.stringify({d:themeDone}));}catch(_){}}
+function progLoad(){try{var s=localStorage.getItem(_progKey());if(!s)return;var o=JSON.parse(s);if(o&&o.d)Object.keys(o.d).forEach(function(k){if(k in themeDone)themeDone[k]=o.d[k];});}catch(_){}}
+
+/* ===== CALCULATRICE ===== */
+var kcExpr='',kcAns=0;
+var KC_ROWS=[
+  [{l:'AC',a:'clr',c:'act'},{l:'⌫',a:'back',c:'act'},{l:'(',a:'(',c:'op'},{l:')',a:')',c:'op'}],
+  [{l:'x²',a:'^2',c:'fn'},{l:'√',a:'sqrt(',c:'fn'},{l:'%',a:'%',c:'op'},{l:'÷',a:'/',c:'op'}],
+  [{l:'7'},{l:'8'},{l:'9'},{l:'×',a:'*',c:'op'}],
+  [{l:'4'},{l:'5'},{l:'6'},{l:'\u2212',a:'-',c:'op'}],
+  [{l:'1'},{l:'2'},{l:'3'},{l:'+',a:'+',c:'op'}],
+  [{l:'0',a:'0',c:'w2'},{l:',',a:'.'},{l:'=',a:'eq',c:'eq'}]
+];
+function kcBuild(){
+  var kk=gid('kcKeys');if(!kk)return;kk.innerHTML='';
+  KC_ROWS.forEach(function(row){
+    row.forEach(function(k){
+      var b=document.createElement('button');
+      b.className='kc-key'+(k.c?' '+k.c:'');
+      b.textContent=k.l;
+      var act=k.a!==undefined?k.a:k.l;
+      b.onclick=function(){kcTap(act);};
+      kk.appendChild(b);
+    });
+  });
+}
+function kcTap(a){
+  if(a==='clr'){kcExpr='';kcAns=0;}
+  else if(a==='back'){kcExpr=kcExpr.slice(0,-1);}
+  else if(a==='eq'){
+    try{
+      var expr=kcExpr.replace(/\^2/g,'**2').replace(/sqrt\(/g,'Math.sqrt(').replace(/%/g,'/100');
+      var r=Function('"use strict";return ('+expr+')')();
+      kcAns=isFinite(r)?r:0;
+      gid('kcRes').textContent=String(round2(kcAns)).replace('.',',');
+      gid('kcExpr').textContent=kcExpr;
+      return;
+    }catch(e){gid('kcRes').textContent='Erreur';return;}
+  }
+  else kcExpr+=a;
+  gid('kcExpr').textContent=kcExpr;
+  gid('kcRes').textContent=String(round2(kcAns)).replace('.',',');
+}
+function kcToggle(){var p=gid('kcPanel');p.hidden=!p.hidden;if(!p.hidden){var a=document.activeElement;if(a&&a.matches&&(a.id==='tq_input'||a.id==='aq_input'))a.blur();}}
+function kcSend(){
+  var v=String(round2(kcAns)).replace('.',',');
+  var t=document.getElementById('tq_input');var a=document.getElementById('aq_input');
+  var active=IS_ARENE?a:t;
+  if(active)active.value=v;
+  kcToggle();
+}
+
+/* ===== INIT ===== */
+progLoad();updateMap();kcBuild();
+</script>
+</body>
+</html>
