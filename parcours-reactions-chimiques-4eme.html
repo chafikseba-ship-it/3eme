@@ -915,8 +915,122 @@ function genEquation(){
   };
 }
 
+/* ===== GÉNÉRATEUR 5 : CONSERVATION DE LA MASSE ===== */
+function genConservationMasse(){
+  var mode=pick(['cascade_masse','calc_prod','qcm_lavoisier']);
+  if(mode==='cascade_masse'){
+    var mR1=rint(3,30);var mR2=pick([8,10,12,16,20,24,32,40]);
+    var mProd=mR1+mR2;
+    return {
+      type:'cascade',cat:'Équation bilan',
+      sig:'CM4'+mR1+'R'+mR2,
+      text:'Réactif 1 : <b>'+mR1+' g</b> · Réactif 2 : <b>'+mR2+' g</b><br>Calcule la masse totale des produits formés (en g).',
+      steps:[
+        {
+          prompt:'Écris la loi de conservation de la masse (loi de Lavoisier) :',
+          lines:[
+            {pre:'m<sub>produits</sub> =',blank:true,ans:'m réactifs',accept:['m reactifs','m_réactifs','m des réactifs','m(réactifs)','m réactif 1 + m réactif 2'],unit:'',hint:'m_produits = m_réactifs (rien ne se crée, rien ne se perd)'}
+          ]
+        },
+        {
+          prompt:'Substitue les valeurs :',
+          lines:[
+            {pre:'m<sub>produits</sub> =',blank:true,ans:mR1+' + '+mR2,accept:[mR1+'+'+mR2,String(mR1)+' + '+String(mR2)],unit:'g',hint:'Remplace par '+mR1+' + '+mR2}
+          ]
+        },
+        {
+          prompt:'Calcule la masse totale des produits :',
+          lines:[
+            {pre:'m<sub>produits</sub> =',blank:true,ans:String(mProd),accept:[String(mProd)],unit:'g',hint:mR1+' + '+mR2+' = ?'}
+          ]
+        }
+      ],
+      finalMsg:'Masse des produits = <b>'+mProd+' g</b> ✅'
+    };
+  }
+  if(mode==='calc_prod'){
+    var mR1=rint(5,40);var mR2=pick([8,10,16,20,24,32,40,48]);
+    var mProd=mR1+mR2;
+    var whichAsk=pick(['r1','r2']);
+    if(whichAsk==='r1'){
+      return {
+        type:'num',cat:'Équation bilan',answer:mR1,tol:0,
+        text:'La masse totale des produits est <b>'+mProd+' g</b>. Le réactif 2 pèse <b>'+mR2+' g</b>.<br>Quelle est la masse du réactif 1 (en g) ?',
+        explain:'m<sub>réactif 1</sub> = m<sub>produits</sub> − m<sub>réactif 2</sub> = '+mProd+' − '+mR2+' = <b>'+mR1+' g</b>.'
+      };
+    } else {
+      return {
+        type:'num',cat:'Équation bilan',answer:mR2,tol:0,
+        text:'La masse totale des produits est <b>'+mProd+' g</b>. Le réactif 1 pèse <b>'+mR1+' g</b>.<br>Quelle est la masse du réactif 2 (en g) ?',
+        explain:'m<sub>réactif 2</sub> = m<sub>produits</sub> − m<sub>réactif 1</sub> = '+mProd+' − '+mR1+' = <b>'+mR2+' g</b>.'
+      };
+    }
+  }
+  /* qcm_lavoisier */
+  var pools=[
+    {t:'On brûle 12 g de carbone avec 32 g de dioxygène → CO₂. La masse de CO₂ obtenue est…',o:['44 g','32 g','12 g','24 g'],c:0,e:'m_produits = 12 + 32 = 44 g. Loi de conservation de la masse !'},
+    {t:'Après une combustion, on obtient 88 g de CO₂ et 36 g d\'eau. La masse totale des réactifs était…',o:['124 g','88 g','36 g','52 g'],c:0,e:'m_réactifs = m_produits = 88 + 36 = 124 g. Rien ne se perd !'},
+    {t:'On chauffe 56 g de fer avec 16 g de dioxygène. On obtient de l\'oxyde de fer. Sa masse est…',o:['72 g','56 g','16 g','40 g'],c:0,e:'m_oxyde = m_fer + m_O₂ = 56 + 16 = 72 g. L\'oxyde de fer est plus lourd que le fer de départ !'},
+    {t:'Pourquoi la masse d\'un morceau de fer augmente-t-elle quand il rouille ?',o:['Le fer fixe des atomes d\'oxygène de l\'air pour former de l\'oxyde de fer','Le fer se dilate','L\'eau s\'accumule sur le fer','Les atomes de fer grossissent'],c:0,e:'m_oxyde_fer = m_fer + m_oxygène. Le fer "gagne" des atomes d\'O₂ → sa masse augmente.'},
+    {t:'Un chimiste brûle un gaz et récupère 44 g de CO₂ et 18 g d\'eau. La masse de dioxygène consommé était 48 g. La masse du gaz brûlé était…',o:['14 g','62 g','48 g','26 g'],c:0,e:'m_gaz + m_O₂ = m_CO₂ + m_H₂O → m_gaz = (44+18) − 48 = 14 g.'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Équation bilan',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 6 : IDENTIFICATION RÉACTIFS/PRODUITS PAR LES TESTS ===== */
+function genTestsChimiques(){
+  var mode=pick(['qcm_test','cascade_protocole','qcm_interpretation']);
+  if(mode==='qcm_test'){
+    var pools=[
+      {t:'Pour identifier le <b>dioxyde de carbone (CO₂)</b> parmi les gaz produits d\'une combustion, on utilise…',o:['L\'eau de chaux : elle se trouble en présence de CO₂','Le sulfate de cuivre : il devient bleu en présence de CO₂','Un thermomètre','Un pH-mètre'],c:0,e:'Test CO₂ : eau de chaux → trouble blanc. C\'est le test officiel du dioxyde de carbone.'},
+      {t:'Pour identifier l\'<b>eau (H₂O)</b> produite lors d\'une combustion, on utilise…',o:['Le sulfate de cuivre anhydre (blanc → bleu en présence d\'eau)','L\'eau de chaux (qui se trouble)','Un compte-gouttes','Un thermomètre'],c:0,e:'Test H₂O : sulfate de cuivre anhydre BLANC → BLEU au contact de l\'eau. Spécifique à l\'eau.'},
+      {t:'L\'eau de chaux devient trouble. Que peut-on conclure ?',o:['Il y a du CO₂ (dioxyde de carbone)','Il y a de l\'eau','Il y a du méthane','Il y a de l\'oxygène'],c:0,e:'Eau de chaux trouble = présence de CO₂ confirmée.'},
+      {t:'Le sulfate de cuivre anhydre passe de blanc à bleu. Que peut-on conclure ?',o:['Il y a de l\'eau (H₂O)','Il y a du CO₂','Il y a du fer','Il y a du méthane'],c:0,e:'Sulfate de cuivre blanc → bleu = présence d\'eau (H₂O) confirmée.'},
+      {t:'Lors de la combustion du méthane, on recueille le gaz dans l\'eau de chaux. Que se passe-t-il ?',o:['L\'eau de chaux se trouble car le méthane brûlé produit du CO₂','L\'eau de chaux reste claire','L\'eau de chaux devient rouge','L\'eau de chaux s\'évapore'],c:0,e:'Combustion méthane → CO₂ + H₂O. Le CO₂ trouble l\'eau de chaux.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Combustion',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_protocole'){
+    return {
+      type:'cascade',cat:'Combustion',sig:'TEST_COMB',
+      text:'🔬 Après la combustion d\'une bougie, on recueille les gaz et vapeurs produits.<br>On effectue deux tests pour identifier les produits.',
+      steps:[
+        {
+          prompt:'Test 1 : On souffle les gaz dans l\'eau de chaux. Elle se trouble. Quel produit cela identifie-t-il ?',
+          lines:[
+            {pre:'Produit identifié :',blank:true,ans:'dioxyde de carbone',accept:['dioxyde de carbone','CO2','CO₂','dioxyde carbone'],unit:'',hint:'L\'eau de chaux trouble = CO₂ (dioxyde de carbone)'}
+          ]
+        },
+        {
+          prompt:'Test 2 : On met du sulfate de cuivre anhydre (blanc) en contact avec la vapeur. Il devient bleu. Quel produit cela identifie-t-il ?',
+          lines:[
+            {pre:'Produit identifié :',blank:true,ans:'eau',accept:['eau','H2O','H₂O','vapeur d\'eau'],unit:'',hint:'Sulfate de cuivre blanc → bleu = H₂O (eau)'}
+          ]
+        },
+        {
+          prompt:'Complète l\'équation bilan de la combustion de la bougie (cire) :',
+          lines:[
+            {pre:'cire + dioxygène →',blank:true,ans:'dioxyde de carbone + eau',accept:['dioxyde de carbone + eau','CO2 + eau','CO₂ + H₂O','dioxyde de carbone + H2O'],unit:'',hint:'Les deux produits identifiés séparés par un +'}
+          ]
+        }
+      ],
+      finalMsg:'Bravo ! cire + O₂ → <b>CO₂ + H₂O</b> ✅'
+    };
+  }
+  /* qcm_interpretation */
+  var pools2=[
+    {t:'On brûle un gaz inconnu. Les produits troublent l\'eau de chaux ET font virer le sulfate de cuivre au bleu. Que peut-on conclure ?',o:['Le gaz contient du carbone (C) et de l\'hydrogène (H)','Le gaz contient du fer','Le gaz est de l\'azote','Le gaz est de l\'oxygène pur'],c:0,e:'CO₂ → carbone. H₂O → hydrogène. Donc le combustible contient C et H. C\'est un hydrocarbure (méthane, propane, butane…).'},
+    {t:'On brûle du carbone pur. On obtient uniquement du CO₂, pas d\'eau. Qu\'est-ce que cela indique sur la composition du carbone ?',o:['Le carbone pur ne contient pas d\'hydrogène (sinon H₂O se serait formée)','Le carbone contient de l\'hydrogène','Le test est incorrect','Il manque du dioxygène'],c:0,e:'Pas d\'eau → pas d\'hydrogène H dans le combustible. Le carbone pur = uniquement des atomes C.'},
+    {t:'La combustion du méthane (CH₄) produit de l\'eau. D\'où viennent les atomes d\'hydrogène de l\'eau ?',o:['Du méthane (CH₄ contient 4 atomes H)','Du dioxygène (O₂)','De l\'air ambiant','Ils sont créés lors de la combustion'],c:0,e:'L\'eau H₂O contient H. Ces H viennent du méthane CH₄ (4 atomes d\'hydrogène). Conservation des atomes !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Combustion',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== DISPATCH GEN ===== */
-var GEN={combustion:genCombustion,oxydation:genOxydation,reactifs:genReactifs,equation:genEquation};
+var GEN={combustion:genCombustion,oxydation:genOxydation,reactifs:genReactifs,equation:genEquation,conservationMasse:genConservationMasse,testsChimiques:genTestsChimiques};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

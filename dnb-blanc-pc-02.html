@@ -801,6 +801,363 @@ function genOndes(){
   };
 }
 
+/* ===== GÉNÉRATEUR 8 : Bilan de masse dissolution ===== */
+function genBilanMasse(){
+  var configs=[
+    {solute:'sel (NaCl)',solvant:'eau',m_solute:25,m_solvant:200,m_solution:225},
+    {solute:'sucre',solvant:'eau',m_solute:50,m_solvant:450,m_solution:500},
+    {solute:'glucose',solvant:'eau',m_solute:18,m_solvant:182,m_solution:200},
+    {solute:'sulfate de cuivre',solvant:'eau',m_solute:10,m_solvant:240,m_solution:250}
+  ];
+  var cfg=choix(configs);
+  var etapes=[
+    {
+      question:'Q1 — Loi de conservation de la masse (2 pts)',
+      role:'Rappeler la loi',
+      q:'Lors d\'une dissolution, quelle loi permet de calculer la masse de la solution obtenue ?',
+      verif:function(inp){var t=norm(inp);return t.includes('conservation')||t.includes('masse')||t.includes('total');},
+      aide:'La loi de conservation de la masse : m_solution = m_solvant + m_soluté.',
+      solutionHTML:'Loi de conservation de la masse : m_solution = m_solvant + m_soluté'
+    },
+    {
+      question:'Q2 — Écrire le bilan (2 pts)',
+      role:'Écrire la relation',
+      clavier:['m','=','+'],
+      q:'Écris la relation entre m_solution, m_solvant et m_soluté.',
+      verif:function(inp){var t=norm(inp);return t.includes('=')&&t.includes('+')&&(t.includes('solution')||t.includes('sol'))&&(t.includes('solvant')||t.includes('solute'));},
+      aide:'m_solution = m_solvant + m_soluté',
+      solutionHTML:'m_solution = m_solvant + m_soluté'
+    },
+    {
+      question:'Q3 — Calculer la masse de la solution (3 pts)',
+      role:'Remplacer les valeurs',
+      clavier:['+','='],
+      q:'Remplace m_solvant = '+cfg.m_solvant+' g et m_soluté = '+cfg.m_solute+' g dans la relation.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.m_solvant)<1;})&&ns.some(function(x){return Math.abs(x-cfg.m_solute)<1;});},
+      aide:'m_solution = '+cfg.m_solvant+' + '+cfg.m_solute,
+      solutionHTML:'m_solution = '+cfg.m_solvant+' + '+cfg.m_solute
+    },
+    {
+      role:'Calculer m_solution',
+      clavier:['+','='],
+      q:'Calcule m_solution = '+cfg.m_solvant+' + '+cfg.m_solute+'. Donne le résultat en grammes (g).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.m_solution)<=1;});},
+      aide:cfg.m_solvant+' + '+cfg.m_solute+' = '+cfg.m_solution+' g',
+      solutionHTML:'m_solution = '+cfg.m_solution+' g'
+    }
+  ];
+  return {
+    titre:'Dissolution — bilan de masse',
+    enonceHTML:'On dissout <b>'+cfg.m_solute+' g de '+cfg.solute+'</b> (soluté) dans <b>'+cfg.m_solvant+' g d\''+cfg.solvant+'</b> (solvant).<br>Calcule la masse de la solution obtenue.<br><i>Rappel : m_solution = m_solvant + m_soluté</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="400" height="200" fill="#FFF6E6" rx="10"/>';
+      // Bécher solvant
+      svg+='<path d="M 30 50 L 22 155 L 102 155 L 94 50 Z" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2"/>';
+      svg+='<path d="M 26 120 L 22 155 L 102 155 L 98 120 Z" fill="#7EC8E8" opacity="0.6"/>';
+      svg+=svgTxt(62,40,'Solvant',11,'#2A7AB0');
+      svg+=svgTxt(62,170,'m = '+cfg.m_solvant+' g',12,'#2A7AB0');
+      // Balance soluté
+      svg+='<rect x="150" y="95" width="60" height="40" rx="6" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(180,115,'Soluté',11,'#E07A1F');
+      svg+=svgTxt(180,170,'m = '+cfg.m_solute+' g',12,'#E07A1F');
+      // Flèche addition
+      svg+='<line x1="218" y1="115" x2="248" y2="115" stroke="#9FD356" stroke-width="2.5"/>';
+      svg+='<polygon points="248,110 260,115 248,120" fill="#9FD356"/>';
+      svg+=svgTxt(234,104,'+',16,'#9FD356');
+      // Résultat
+      svg+='<path d="M 270 50 L 262 155 L 362 155 L 354 50 Z" fill="#fff0d6" stroke="#E0A415" stroke-width="2"/>';
+      svg+='<path d="M 266 100 L 262 155 L 362 155 L 358 100 Z" fill="#FFD98A" opacity="0.6"/>';
+      svg+=svgTxt(312,40,'Solution',11,'#E07A1F');
+      svg+=svgTxt(312,170,'m = ? g',12,'#E07A1F');
+      svg+=svgTxt(200,190,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 9 : Concentration massique ===== */
+function genConcentrationMassique(){
+  var configs=[
+    {solute:'glucose',V:0.25,m:50,unite:'g/L'},
+    {solute:'sel',V:2,m:144,unite:'g/L'},
+    {solute:'sulfate de cuivre',V:0.5,m:25,unite:'g/L'},
+    {solute:'sucre',V:1.5,m:300,unite:'g/L'}
+  ];
+  var cfg=choix(configs);
+  var C=Math.round(cfg.m/cfg.V*10)/10;
+  var etapes=[
+    {
+      question:'Q1 — Formule de la concentration (2 pts)',
+      role:'Rappeler la formule',
+      clavier:['t','=','m','÷','V'],
+      q:'Rappelle la formule de la concentration massique t (ou C) en fonction de la masse m et du volume V de solution.',
+      verif:function(inp){var t=norm(inp);return (t.includes('t')||t.includes('c'))&&t.includes('m')&&t.includes('v')&&t.includes('=')&&(t.includes('÷')||t.includes('/'));},
+      aide:'t = m ÷ V  (avec m en g et V en L, t en g/L)',
+      solutionHTML:'t = m ÷ V'
+    },
+    {
+      question:'Q2 — Calculer la concentration (3 pts)',
+      role:'Remplacer les valeurs',
+      clavier:['÷','='],
+      q:'Remplace m = '+cfg.m+' g et V = '+fr(cfg.V)+' L dans la formule.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.m)<1;})&&ns.some(function(x){return Math.abs(x-cfg.V)<0.01;});},
+      aide:'t = '+cfg.m+' ÷ '+fr(cfg.V),
+      solutionHTML:'t = '+cfg.m+' ÷ '+fr(cfg.V)
+    },
+    {
+      role:'Calculer t',
+      clavier:['÷','='],
+      q:'Calcule t = '+cfg.m+' ÷ '+fr(cfg.V)+'. Donne le résultat en g/L.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-C)<=C*0.05+0.1;});},
+      aide:'t = '+fr(C)+' g/L',
+      solutionHTML:'t = '+fr(C)+' g/L'
+    },
+    {
+      question:'Q3 — Interpréter (2 pts)',
+      role:'Donner un sens physique',
+      q:'Que signifie t = '+fr(C)+' g/L ? Que contient 1 litre de cette solution ?',
+      verif:function(inp){var t=norm(inp);return nbs(inp).some(function(x){return Math.abs(x-C)<=C*0.05+0.1;})&&(t.includes('g')||t.includes('gramme'));},
+      aide:'t = '+fr(C)+' g/L signifie qu\'il y a '+fr(C)+' g de soluté par litre de solution.',
+      solutionHTML:'1 litre de solution contient '+fr(C)+' g de '+cfg.solute+'.'
+    }
+  ];
+  return {
+    titre:'Concentration massique — '+cfg.solute,
+    enonceHTML:'On prépare une solution en dissolvant <b>'+cfg.m+' g de '+cfg.solute+'</b> dans <b>'+fr(cfg.V)+' L d\'eau</b>.<br>Calcule la concentration massique de cette solution.<br><i>Rappel : t = m ÷ V &nbsp;(m en g, V en L, t en g/L)</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="360" height="200" fill="#FFF6E6" rx="10"/>';
+      svg+='<path d="M 120 40 L 110 165 L 250 165 L 240 40 Z" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5"/>';
+      svg+='<line x1="115" y1="40" x2="245" y2="40" stroke="#4FA3D1" stroke-width="2"/>';
+      svg+='<path d="M 113 125 L 110 165 L 250 165 L 247 125 Z" fill="#7EC8E8" opacity="0.6"/>';
+      svg+=svgTxt(180,150,cfg.solute+' dissous',12,'#2A7AB0');
+      svg+=svgTxt(60,80,'m = '+cfg.m+' g',13,'#E07A1F');
+      svg+=svgTxt(300,80,'V = '+fr(cfg.V)+' L',13,'#E07A1F');
+      svg+=svgTxt(180,185,'t = m ÷ V = ? g/L',12,'#5A4A2F');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 10 : Conservation de la masse — réaction chimique ===== */
+function genConservationMasseReaction(){
+  var configs=[
+    {reactif1:'fer (Fe)',reactif2:'soufre (S)',produit:'sulfure de fer (FeS)',m1:56,m2:32,mproduit:88,eq:'Fe + S → FeS'},
+    {reactif1:'magnésium (Mg)',reactif2:'dioxygène (O₂)',produit:'oxyde de magnésium (MgO)',m1:24,m2:16,mproduit:40,eq:'2 Mg + O₂ → 2 MgO'},
+    {reactif1:'cuivre (Cu)',reactif2:'soufre (S)',produit:'sulfure de cuivre (CuS)',m1:64,m2:32,mproduit:96,eq:'Cu + S → CuS'},
+    {reactif1:'aluminium (Al)',reactif2:'dioxygène (O₂)',produit:'alumine (Al₂O₃)',m1:54,m2:48,mproduit:102,eq:'4 Al + 3 O₂ → 2 Al₂O₃'}
+  ];
+  var cfg=choix(configs);
+  var facteur=choix([1,2,3]);
+  var mR1=cfg.m1*facteur;
+  var mR2=cfg.m2*facteur;
+  var mProd=cfg.mproduit*facteur;
+  var etapes=[
+    {
+      question:'Q1 — Principe de conservation (2 pts)',
+      role:'Énoncer la loi',
+      q:'Lors d\'une réaction chimique, que peut-on dire de la masse totale des réactifs comparée à la masse totale des produits ?',
+      verif:function(inp){var t=norm(inp);return t.includes('conservation')||t.includes('egal')||t.includes('meme')||t.includes('conserve');},
+      aide:'La masse totale des réactifs = la masse totale des produits (loi de conservation de la masse).',
+      solutionHTML:'La masse totale des réactifs est égale à la masse totale des produits.'
+    },
+    {
+      question:'Q2 — Écrire le bilan de masse (2 pts)',
+      role:'Écrire la relation',
+      clavier:['m','=','+'],
+      q:'Pour la réaction : '+cfg.eq+'<br>Écris la relation entre m(réactifs) et m(produits).',
+      verif:function(inp){var t=norm(inp);return t.includes('=')&&(t.includes('reactif')||t.includes('produit'));},
+      aide:'m(réactifs) = m(produit) &nbsp;→&nbsp; m('+cfg.reactif1+') + m('+cfg.reactif2+') = m('+cfg.produit+')',
+      solutionHTML:'m(réactifs) = m(produits)'
+    },
+    {
+      question:'Q3 — Calculer la masse du produit (3 pts)',
+      role:'Additionner les masses des réactifs',
+      clavier:['+','='],
+      q:'Pour cette expérience : m('+cfg.reactif1+') = '+mR1+' g et m('+cfg.reactif2+') = '+mR2+' g.<br>Calcule la masse totale des réactifs.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-mProd)<=1;});},
+      aide:mR1+' + '+mR2+' = '+mProd+' g',
+      solutionHTML:'m(réactifs) = '+mR1+' + '+mR2+' = '+mProd+' g'
+    },
+    {
+      role:'Conclure sur la masse du produit',
+      q:'D\'après la loi de conservation, quelle est la masse de '+cfg.produit+' formé ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-mProd)<=1;});},
+      aide:'Masse du produit = '+mProd+' g (conservation de la masse).',
+      solutionHTML:'m('+cfg.produit+') = '+mProd+' g'
+    }
+  ];
+  return {
+    titre:'Conservation de la masse — réaction chimique',
+    enonceHTML:'On fait réagir du <b>'+cfg.reactif1+'</b> avec du <b>'+cfg.reactif2+'</b> pour former du <b>'+cfg.produit+'</b>.<br>'+
+      'Équation : <b style="background:#FFF0D6;padding:2px 8px;border-radius:6px;">'+cfg.eq+'</b><br>'+
+      'Masses utilisées : m('+cfg.reactif1+') = <b>'+mR1+' g</b>, m('+cfg.reactif2+') = <b>'+mR2+' g</b>.',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="400" height="180" fill="#FFF6E6" rx="10"/>';
+      svg+=svgTxt(200,18,'Conservation de la masse',13,'#5A4A2F');
+      svg+='<rect x="10" y="35" width="110" height="80" rx="8" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2"/>';
+      svg+=svgTxt(65,65,cfg.reactif1.split(' ')[0],13,'#2A7AB0');
+      svg+=svgTxt(65,85,mR1+' g',14,'#E07A1F');
+      svg+='<rect x="140" y="35" width="110" height="80" rx="8" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2"/>';
+      svg+=svgTxt(195,65,cfg.reactif2.split(' ')[0],13,'#2A7AB0');
+      svg+=svgTxt(195,85,mR2+' g',14,'#E07A1F');
+      svg+='<line x1="260" y1="75" x2="285" y2="75" stroke="#9FD356" stroke-width="2.5"/>';
+      svg+='<polygon points="285,70 297,75 285,80" fill="#9FD356"/>';
+      svg+=svgTxt(272,65,'→',16,'#9FD356');
+      svg+='<rect x="300" y="35" width="90" height="80" rx="8" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(345,65,'Produit',12,'#E07A1F');
+      svg+=svgTxt(345,85,'? g',14,'#E07A1F');
+      svg+=svgTxt(200,158,'Loi de conservation : m(réactifs) = m(produits)',11,'#5A4A2F');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 11 : pH — acide, basique, neutre ===== */
+function genPH(){
+  var solutions=[
+    {nom:'jus de citron',pH:2,nature:'acide',couleur:'#FFFACD'},
+    {nom:'vinaigre',pH:3,nature:'acide',couleur:'#FFFACD'},
+    {nom:'eau pure',pH:7,nature:'neutre',couleur:'#d8edf8'},
+    {nom:'eau savonneuse',pH:9,nature:'basique',couleur:'#E8F4F0'},
+    {nom:'lait de chaux',pH:12,nature:'basique',couleur:'#E8F4F0'},
+    {nom:'jus de pomme',pH:4,nature:'acide',couleur:'#FFFACD'}
+  ];
+  var cfg=choix(solutions);
+  var etapes=[
+    {
+      question:'Q1 — Échelle de pH (2 pts)',
+      role:'Rappeler l\'échelle',
+      q:'Rappelle les valeurs limites de l\'échelle de pH et donne la valeur du pH pour une solution neutre.',
+      verif:function(inp){var t=norm(inp);return (nbs(inp).some(function(x){return Math.abs(x-7)<=0.5;})||t.includes('neutre'));},
+      aide:'L\'échelle de pH va de 0 à 14. Une solution neutre a pH = 7.',
+      solutionHTML:'Échelle de pH : 0 à 14. Solution neutre : pH = 7.'
+    },
+    {
+      question:'Q2 — Identifier la nature de la solution (2 pts)',
+      role:'Classer la solution',
+      q:'Le '+cfg.nom+' a un pH = '+cfg.pH+'. Cette solution est-elle acide, basique ou neutre ? Justifie.',
+      verif:function(inp){var t=norm(inp);return t.includes(cfg.nature.substring(0,5));},
+      aide:'pH < 7 → acide. pH = 7 → neutre. pH > 7 → basique.',
+      solutionHTML:'pH = '+cfg.pH+' '+(cfg.pH<7?'< 7 → solution acide.':(cfg.pH>7?'> 7 → solution basique.':'= 7 → solution neutre.'))
+    },
+    {
+      question:'Q3 — Comparer deux solutions (3 pts)',
+      role:'Comparer les acidités',
+      q:'Un autre liquide a pH = 5. Compare l\'acidité du '+cfg.nom+' (pH = '+cfg.pH+') avec ce liquide. Lequel est le plus acide ?',
+      verif:function(inp){var t=norm(inp);return cfg.pH<5?(t.includes(cfg.nom.substring(0,4))||t.includes('citron')||t.includes('vinaig')||t.includes('pomme')||t.includes('plus')):(t.includes('ph5')||t.includes('cinq')||t.includes('5')||t.includes('autre')||t.includes('plus'));},
+      aide:'Plus le pH est bas, plus la solution est acide. Comparer '+cfg.pH+' et 5.',
+      solutionHTML:cfg.pH<5?'pH = '+cfg.pH+' < 5 → le '+cfg.nom+' est plus acide.':'pH = 5 < '+cfg.pH+' → le liquide à pH 5 est plus acide.'
+    },
+    {
+      question:'Q4 — Mesure du pH (1 pt)',
+      role:'Connaître les outils de mesure',
+      q:'Cite deux méthodes pour mesurer ou estimer le pH d\'une solution en laboratoire.',
+      verif:function(inp){var t=norm(inp);return (t.includes('ph')||t.includes('metre'))&&(t.includes('papier')||t.includes('indicateur')||t.includes('couleur'));},
+      aide:'On peut utiliser du papier pH ou un pH-mètre (appareil électronique).',
+      solutionHTML:'Papier pH (colorimétrique) et pH-mètre (électronique).'
+    }
+  ];
+  return {
+    titre:'pH et classification acide/basique',
+    enonceHTML:'On mesure le pH de différentes solutions. Le <b>'+cfg.nom+'</b> a un <b>pH = '+cfg.pH+'</b>.<br>'+
+      '<i>Rappel : pH < 7 → acide &nbsp;|&nbsp; pH = 7 → neutre &nbsp;|&nbsp; pH > 7 → basique</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="180" fill="#FFF6E6" rx="10"/>';
+      // Echelle pH
+      svg+='<rect x="20" y="50" width="340" height="40" rx="8" fill="url(#phGrad)"/>';
+      var defs='<defs><linearGradient id="phGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FF4444"/><stop offset="50%" stop-color="#9FD356"/><stop offset="100%" stop-color="#4444FF"/></linearGradient></defs>';
+      svg=svg.replace('<rect x="0" y="0"',defs+'<rect x="0" y="0"');
+      svg+=svgTxt(20,110,'0',12,'#E07A1F');svg+=svgTxt(200,110,'7',12,'#6FA52A');svg+=svgTxt(360,110,'14',12,'#2A7AB0');
+      svg+=svgTxt(60,125,'Acide',11,'#E07A1F');svg+=svgTxt(200,125,'Neutre',11,'#6FA52A');svg+=svgTxt(320,125,'Basique',11,'#2A7AB0');
+      // Flèche position pH
+      var posX=20+Math.round(cfg.pH/14*340);
+      svg+='<line x1="'+posX+'" y1="48" x2="'+posX+'" y2="38" stroke="#5A4A2F" stroke-width="2.5"/>';
+      svg+='<polygon points="'+(posX-5)+',38 '+(posX+5)+',38 '+posX+',26" fill="#5A4A2F"/>';
+      svg+=svgTxt(posX,18,'pH = '+cfg.pH,12,'#5A4A2F');
+      svg+=svgTxt(190,155,cfg.nom,12,'#5A4A2F');
+      svg+=svgTxt(190,170,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 12 : Formule chimique — éléments et atomes ===== */
+function genFormuleChimique(){
+  var molecules=[
+    {nom:'eau',formule:'H₂O',elements:['hydrogène (H)','oxygène (O)'],nb:[2,1],total:3,contexte:'L\'eau est la molécule la plus abondante des êtres vivants.'},
+    {nom:'dioxyde de carbone',formule:'CO₂',elements:['carbone (C)','oxygène (O)'],nb:[1,2],total:3,contexte:'Le CO₂ est le principal gaz à effet de serre.'},
+    {nom:'glucose',formule:'C₆H₁₂O₆',elements:['carbone (C)','hydrogène (H)','oxygène (O)'],nb:[6,12,6],total:24,contexte:'Le glucose est le sucre utilisé par les cellules pour produire de l\'énergie.'},
+    {nom:'ammoniac',formule:'NH₃',elements:['azote (N)','hydrogène (H)'],nb:[1,3],total:4,contexte:'L\'ammoniac est utilisé en agriculture comme engrais.'},
+    {nom:'méthane',formule:'CH₄',elements:['carbone (C)','hydrogène (H)'],nb:[1,4],total:5,contexte:'Le méthane est le principal constituant du gaz naturel.'}
+  ];
+  var cfg=choix(molecules);
+  var etapes=[
+    {
+      question:'Q1 — Identifier les éléments (2 pts)',
+      role:'Lire la formule',
+      q:'Dans la formule '+cfg.formule+', quels sont les éléments chimiques présents ?',
+      verif:function(inp){var t=norm(inp);return cfg.elements.every(function(el){var sym=el.split(' ')[0].toLowerCase().substring(0,2);return t.includes(sym.toLowerCase());});},
+      aide:'Les éléments sont : '+cfg.elements.join(', ')+'.',
+      solutionHTML:'Éléments : '+cfg.elements.join(', ')+'.'
+    },
+    {
+      question:'Q2 — Compter les atomes (3 pts)',
+      role:'Compter les atomes de chaque élément',
+      q:'Dans une molécule de '+cfg.formule+', combien y a-t-il d\'atomes de '+cfg.elements[0]+' ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.nb[0])<=0;});},
+      aide:'Le nombre en indice donne le nombre d\'atomes : '+cfg.elements[0].split(' ')[0]+' → '+cfg.nb[0]+' atome'+(cfg.nb[0]>1?'s':'')+'.',
+      solutionHTML:cfg.nb[0]+' atome'+(cfg.nb[0]>1?'s':'')+' de '+cfg.elements[0]+'.'
+    },
+    {
+      role:'Compter le total d\'atomes',
+      q:'Combien y a-t-il d\'atomes en tout dans une molécule de '+cfg.formule+' ? (additionne tous les indices)',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.total)<=0;});},
+      aide:'Nombre total : '+cfg.nb.join(' + ')+' = '+cfg.total+' atomes.',
+      solutionHTML:'Total : '+cfg.nb.join(' + ')+' = '+cfg.total+' atomes.'
+    },
+    {
+      question:'Q3 — Comprendre la formule (2 pts)',
+      role:'Interpréter',
+      q:cfg.contexte+' Que représente le chiffre 2 dans H₂O (ou le chiffre en indice dans la formule) ?',
+      verif:function(inp){var t=norm(inp);return t.includes('atome')||t.includes('nombre')||t.includes('indice');},
+      aide:'Les chiffres en indice indiquent le nombre d\'atomes de chaque élément dans la molécule.',
+      solutionHTML:'Le chiffre en indice indique le nombre d\'atomes de cet élément dans une molécule.'
+    }
+  ];
+  return {
+    titre:'Formule chimique — '+cfg.nom,
+    enonceHTML:'On étudie la molécule de <b>'+cfg.nom+'</b>, de formule <b style="font-size:1.1em;">'+cfg.formule+'</b>.<br>'+cfg.contexte,
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="180" fill="#FFF6E6" rx="10"/>';
+      // Grande formule au centre
+      svg+='<rect x="90" y="40" width="200" height="80" rx="12" fill="#FFF0D6" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(190,70,cfg.formule,28,'#E07A1F');
+      svg+=svgTxt(190,102,cfg.nom,13,'#5A4A2F');
+      // Légende éléments
+      cfg.elements.forEach(function(el,i){
+        svg+=svgTxt(40+i*170,145,el.split(' ')[0]+' : '+cfg.nb[i]+' atome'+(cfg.nb[i]>1?'s':''),12,'#2A7AB0');
+      });
+      svg+=svgTxt(190,168,'Total : '+cfg.total+' atomes',12,'#6FA52A');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'vitesse', gen:genVitesse},
@@ -809,7 +1166,12 @@ var BANQUE=[
   {notion:'chuteLibre', gen:genChuteLibre},
   {notion:'energieThermi', gen:genEnergieThermi},
   {notion:'changementEtat', gen:genChangementEtat},
-  {notion:'ondes', gen:genOndes}
+  {notion:'ondes', gen:genOndes},
+  {notion:'bilanMasse', gen:genBilanMasse},
+  {notion:'concentrationMassique', gen:genConcentrationMassique},
+  {notion:'conservationMasseReaction', gen:genConservationMasseReaction},
+  {notion:'pH', gen:genPH},
+  {notion:'formuleChimique', gen:genFormuleChimique}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;
@@ -823,7 +1185,7 @@ function construireEcrans(){
     '<div class="exercice-header"><h2>Sujet de Physique-Chimie</h2>'+
     '<div class="bareme">Tirage aléatoire — recharge pour un nouveau sujet</div></div>'+
     '<div class="exercice-body">'+
-    '<p style="font-size:16px;line-height:1.7;">Voici <b>'+mot+'</b> tirés aléatoirement parmi 7 notions :<br>'+
+    '<p style="font-size:16px;line-height:1.7;">Voici <b>'+mot+'</b> tirés aléatoirement parmi 12 notions :<br>'+
     SUJET.map(function(ex,i){return '&bull; Exercice '+(i+1)+' — '+ex.titre;}).join('<br>')+
     '</p>'+
     '<p style="margin-top:10px;font-size:15px;color:var(--brun-clair);">La calculatrice est disponible en bas à droite.</p>'+

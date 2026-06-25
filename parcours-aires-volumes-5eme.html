@@ -740,6 +740,136 @@ document.addEventListener('keydown',e=>{
 });
 
 updateMap();
+
+/* ===== GÉNÉRATEURS GÉOMÉTRIE (aire trapèze, volume prisme, aire disque) ===== */
+function rint2(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+
+/* ===== GÉNÉRATEUR : AIRE D'UN TRAPÈZE ===== */
+function genAireTrap(){
+  const B=rint2(6,14),b=rint2(2,5),h=rint2(3,10);
+  const aire=(B+b)*h/2;
+  return {
+    notion:'Aire du trapèze',
+    enonce:'Calcule l\'aire d\'un trapèze de grande base B = '+B+' cm, petite base b = '+b+' cm, hauteur h = '+h+' cm.',
+    reponse:aire,
+    solution:'A = (B + b) × h ÷ 2 = ('+B+' + '+b+') × '+h+' ÷ 2 = '+(B+b)+' × '+h+' ÷ 2 = '+aire+' cm².',
+    _ans:String(aire),_cat:'Aire du trapèze',_tol:0.01
+  };
+}
+
+/* ===== GÉNÉRATEUR : VOLUME D'UN PRISME DROIT ===== */
+function genVolPrismeDroit(){
+  const sub=Math.floor(Math.random()*2);
+  if(sub===0){
+    const L=rint2(3,10),l=rint2(2,8),H=rint2(2,9);
+    const V=L*l*H;
+    return {
+      notion:'Volume du prisme droit',
+      enonce:'Prisme droit à base rectangulaire : base '+L+' cm × '+l+' cm, hauteur '+H+' cm. Calcule le volume (en cm³).',
+      reponse:V,
+      solution:'Aire de base = '+L+' × '+l+' = '+(L*l)+' cm². V = '+(L*l)+' × '+H+' = '+V+' cm³.',
+      _ans:String(V),_cat:'Volume du prisme droit',_tol:0.01
+    };
+  } else {
+    let b=rint2(4,12),hb=rint2(2,10);
+    if((b*hb)%2)hb+=(hb<10?1:-1);
+    const H=rint2(2,9);
+    const aireB=b*hb/2;
+    const V=aireB*H;
+    return {
+      notion:'Volume du prisme droit',
+      enonce:'Prisme droit à base triangulaire : base '+b+' cm, hauteur du triangle '+hb+' cm, hauteur du prisme '+H+' cm. Calcule le volume (en cm³).',
+      reponse:V,
+      solution:'Aire de base = ('+b+' × '+hb+') ÷ 2 = '+aireB+' cm². V = '+aireB+' × '+H+' = '+V+' cm³.',
+      _ans:String(V),_cat:'Volume du prisme droit',_tol:0.01
+    };
+  }
+}
+
+/* ===== GÉNÉRATEUR : AIRE D'UN DISQUE ===== */
+function genAireDisque(){
+  const r=rint2(2,10);
+  const aireExacte=r*r;
+  const aireApprox=Math.round(3.14*r*r*100)/100;
+  const sub=Math.floor(Math.random()*2);
+  if(sub===0){
+    return {
+      notion:'Aire du disque',
+      enonce:'Disque de rayon '+r+' cm. Aire en fonction de π : donne le nombre devant π.',
+      reponse:aireExacte,
+      solution:'A = π × r² = π × '+r+'² = '+aireExacte+'π cm².',
+      _ans:String(aireExacte),_cat:'Aire du disque',_tol:0.01
+    };
+  } else {
+    return {
+      notion:'Aire du disque',
+      enonce:'Disque de rayon '+r+' cm. Aire avec π ≈ 3,14 (arrondi au centième, en cm²).',
+      reponse:aireApprox,
+      solution:'A ≈ 3,14 × '+r+'² = 3,14 × '+aireExacte+' = '+String(aireApprox).replace('.',',')+' cm².',
+      _ans:String(aireApprox),_cat:'Aire du disque',_tol:0.5
+    };
+  }
+}
+
+const GEN_GEO=[genAireTrap,genVolPrismeDroit,genAireDisque];
+
+/* Injection : 1 question sur 4 dans quizNext sera géométrique */
+(function(){
+  const _origNext=quizNext;
+  const _origValidate=quizValidate;
+  let _geoCount=0;
+  quizNext=function(){
+    _geoCount++;
+    if(_geoCount%4===0){
+      const fn=GEN_GEO[Math.floor(Math.random()*GEN_GEO.length)];
+      const g=fn();
+      Q.locked=false;
+      const e=Q.els;
+      e.feed.textContent='';e.feed.className='feedback';
+      if(e.stars)e.stars.textContent='';
+      e.input.value='';e.input.disabled=false;e.input.focus();e.valid.disabled=false;
+      e.cat.textContent=g._cat;
+      e.text.innerHTML=g.enonce;
+      Q.answer=g._ans;
+      Q.cur={cat:g._cat,_geo:true,_tol:g._tol||0.01,_explain:g.solution};
+    } else {
+      _origNext.apply(this,arguments);
+    }
+  };
+  quizValidate=function(){
+    if(Q.cur&&Q.cur._geo){
+      if(Q.locked||!Q.els)return;
+      const e=Q.els;
+      if(!e.input.value.trim()){e.feed.className='feedback no';e.feed.textContent='Écris ta réponse d\'abord !';return;}
+      const raw=e.input.value.trim().replace(',','.');
+      const v=parseFloat(raw);
+      if(isNaN(v)){e.feed.className='feedback no';e.feed.textContent='Écris un nombre valide.';return;}
+      Q.locked=true;e.input.disabled=true;e.valid.disabled=true;Q.total++;
+      const expected=parseFloat(Q.answer);
+      const tol=Q.cur._tol||0.01;
+      const ok=Math.abs(v-expected)<tol;
+      if(ok){
+        Q.correct++;Q.streak++;Q.score+=10+Math.min(Q.streak,5)*2;
+        e.feed.className='feedback ok';
+        e.feed.innerHTML='✅ Bravo !<br><span style="font-size:.9rem;color:var(--bois-clair)">'+Q.cur._explain+'</span>';
+        if(e.stars)e.stars.textContent='⭐'.repeat(Math.min(Q.streak,5));
+        confettis();
+      } else {
+        Q.streak=0;e.feed.className='feedback no';
+        e.feed.innerHTML='❌ Réponse : <b>'+Q.answer.replace('.',',')+'</b><br><span style="font-size:.9rem;color:var(--bois-clair)">'+Q.cur._explain+'</span>';
+        e.input.classList.add('shake');setTimeout(()=>e.input.classList.remove('shake'),400);
+      }
+      quizScore();
+      if(Q.guided&&Q.correct>=Q.target){
+        if(e.cont)e.cont.style.display='inline-flex';
+        if(e.prog)e.prog.innerHTML='🎉 Objectif atteint ! Tu peux continuer (ou t\'entraîner encore).';
+      }
+      setTimeout(quizNext,ok?1100:2400);
+    } else {
+      _origValidate.apply(this,arguments);
+    }
+  };
+})();
 </script>
 <script>
 /* ===== sauvegarde et reprise de la progression ===== */

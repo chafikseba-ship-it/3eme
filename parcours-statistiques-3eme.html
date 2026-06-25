@@ -903,7 +903,121 @@ function genDiagrammes(){
   return {type:'qcm',cat:'diagrammes',text:q,viz:svg,options:opts,correct:correct,explain:explain};
 }
 
-var GEN={vocabulaire:genVocabulaire,etendue:genEtendue,moyenne:genMoyenne,mediane:genMediane,frequences:genFrequences,diagrammes:genDiagrammes};
+/* ===== CASCADE : calcul de médiane série brute ===== */
+function genMedianeSerie(){
+  var n=pick([5,7,9,11]);
+  var vals=[];
+  for(var i=0;i<n;i++) vals.push(rint(10,30));
+  var sorted=vals.slice().sort(function(a,b){return a-b;});
+  var posAff=Math.ceil(n/2);
+  var mediane=sorted[posAff-1];
+  var listeOrig=vals.join(' ; ');
+  var listeTri=sorted.join(' ; ');
+  var steps=[
+    {prompt:'Étape 1 — Trie les '+n+' valeurs dans l\'ordre croissant. Quelle est la plus petite ?',
+     aide:'La série triée est : '+listeTri,
+     parts:['Valeur minimale = ',{b:1,kind:'num',ans:sorted[0],show:''+sorted[0],w:60}]},
+    {prompt:'Étape 2 — Combien faut-il de valeurs de chaque côté de la médiane ? (N impair : position = (N+1)÷2)',
+     aide:'N = '+n+' (impair) → position médiane = ('+n+'+1)÷2 = '+posAff,
+     parts:['Position de la médiane = ',{b:1,kind:'num',ans:posAff,show:''+posAff,w:60}]},
+    {prompt:'Étape 3 — Quelle est la valeur en position '+posAff+' de la série triée ?',
+     aide:'Série triée : '+listeTri+' → valeur n°'+posAff+' = '+mediane,
+     parts:['Médiane = ',{b:1,kind:'num',ans:mediane,show:''+mediane,w:70}]}
+  ];
+  return {type:'cascade',cat:'medianebrute',sig:'MB'+n+sorted[0]+mediane,
+    text:'Série de '+n+' valeurs : '+listeOrig+'\nTrie cette série et trouve la médiane.',
+    viz:null,steps:steps};
+}
+
+/* ===== CASCADE : étendue et mode ===== */
+function genEtendueMode(){
+  var nVals=rint(3,5);
+  var baseVals=shuffle([2,3,4,5,6,7,8,9,10,11,12]).slice(0,nVals).sort(function(a,b){return a-b;});
+  var effs=baseVals.map(function(){return rint(1,4);});
+  // S'assurer qu'un mode unique existe
+  var maxEff=Math.max.apply(null,effs);
+  var modeIdx=effs.indexOf(maxEff);
+  // S'assurer que le mode est unique
+  while(effs.filter(function(e){return e===maxEff;}).length>1){
+    effs[modeIdx]++;maxEff++;
+  }
+  var mode=baseVals[modeIdx];
+  var etendue=baseVals[nVals-1]-baseVals[0];
+  var thV='<tr><th>Valeur</th>',thE='<tr><th>Effectif</th>';
+  baseVals.forEach(function(v,i){thV+='<td>'+v+'</td>';thE+='<td>'+effs[i]+'</td>';});
+  thV+='</tr>';thE+='</tr>';
+  var tableHtml='<div style="overflow-x:auto"><table class="stat-table">'+thV+thE+'</table></div>';
+  var steps=[
+    {prompt:'Étape 1 — Quelle est la valeur maximale de la série ?',
+     aide:'Regarde la dernière colonne du tableau : valeur maximale = '+baseVals[nVals-1],
+     parts:['Valeur max = ',{b:1,kind:'num',ans:baseVals[nVals-1],show:''+baseVals[nVals-1],w:60}]},
+    {prompt:'Étape 2 — Calcule l\'étendue (max − min).',
+     aide:baseVals[nVals-1]+' − '+baseVals[0]+' = '+etendue,
+     parts:['Étendue = ',{b:1,kind:'num',ans:etendue,show:''+etendue,w:60}]},
+    {prompt:'Étape 3 — Quelle valeur a le plus grand effectif ? C\'est le mode.',
+     aide:'Le plus grand effectif est '+maxEff+' → il correspond à la valeur '+mode,
+     parts:['Mode = ',{b:1,kind:'num',ans:mode,show:''+mode,w:60}]}
+  ];
+  return {type:'cascade',cat:'etenduemode',sig:'EM'+baseVals.join('-')+mode,
+    text:'📊 Voici un tableau statistique. Calcule l\'étendue et trouve le mode.',
+    viz:tableHtml,steps:steps};
+}
+
+/* ===== QCM : lecture de diagramme en barres ===== */
+function genLectureDiagramme(){
+  var labels=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  var nbJours=pick([4,5]);
+  var jours=labels.slice(0,nbJours);
+  var vals=jours.map(function(){return rint(3,12);});
+  var maxVal=Math.max.apply(null,vals);
+  var minVal=Math.min.apply(null,vals);
+  var maxJour=jours[vals.indexOf(maxVal)];
+  var minJour=jours[vals.indexOf(minVal)];
+  // SVG diagramme
+  var W=260,H=160,pad=30,barW=Math.floor((W-2*pad)/nbJours*0.6);
+  var barGap=Math.floor((W-2*pad)/nbJours);
+  var svg='<svg width="'+W+'" height="'+(H+40)+'" viewBox="0 0 '+W+' '+(H+40)+'" style="display:block;margin:auto">';
+  svg+='<line x1="'+pad+'" y1="'+pad+'" x2="'+pad+'" y2="'+(H+pad)+'" stroke="#5C3D2E" stroke-width="2"/>';
+  svg+='<line x1="'+pad+'" y1="'+(H+pad)+'" x2="'+(W-pad)+'" y2="'+(H+pad)+'" stroke="#5C3D2E" stroke-width="2"/>';
+  vals.forEach(function(v,i){
+    var x=pad+i*barGap+Math.floor(barGap/2)-Math.floor(barW/2);
+    var bh=Math.round(v/maxVal*(H-20));
+    var y=H+pad-bh;
+    svg+='<rect x="'+x+'" y="'+y+'" width="'+barW+'" height="'+bh+'" fill="#4FA3D1" rx="4"/>';
+    svg+='<text x="'+(x+barW/2)+'" y="'+(y-5)+'" text-anchor="middle" font-size="11" fill="#5C3D2E" font-family="Fredoka">'+v+'</text>';
+    svg+='<text x="'+(x+barW/2)+'" y="'+(H+pad+18)+'" text-anchor="middle" font-size="11" fill="#5C3D2E" font-family="Fredoka">'+jours[i].slice(0,3)+'</text>';
+  });
+  svg+='</svg>';
+  var qType=pick(['max','min','val']);
+  var q,opts,correct,explain;
+  if(qType==='max'){
+    q='📊 Quel jour les ventes sont-elles les plus élevées ?';
+    var wrong1=jours[(vals.indexOf(maxVal)+1)%nbJours];
+    var wrong2=jours[(vals.indexOf(maxVal)+2)%nbJours];
+    opts=shuffle([maxJour,wrong1,wrong2]);
+    correct=opts.indexOf(maxJour);
+    explain='La barre la plus haute correspond à '+maxJour+' (valeur '+maxVal+').';
+  } else if(qType==='min'){
+    q='📊 Quel jour les ventes sont-elles les plus faibles ?';
+    var wrong1b=jours[(vals.indexOf(minVal)+1)%nbJours];
+    var wrong2b=jours[(vals.indexOf(minVal)+2)%nbJours];
+    opts=shuffle([minJour,wrong1b,wrong2b]);
+    correct=opts.indexOf(minJour);
+    explain='La barre la plus basse correspond à '+minJour+' (valeur '+minVal+').';
+  } else {
+    var idx=rint(0,nbJours-1);
+    q='📊 Quelle est la valeur lue pour '+jours[idx]+' ?';
+    var v=vals[idx];
+    var w1=v===1?2:v-1;
+    var w2=v+1;
+    opts=shuffle([String(v),String(w1),String(w2)]);
+    correct=opts.indexOf(String(v));
+    explain='La barre de '+jours[idx]+' atteint la valeur '+v+'.';
+  }
+  return {type:'qcm',cat:'lecturediag',text:q,viz:svg,options:opts,correct:correct,explain:explain};
+}
+
+var GEN={vocabulaire:genVocabulaire,etendue:genEtendue,moyenne:genMoyenne,mediane:genMediane,frequences:genFrequences,diagrammes:genDiagrammes,medianebrute:genMedianeSerie,etenduemode:genEtendueMode,lecturediag:genLectureDiagramme};
 
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});(function(el){setTimeout(function(){el.remove();},fall);})(d);}}
 

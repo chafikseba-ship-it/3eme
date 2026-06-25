@@ -899,7 +899,109 @@ function genInegalites(){
   }
 }
 
-var GEN={intervalles:genIntervalles,absolu:genAbsolu,inegalites:genInegalites};
+/* Thème 4 : intersection de deux intervalles */
+function genIntersection(){
+  var sub=rnd(2);
+  if(sub===0){
+    // Pool fixe avec cas concrets
+    var pool=[
+      {i1:'[1 ; 5]',i2:'[3 ; 7]',res:'[3 ; 5]',
+       ex:'Les deux intervalles se chevauchent entre 3 et 5. L\'intersection garde les bornes les plus restrictives : [3 ; 5].'},
+      {i1:'[−2 ; 4]',i2:'[0 ; 6]',res:'[0 ; 4]',
+       ex:'Le chevauchement commence à 0 (borne gauche la plus grande) et finit à 4 (borne droite la plus petite) : [0 ; 4].'},
+      {i1:']0 ; 5[',i2:'[2 ; 8]',res:']0 ; 5[ ∩ [2 ; 8] = [2 ; 5[',
+       ex:'Borne gauche : max(]0, [2) = 2 inclus. Borne droite : min(5 exclu, 8 inclus) = 5 exclu. Résultat : [2 ; 5[.'},
+      {i1:'[−5 ; −1]',i2:'[0 ; 3]',res:'∅ (vide)',
+       ex:'[−5 ; −1] se termine avant que [0 ; 3] commence. Il n\'y a aucun point commun : l\'intersection est vide.'},
+      {i1:'[1 ; 6]',i2:'[6 ; 9]',res:'{6}',
+       ex:'Les deux intervalles se touchent uniquement en 6 (les deux crochets fermés incluent 6). Intersection = {6}.'},
+      {i1:']−3 ; 2[',i2:']1 ; 5[',res:']1 ; 2[',
+       ex:'Borne gauche : max(−3, 1) = 1 exclu. Borne droite : min(2, 5) = 2 exclu. Résultat : ]1 ; 2[.'}
+    ];
+    var q=pick(pool);
+    return {type:'qcm',cat:'intervalles',sig:'inter_pool_'+rnd(600),
+      text:'Quelle est l\'intersection de <b>'+q.i1+'</b> et <b>'+q.i2+'</b> ?',
+      opts:[q.res,
+            q.i1+' ∪ '+q.i2,
+            '∅',
+            q.i1],
+      ans:0,explain:q.ex};
+  } else {
+    // Aléatoire : deux intervalles fermés qui se chevauchent ou non
+    var a=rint(-5,0), b=rint(2,6);
+    var c=rint(a,b-1), d=rint(b,b+4);
+    // intersection [a,b] ∩ [c,d] = [c, b]
+    return {type:'qcm',cat:'intervalles',sig:'inter_rand_'+a+'_'+b+'_'+c,
+      text:'Quelle est l\'intersection de <b>['+a+' ; '+b+']</b> et <b>['+c+' ; '+d+']</b> ?',
+      opts:['['+c+' ; '+b+']','['+a+' ; '+d+']','∅','['+a+' ; '+b+'] ∪ ['+c+' ; '+d+']'],
+      ans:0,
+      explain:'On garde la borne gauche la plus grande ('+c+') et la borne droite la plus petite ('+b+'). Intersection = ['+c+' ; '+b+'].'};
+  }
+}
+
+/* Thème 5 : réunion de deux intervalles */
+function genReunion(){
+  var pool=[
+    {i1:'[1 ; 3]',i2:'[5 ; 8]',res:'[1 ; 3] ∪ [5 ; 8]',
+     ex:'Les deux intervalles ne se touchent pas (3 < 5). On ne peut pas les fusionner : on écrit [1 ; 3] ∪ [5 ; 8].'},
+    {i1:'[−2 ; 4]',i2:'[2 ; 7]',res:'[−2 ; 7]',
+     ex:'Les intervalles se chevauchent (2 à 4 en commun). On fusionne en un seul : [−2 ; 7].'},
+    {i1:']−∞ ; 3]',i2:'[1 ; +∞[',res:']−∞ ; +∞[ = ℝ',
+     ex:'Tout réel est soit ≤ 3 soit ≥ 1 (et les deux se chevauchent). La réunion couvre tout ℝ.'},
+    {i1:'[0 ; 2]',i2:'[2 ; 5]',res:'[0 ; 5]',
+     ex:'Les intervalles se rejoignent exactement en 2. On fusionne : [0 ; 5].'},
+    {i1:']−3 ; 0[',i2:']4 ; 7[',res:']−3 ; 0[ ∪ ]4 ; 7[',
+     ex:'Les intervalles ne se touchent pas (0 < 4). On les écrit côte à côte avec ∪.'},
+    {i1:'[−1 ; 3]',i2:'[1 ; 6]',res:'[−1 ; 6]',
+     ex:'Il y a un chevauchement entre 1 et 3. La réunion va de −1 à 6 : [−1 ; 6].'}
+  ];
+  var q=pick(pool);
+  return {type:'qcm',cat:'intervalles',sig:'reun_pool_'+rnd(500),
+    text:'Quelle est la réunion de <b>'+q.i1+'</b> et <b>'+q.i2+'</b> ?',
+    opts:[q.res,
+          '∅',
+          q.i1+' (seul)',
+          q.i2+' (seul)'],
+    ans:0,explain:q.ex};
+}
+
+/* Thème 6 : longueur d'un intervalle */
+function genLongueur(){
+  var sub=rnd(2);
+  if(sub===0){
+    // Longueur directe : b − a
+    var a=rint(-5,2), b=rint(a+1,a+10);
+    var len=b-a;
+    var bNames=['['+a+' ; '+b+']',']'+a+' ; '+b+'[','['+a+' ; '+b+'[',']'+a+' ; '+b+']'];
+    var itvName=pick(bNames);
+    return {type:'casc',cat:'intervalles',sig:'long_casc_'+a+'_'+b,
+      text:'Calcule la longueur de l\'intervalle <b>'+itvName+'</b>.',
+      steps:[
+        {prompt:'La longueur d\'un intervalle [a ; b] se calcule par b − a. Identifie a et b.',
+         parts:['a = ',{kind:'num',ans:a,w:55},' et b = ',{kind:'num',ans:b,w:55},''],
+         aide:'La borne gauche est '+a+', la borne droite est '+b+'.'},
+        {prompt:'Calcule b − a = '+b+' − ('+a+')',
+         parts:['Longueur = ',{kind:'num',ans:len,w:60},''],
+         aide:b+' − ('+a+') = '+len}
+      ]};
+  } else {
+    // QCM : choisir la bonne longueur
+    var pool=[
+      {itv:'[2 ; 7]',len:5,opts:['5','9','7','2'],explain:'7 − 2 = 5.'},
+      {itv:']−3 ; 4[',len:7,opts:['7','1','3','4'],explain:'4 − (−3) = 7.'},
+      {itv:'[−5 ; −1]',len:4,opts:['4','6','5','1'],explain:'−1 − (−5) = −1 + 5 = 4.'},
+      {itv:'[0 ; 10]',len:10,opts:['10','0','1','9'],explain:'10 − 0 = 10.'},
+      {itv:']1 ; 6[',len:5,opts:['5','7','6','1'],explain:'6 − 1 = 5.'},
+      {itv:'[−4 ; 3]',len:7,opts:['7','1','4','3'],explain:'3 − (−4) = 7.'}
+    ];
+    var q=pick(pool);
+    return {type:'qcm',cat:'intervalles',sig:'long_qcm_'+q.itv,
+      text:'Quelle est la longueur de l\'intervalle <b>'+q.itv+'</b> ?',
+      opts:q.opts,ans:0,explain:q.explain};
+  }
+}
+
+var GEN={intervalles:genIntervalles,absolu:genAbsolu,inegalites:genInegalites,intersection:genIntersection,reunion:genReunion,longueur:genLongueur};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

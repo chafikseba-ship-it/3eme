@@ -828,8 +828,106 @@ function genRefraction(){
   return {type:'qcm',cat:'refraction',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : RÉFLEXION ET RÉFRACTION AVANCÉES ===== */
+function genOptique(){
+  var mode=pick(['cascade_refraction_calc','qcm_optique_avance','cascade_reflexion_comp']);
+  if(mode==='cascade_refraction_calc'){
+    var iVal=pick([20,25,30,35,40,45,50,55]);
+    /* Snell-Descartes simplifié : air→verre, r ≈ i × 0.6 */
+    var rVal=Math.round(iVal*0.6);
+    return {
+      type:'cascade',cat:'reflexion',sig:'REFR'+iVal,
+      text:'Un rayon passe de l\'air vers le verre. L\'angle d\'incidence est <b>i = '+iVal+'°</b>.<br>Dans le verre (milieu plus dense), le rayon réfracté se <em>rapproche</em> de la normale.',
+      steps:[
+        {prompt:'Dans quel sens le rayon se dévie-t-il en passant dans un milieu plus dense (air → verre) ?',
+         aide:'Milieu plus dense → la lumière ralentit et se rapproche de la normale → l\'angle réfracté est PLUS PETIT que l\'angle d\'incidence.',
+         parts:['Le rayon se rapproche de la normale : angle réfracté ',{b:1,kind:'txt',accept:['plus petit','<','inférieur','< i','plus petit que i'],show:'plus petit que i',w:200},' .']},
+        {prompt:'L\'angle réfracté r est d\'environ '+rVal+'°. Est-il plus petit ou plus grand que i = '+iVal+'° ?',
+         aide:rVal+' < '+iVal+' → l\'angle réfracté est plus petit que l\'angle d\'incidence.',
+         parts:['r = '+rVal+'°, i = '+iVal+'° → r est ',{b:1,kind:'txt',accept:['plus petit','inférieur','< i','<'],show:'plus petit',w:160},' que i.']},
+        {prompt:'Donne la valeur approximative de l\'angle réfracté r en °.',
+         aide:'Dans ce cas, r ≈ '+rVal+'°.',
+         parts:['r ≈ ',{b:1,kind:'num',ans:rVal,show:''+rVal,w:70,tol:3},'°']}
+      ]
+    };
+  }
+  if(mode==='qcm_optique_avance'){
+    var pools=[
+      {t:'Un rayon de lumière passe de l\'eau (milieu dense) vers l\'air (milieu moins dense). Il…',o:['s\'éloigne de la normale (angle réfracté > angle d\'incidence)','se rapproche de la normale','ne change pas de direction','est totalement absorbé'],c:0,e:'Eau → air (milieu moins dense) : la lumière accélère et s\'éloigne de la normale. L\'angle réfracté est plus grand.'},
+      {t:'Pourquoi les lentilles de lunettes dévient-elles la lumière ?',o:['Elles réfractent la lumière car leur indice optique est différent de celui de l\'air','Elles réfléchissent la lumière','Elles absorbent la lumière','Elles diffusent la lumière dans toutes les directions'],c:0,e:'Le verre des lentilles est plus dense que l\'air → réfraction → déviation des rayons → correction visuelle.'},
+      {t:'Un arc-en-ciel se forme parce que…',o:['La pluie réfracte (et disperse) différemment les différentes couleurs de la lumière','Le soleil se réfléchit dans l\'eau','Les nuages dispersent la lumière','L\'air réfléchit la lumière blanche'],c:0,e:'La réfraction dans les gouttes de pluie sépare les couleurs (chaque couleur a un angle de déviation différent) → spectre coloré = arc-en-ciel.'},
+      {t:'La lumière blanche est composée de…',o:['Toutes les couleurs de l\'arc-en-ciel (rouge, orange, jaune, vert, bleu, violet)','Uniquement du blanc','Uniquement du rouge et du bleu','Du noir et du blanc'],c:0,e:'Un prisme décompose la lumière blanche en son spectre : rouge, orange, jaune, vert, bleu, indigo, violet. La lumière blanche = mélange de toutes les couleurs !'},
+      {t:'Lorsqu\'un rayon lumineux frappe une surface à 90° (normalement), il…',o:['Traverse le milieu sans déviation (ou est réfléchi dans la direction opposée)','Est totalement absorbé','Est dévié de 90°','Se divise en deux rayons'],c:0,e:'À 90° (i = 0°), le rayon est perpendiculaire à la surface. Il n\'y a aucune déviation lors de la réfraction (ou r = 0 pour la réflexion).'},
+      {t:'La fibre optique transmet la lumière sur de longues distances grâce à…',o:['La réflexion totale interne (la lumière rebondit indéfiniment à l\'intérieur de la fibre)','La réfraction qui la ralentit','L\'absorption de la lumière','La diffusion de la lumière'],c:0,e:'Dans une fibre optique, la lumière subit des réflexions totales internes successives → elle reste confinée dans la fibre et parcourt de très grandes distances.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'reflexion',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* cascade_reflexion_comp */
+  var i=pick([30,35,40,45,50,60]);
+  return {
+    type:'cascade',cat:'reflexion',sig:'REFL_COMP'+i,
+    text:'Un rayon lumineux frappe un miroir plan avec un angle d\'incidence <b>i = '+i+'°</b>.',
+    steps:[
+      {prompt:'Rappelle la loi de réflexion.',
+       lines:[{pre:'r =',blank:true,ans:'i',accept:['i','angle i'],unit:'°',hint:'Loi de réflexion : r = i'}]},
+      {prompt:'Quelle est la valeur de l\'angle de réflexion ?',
+       lines:[{pre:'r =',blank:true,ans:String(i),accept:[String(i),String(i)+'°'],unit:'°',hint:'r = i = '+i+'°'}]},
+      {prompt:'Si on incline le miroir de 10° supplémentaires (i devient '+(i+10)+'°), quel sera le nouvel angle réfléchi ?',
+       lines:[{pre:'r\' =',blank:true,ans:String(i+10),accept:[String(i+10),String(i+10)+'°'],unit:'°',hint:'La loi reste la même : r\' = i\' = '+(i+10)+'°'}]}
+    ],
+    finalMsg:'r = <b>'+i+'°</b> ✅ La loi r = i est toujours vraie !'
+  };
+}
+
+/* ===== GÉNÉRATEUR 6 : VITESSE DE LA LUMIÈRE ET DISTANCES ===== */
+function genVitesseLumiere(){
+  var mode=pick(['qcm_vitesse','cascade_distance','qcm_annee_lumiere']);
+  if(mode==='qcm_vitesse'){
+    var pools=[
+      {t:'La vitesse de la lumière dans le vide est…',o:['c ≈ 300 000 km/s = 3 × 10⁸ m/s','c ≈ 300 km/s','c ≈ 340 m/s (vitesse du son)','c ≈ 300 000 m/s'],c:0,e:'c = 299 792 458 m/s ≈ 3 × 10⁸ m/s = 300 000 km/s. C\'est la vitesse limite de l\'Univers !'},
+      {t:'La lumière met environ 8 minutes pour aller du Soleil à la Terre. La distance Soleil-Terre est…',o:['Environ 150 millions de km (1 unité astronomique)','Environ 1 500 km','Environ 8 km','Environ 1 année-lumière'],c:0,e:'d = v × t = 300 000 km/s × 8 × 60 s ≈ 150 000 000 km = 150 millions de km.'},
+      {t:'La lumière met 1 seconde pour parcourir environ…',o:['300 000 km','1 km','300 km','1 000 000 km'],c:0,e:'En 1 seconde, la lumière parcourt c = 300 000 km. En 1 minute, elle parcourt 18 000 000 km !'},
+      {t:'La lumière est plus rapide que le son. C\'est pour ça que lors d\'un orage…',o:['On voit l\'éclair avant d\'entendre le tonnerre','On entend le tonnerre avant de voir l\'éclair','Les deux arrivent en même temps','On ne voit pas l\'éclair'],c:0,e:'Lumière : 300 000 km/s. Son : 340 m/s. La lumière est un million de fois plus rapide → on voit l\'éclair instantanément, le son met du temps à arriver.'},
+      {t:'La vitesse de la lumière dans l\'eau est…',o:['Inférieure à c (la lumière ralentit dans les milieux denses)','Supérieure à c','Égale à c (même vitesse que dans le vide)','Nulle (la lumière ne traverse pas l\'eau)'],c:0,e:'Dans l\'eau, c_eau ≈ 0,75c = 225 000 km/s. La lumière ralentit dans les milieux denses — c\'est ce qui provoque la réfraction !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'propagation',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_distance'){
+    /* Calcul de distance : d = c × t */
+    var scenarios=[
+      {obj:'la Lune',t_s:1.28,t_str:'1,28 secondes',d_km:384000,d_str:'384 000 km'},
+      {obj:'Mars (distance minimale)',t_s:180,t_str:'3 minutes',d_km:54000000,d_str:'54 millions de km'},
+      {obj:'Jupiter',t_s:2520,t_str:'42 minutes',d_km:756000000,d_str:'756 millions de km'}
+    ];
+    var sc=pick(scenarios);
+    return {
+      type:'cascade',cat:'propagation',sig:'DIST'+sc.obj.slice(0,4),
+      text:'La lumière met <b>'+sc.t_str+'</b> pour aller de la Terre à <b>'+sc.obj+'</b>.<br>Calcule la distance Terre–'+sc.obj+'.<br><i>(c = 300 000 km/s)</i>',
+      steps:[
+        {prompt:'Quelle formule relie distance, vitesse et temps ?',
+         lines:[{pre:'d =',blank:true,ans:'c × t',accept:['c×t','c × t','v×t','v × t'],unit:'',hint:'d = vitesse × temps'}]},
+        {prompt:'Convertis le temps en secondes : '+sc.t_str+' = ? secondes',
+         lines:[{pre:'t =',blank:true,ans:String(sc.t_s),accept:[String(sc.t_s)],unit:'s',hint:''+sc.t_str+' = '+sc.t_s+' s'}]},
+        {prompt:'Calcule la distance (c = 300 000 km/s) :',
+         lines:[{pre:'d =',blank:true,ans:String(sc.d_km),accept:[String(sc.d_km),sc.d_str],unit:'km',hint:'d = 300 000 × '+sc.t_s+' = ?'}]}
+      ],
+      finalMsg:'Distance Terre–'+sc.obj+' ≈ <b>'+sc.d_str+'</b> ✅'
+    };
+  }
+  /* qcm_annee_lumiere */
+  var pools2=[
+    {t:'Une année-lumière représente…',o:['La distance parcourue par la lumière en 1 an (environ 9 461 milliards de km)','La durée mise par la lumière pour faire un tour de la Terre','La vitesse de la lumière en 1 an','Le temps que met la lumière pour traverser la Voie Lactée'],c:0,e:'1 année-lumière = 300 000 km/s × 365,25 jours × 24 h × 3 600 s ≈ 9 461 milliards de km. C\'est une unité de DISTANCE !'},
+    {t:'L\'étoile la plus proche du Soleil (Proxima Centauri) est à 4,2 années-lumière. Cela signifie que…',o:['La lumière de cette étoile a voyagé 4,2 ans pour nous parvenir — nous la voyons telle qu\'elle était il y a 4,2 ans','L\'étoile est à 4,2 km de nous','L\'étoile met 4,2 secondes à nous envoyer de la lumière','L\'étoile est 4,2 fois plus brillante que le Soleil'],c:0,e:'Nous observons les étoiles dans le PASSÉ ! La lumière de Proxima Centauri a voyagé 4,2 ans → nous la voyons comme elle était il y a 4,2 ans.'},
+    {t:'Si une supernova (explosion d\'étoile) se produit à 1 000 années-lumière, nous la verrons…',o:['Dans 1 000 ans','Immédiatement','Dans 1 000 000 ans','Aujourd\'hui (elle s\'est déjà produite)'],c:0,e:'La lumière voyage à vitesse finie. Pour 1 000 années-lumière, il faut 1 000 ans. Elle s\'est déjà produite il y a 1 000 ans, mais nous ne le verrons que dans 1 000 ans !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'propagation',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== DISPATCH GEN ===== */
-var GEN={propagation:genPropagation,ombres:genOmbres,reflexion:genReflexion,refraction:genRefraction};
+var GEN={propagation:genPropagation,ombres:genOmbres,reflexion:genReflexion,refraction:genRefraction,optique:genOptique,vitesseLumiere:genVitesseLumiere};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

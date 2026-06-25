@@ -424,8 +424,8 @@ const SERIE=10, SEUIL=8;
 const CASCADE_THEMES={calculer:true,problemes:true};
 function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
 function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
-const CATNOM={comprendre:'Comprendre',rapports:'Rapports',calculer:'Calculer',problemes:'Problèmes',reciproque:'Réciproque',redaction:'Rédaction'};
-const THEME_CATS={comprendre:['comprendre'],rapports:['rapports'],calculer:['calculer'],problemes:['problemes'],reciproque:['reciproque'],redaction:['redaction']};
+const CATNOM={comprendre:'Comprendre',rapports:'Rapports',calculer:'Calculer',problemes:'Problèmes',reciproque:'Réciproque',redaction:'Rédaction',comprendre2:'Comprendre',rapports2:'Rapports',problemes2:'Problèmes'};
+const THEME_CATS={comprendre:['comprendre','comprendre2'],rapports:['rapports','rapports2'],calculer:['calculer'],problemes:['problemes','problemes2'],reciproque:['reciproque'],redaction:['redaction']};
 const HELP={
   comprendre:'Thalès calcule des longueurs. Conditions : points alignés + droites parallèles.',
   rapports:'On écrit l’égalité des 3 rapports « du même côté ».',
@@ -633,7 +633,46 @@ function genRedaction(){
   ];
   var q=pick(pool);return qcm('redaction',q[0],q[1],0,q[2],null);
 }
-var GEN={comprendre:genComprendre,rapports:genRapports,calculer:genCalculer,problemes:genProblemes,reciproque:genReciproque,redaction:genRedaction};
+function genComprendre2(){
+  var pool=[
+   ['Thalès permet-il de calculer un angle ?',['Non, il calcule des longueurs','Oui, directement','Oui, avec le cosinus'],'Thalès sert uniquement à calculer des longueurs, pas des angles.'],
+   ['Dans la configuration en triangle, le sommet commun est…',['en dehors des deux droites parallèles','entre les deux droites parallèles','sur l'une des deux droites parallèles'],'En triangle emboîté, le sommet est en dehors de la bande formée par les deux parallèles.'],
+   ['Peut-on appliquer Thalès si les deux droites transversales sont parallèles entre elles ?',['Non, elles doivent se couper en un même sommet','Oui toujours','Oui si les points sont alignés'],'Les deux droites doivent se croiser en un même sommet O ; si elles sont parallèles, elles ne se rencontrent pas.'],
+   ['Combien de points alignés faut-il sur chacune des deux droites pour Thalès ?',['3','2','4'],'Sur chaque droite passant par le sommet, il faut 3 points alignés : le sommet et deux autres.'],
+   ['Dans la figure de Thalès, les longueurs OM et OB sont-elles comparées directement ou via un rapport ?',['Via un rapport (OM/OB)','Elles sont directement égales','On les soustrait'],'Thalès donne une égalité de rapports, pas une égalité directe.']
+  ];
+  var q=pick(pool);return qcm('comprendre',q[0],q[1],0,q[2],null);
+}
+function genRapports2(){
+  var L=letters(),cf=pick(['triangle','papillon']);
+  var good=L.O+L.M+'/'+L.O+L.B+' = '+L.O+L.N+'/'+L.O+L.C;
+  var d1=L.O+L.B+'/'+L.O+L.M+' = '+L.O+L.N+'/'+L.O+L.C;
+  var d2=L.O+L.M+'/'+L.O+L.N+' = '+L.O+L.B+'/'+L.O+L.C;
+  var d3=L.O+L.M+'/'+L.O+L.B+' = '+L.O+L.C+'/'+L.O+L.N;
+  var opts=[good,d1,d2,d3].slice(0,3);
+  return qcm('rapports','Les droites ('+L.M+L.N+') et ('+L.B+L.C+') sont parallèles. Complète l'égalité de deux rapports (parmi les trois) :',opts,0,'Le bon rapport : '+good+' (sommets du même côté à chaque fois).',figThales({config:cf,L:L,e:{}}));
+}
+function genProblemes2(){
+  var h=rint(1,3),s1=rint(1,4),mul=pick([2,3,4]),s2=s1*mul,H=h*mul;
+  var steps=[
+    {prompt:'Étape 1 — Ces deux situations sont-elles proportionnelles ?',
+     aide:'Le soleil est le même pour les deux : hauteur et ombre augmentent dans la même proportion.',
+     parts:['Les hauteurs et ombres sont ',{b:1,kind:'text',accept:['proportionn'],mode:'contains',show:'proportionnelles',w:150},'.']},
+    {prompt:'Étape 2 — Écris l'égalité des rapports (x = hauteur du poteau).',
+     aide:'hauteur du poteau sur son ombre = hauteur du piquet sur son ombre.',
+     parts:[{frac:[['x'],[{b:1,kind:'num',ans:s2,show:''+s2,w:50,mini:true}]]},' = ',{frac:[[{b:1,kind:'num',ans:h,show:''+h,w:50,mini:true}],[{b:1,kind:'num',ans:s1,show:''+s1,w:50,mini:true}]]}]},
+    {prompt:'Étape 3 — Produit en croix : isole x.',
+     aide:'x = hauteur du piquet × ombre du poteau ÷ ombre du piquet.',
+     parts:['x = ',{frac:[[{b:1,kind:'num',ans:h,show:''+h,w:48,mini:true},' × ',{b:1,kind:'num',ans:s2,show:''+s2,w:48,mini:true}],[{b:1,kind:'num',ans:s1,show:''+s1,w:48,mini:true}]]}]},
+    {prompt:'Étape 4 — Calcule et conclus.',
+     aide:'Effectue la division : '+h+' × '+s2+' ÷ '+s1+' = '+H+'.',
+     parts:['Le poteau mesure ',{b:1,kind:'num',ans:H,show:''+H,w:70},' m.']}
+  ];
+  return {type:'cascade',cat:'problemes',sig:'PP2'+h+s1+mul,
+    text:'Au même instant, un piquet de '+h+' m projette une ombre de '+s1+' m, et un poteau projette une ombre de '+s2+' m. Quelle est la hauteur du poteau ?',
+    viz:figOmbres(h,s1,H,s2),steps:steps};
+}
+var GEN={comprendre:genComprendre,rapports:genRapports,calculer:genCalculer,problemes:genProblemes,reciproque:genReciproque,redaction:genRedaction,comprendre2:genComprendre2,rapports2:genRapports2,problemes2:genProblemes2};
 /* ===== moteur de quiz (série notée) ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});setTimeout((function(el){return function(){el.remove();};})(d),fall);}}
 function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;if(s.indexOf('/')>=0){var p=s.split('/');if(p.length!==2)return null;var a=parseFloat(p[0]),b=parseFloat(p[1]);if(!isFinite(a)||!isFinite(b)||b===0)return null;return a/b;}var v=parseFloat(s);return isFinite(v)?v:null;}

@@ -549,7 +549,134 @@ var HELP={
   diagonales:'Les diagonales se coupent en leur milieu : AO=OC=AC÷2, BO=OD=BD÷2.',
   caspart:'Rectangle : 4 angles droits. Losange : 4 côtés égaux. Carré : les deux.'
 };
-var GEN={definir:genDefinir,cotes:genCotes,angles:genAngles,diagonales:genDiagonales,caspart:genCaspart};
+/* ===== GÉNÉRATEUR : PROPRIÉTÉS DES DIAGONALES (VARIANTE AVANCÉE) ===== */
+function genDiagVariante(){
+  var sub=rnd(4);
+  if(sub===0){
+    // Vrai/Faux sur les diagonales
+    var props=[
+      {q:'Dans tout parallélogramme, les diagonales se coupent en leur milieu.',opts:['Vrai','Faux'],ans:0,ex:'Propriété fondamentale : les diagonales d\'un parallélogramme se coupent toujours en leur milieu.'},
+      {q:'Dans tout parallélogramme, les diagonales sont de même longueur.',opts:['Vrai','Faux'],ans:1,ex:'Faux : les diagonales sont égales seulement dans un rectangle (ou un carré).'},
+      {q:'Dans tout parallélogramme, les diagonales sont perpendiculaires.',opts:['Vrai','Faux'],ans:1,ex:'Faux : les diagonales sont perpendiculaires seulement dans un losange (ou un carré).'},
+      {q:'Dans un rectangle, les diagonales sont de même longueur.',opts:['Vrai','Faux'],ans:0,ex:'Vrai : dans un rectangle, les diagonales sont égales (et se coupent en leur milieu).'},
+      {q:'Dans un losange, les diagonales sont perpendiculaires.',opts:['Vrai','Faux'],ans:0,ex:'Vrai : dans un losange, les diagonales sont perpendiculaires et se coupent en leur milieu.'}
+    ];
+    var p=props[rnd(props.length)];
+    return {type:'qcm',cat:'diagonales',sig:'diagv0_'+rnd(100),text:p.q,opts:p.opts,ans:p.ans,explain:p.ex};
+  } else if(sub===1){
+    // Calculer OC ou OD à partir d'un segment
+    var oc=rint(2,10);
+    return {type:'casc',cat:'diagonales',sig:'diagv1_'+oc,
+      text:'ABCD est un parallélogramme. O est l\'intersection des diagonales.<br>OC = <b>'+oc+' cm</b>. Combien fait OA ?',
+      viz:'',
+      steps:[
+        {prompt:'O est le milieu de AC, donc OA = OC :',
+         parts:['OA = ',{kind:'num',ans:oc,w:60},' cm'],
+         aide:'OA = OC = '+oc+' cm (O est le milieu de AC)'}
+      ]};
+  } else if(sub===2){
+    var od=rint(2,9);
+    return {type:'casc',cat:'diagonales',sig:'diagv2_'+od,
+      text:'ABCD est un parallélogramme. O est l\'intersection des diagonales.<br>OD = <b>'+od+' cm</b>. Calcule BD.',
+      viz:'',
+      steps:[
+        {prompt:'O est le milieu de BD, donc BD = 2 × OD :',
+         parts:['BD = 2 × '+od+' = ',{kind:'num',ans:2*od,w:60},' cm'],
+         aide:'BD = 2 × '+od+' = '+(2*od)+' cm'}
+      ]};
+  } else {
+    return {type:'qcm',cat:'diagonales',sig:'diagv3_fixed',
+      text:'ABCD est un parallélogramme. O est l\'intersection des diagonales. Quelle propriété est toujours vraie ?',
+      opts:['AO = OC','AO = OB','AC = BD','AO = AB'],ans:0,
+      explain:'O est le milieu de chaque diagonale : AO = OC et BO = OD.'};
+  }
+}
+
+/* ===== GÉNÉRATEUR : DÉMONTRER QU'UN QUADRILATÈRE EST UN PARALLÉLOGRAMME ===== */
+function genDemontrer(){
+  var qs=[
+    {q:'Quelle propriété suffit à démontrer que ABCD est un parallélogramme ?',
+     opts:['Les diagonales se coupent en leur milieu','Les diagonales sont égales','Un angle est droit','Les diagonales sont perpendiculaires'],
+     ans:0,ex:'Si les diagonales se coupent en leur milieu, alors le quadrilatère est un parallélogramme.'},
+    {q:'ABCD est un quadrilatère. On sait que AB = DC et AB ∥ DC. Peut-on conclure que ABCD est un parallélogramme ?',
+     opts:['Oui : un côté égal et parallèle suffit','Non, il faut tous les côtés','Non, il faut les angles','Seulement si c\'est un rectangle'],
+     ans:0,ex:'Si un côté est à la fois égal et parallèle à son opposé, le quadrilatère est un parallélogramme.'},
+    {q:'ABCD est un quadrilatère. Les diagonales AC et BD se coupent en O avec AO = OC = 5 cm et BO = OD = 3 cm. Que peut-on conclure ?',
+     opts:['ABCD est un parallélogramme','ABCD est un rectangle','ABCD est un losange','On ne peut rien conclure'],
+     ans:0,ex:'Les diagonales se coupent en leur milieu → ABCD est un parallélogramme.'},
+    {q:'Pour démontrer que ABCD est un parallélogramme, combien de paires de côtés opposés faut-il montrer parallèles ?',
+     opts:['2 paires (AB∥DC et AD∥BC)','1 paire suffit','3 paires','4 côtés parallèles'],
+     ans:0,ex:'Un parallélogramme a 2 paires de côtés opposés parallèles : AB∥DC et AD∥BC.'},
+    {q:'ABCD est un quadrilatère avec AB = DC = 6 cm et AD = BC = 4 cm. Est-ce suffisant pour dire que c\'est un parallélogramme ?',
+     opts:['Oui, si on sait aussi que les côtés opposés sont parallèles','Non','Oui, toujours','Seulement si les angles sont droits'],
+     ans:0,ex:'Côtés opposés égaux + parallèles → parallélogramme. Côtés égaux seuls ne suffisent pas (un cerf-volant peut avoir ça).'}
+  ];
+  var q=qs[rnd(qs.length)];
+  return {type:'qcm',cat:'definir',sig:'dem_'+rnd(200),text:q.q,opts:q.opts,ans:q.ans,explain:q.ex};
+}
+
+/* ===== GÉNÉRATEUR : CALCUL DE CÔTÉS AVANCÉ ===== */
+function genCotesAvance(){
+  var sub=rnd(3);
+  if(sub===0){
+    // Trouver un côté manquant via le périmètre et un côté connu
+    var ab=rint(4,10),perim=[24,26,28,30,32,34,36,38,40][rnd(9)];
+    var demi=perim/2;
+    var bc=demi-ab;
+    if(bc<=0||bc===ab)return genCotesAvance();
+    return {type:'casc',cat:'cotes',sig:'cav0_'+ab+'_'+perim,
+      text:'ABCD est un parallélogramme. AB = <b>'+ab+' cm</b>, périmètre = <b>'+perim+' cm</b>.<br>Calcule BC et DC.',
+      viz:'',
+      steps:[
+        {prompt:'Demi-périmètre = AB + BC :',
+         parts:['AB + BC = '+perim+' ÷ 2 = ',{kind:'num',ans:demi,w:70},' cm'],
+         aide:'Demi-périmètre = '+perim+' ÷ 2 = '+demi+' cm'},
+        {prompt:'BC = demi-périmètre − AB :',
+         parts:['BC = '+demi+' − '+ab+' = ',{kind:'num',ans:bc,w:60},' cm'],
+         aide:'BC = '+demi+' − '+ab+' = '+bc+' cm'},
+        {prompt:'DC est le côté opposé à AB (côtés opposés égaux) :',
+         parts:['DC = ',{kind:'num',ans:ab,w:60},' cm'],
+         aide:'DC = AB = '+ab+' cm'}
+      ]};
+  } else if(sub===1){
+    // Losange : trouver le périmètre
+    var cote=rint(3,12);
+    var perim2=4*cote;
+    return {type:'casc',cat:'caspart',sig:'cav1_'+cote,
+      text:'ABCD est un losange de côté <b>'+cote+' cm</b>. Calcule son périmètre.',
+      viz:'',
+      steps:[
+        {prompt:'Un losange a 4 côtés égaux. Périmètre = 4 × côté :',
+         parts:['P = 4 × '+cote+' = ',{kind:'num',ans:perim2,w:70},' cm'],
+         aide:'P = 4 × '+cote+' = '+perim2+' cm'}
+      ]};
+  } else {
+    // Rectangle : trouver L à partir du périmètre et de l
+    var l2=rint(2,7),perim3=[20,22,24,26,28,30,32][rnd(7)];
+    var demi3=perim3/2;
+    var L2=demi3-l2;
+    if(L2<=0||L2===l2)return genCotesAvance();
+    return {type:'casc',cat:'caspart',sig:'cav2_'+l2+'_'+perim3,
+      text:'ABCD est un rectangle. Largeur l = <b>'+l2+' cm</b>, périmètre = <b>'+perim3+' cm</b>. Calcule la longueur L.',
+      viz:'',
+      steps:[
+        {prompt:'Demi-périmètre = L + l :',
+         parts:['L + '+l2+' = '+perim3+' ÷ 2 = ',{kind:'num',ans:demi3,w:70},''],
+         aide:'Demi-périmètre = '+perim3+' ÷ 2 = '+demi3},
+        {prompt:'L = demi-périmètre − l :',
+         parts:['L = '+demi3+' − '+l2+' = ',{kind:'num',ans:L2,w:70},' cm'],
+         aide:'L = '+demi3+' − '+l2+' = '+L2+' cm'}
+      ]};
+  }
+}
+
+var GEN={
+  definir:function(){return Math.random()<0.6?genDefinir():genDemontrer();},
+  cotes:function(){return Math.random()<0.6?genCotes():genCotesAvance();},
+  angles:genAngles,
+  diagonales:function(){return Math.random()<0.5?genDiagonales():genDiagVariante();},
+  caspart:genCaspart
+};
 var BRIQUE={definir:{serie:8,seuil:6},cotes:{serie:8,seuil:6},angles:{serie:8,seuil:6},diagonales:{serie:8,seuil:6},caspart:{serie:8,seuil:6}};
 var THEME_CATS={definir:['definir'],cotes:['cotes'],angles:['angles'],diagonales:['diagonales'],caspart:['caspart']};
 var CATNOM={definir:'Définir & reconnaître',cotes:'Côtés opposés',angles:'Angles',diagonales:'Diagonales',caspart:'Cas particuliers'};

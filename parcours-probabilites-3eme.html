@@ -778,8 +778,96 @@ function genConditionnelle(){
     viz:svgTab,steps:steps};
 }
 
+/* ===== CASCADE : complementaire ===== */
+function genComplementaire(){
+  var kind=pick(['urne','de','cartes']);
+  var total,fav,favTxt,contextTxt;
+  if(kind==='urne'){
+    total=pick([5,6,8,10]);fav=rint(1,total-1);
+    favTxt=fav+' boule'+(fav>1?'s':'')+' rouge'+(fav>1?'s':'');
+    contextTxt='Une urne contient '+total+' boules dont '+fav+' rouge'+(fav>1?'s':'')+'. On tire une boule au hasard.';
+  } else if(kind==='de'){
+    total=6;var ev=pick([['pair',3],['impair',3],['multiple de 3',2],['supérieur ou égal à 5',2]]);
+    fav=ev[1];favTxt=ev[0];
+    contextTxt='On lance un dé équilibré à 6 faces. A = « obtenir '+favTxt+' ».';
+  } else {
+    total=52;var ev2=pick([['un cœur',13],['un roi',4],['une dame',4],['une carte noire',26]]);
+    fav=ev2[1];favTxt=ev2[0];
+    contextTxt='On tire une carte au hasard dans 52 cartes. A = « obtenir '+favTxt+' ».';
+  }
+  var notFav=total-fav;
+  var g1=gcd(fav,total),g2=gcd(notFav,total);
+  var steps=[
+    {prompt:'Étape 1 — Calcule P(A).',
+     aide:'P(A) = nombre de cas favorables / nombre de cas possibles.',
+     parts:['P(A) = ',{frac:[[{b:1,kind:'num',ans:fav/g1,show:''+(fav/g1),w:50,mini:true}],[{b:1,kind:'num',ans:total/g1,show:''+(total/g1),w:50,mini:true}]]}]},
+    {prompt:'Étape 2 — Combien y a-t-il de cas non favorables ?',
+     aide:'Total − favorables = '+total+' − '+fav+' = '+notFav,
+     parts:['Cas non favorables = ',{b:1,kind:'num',ans:notFav,show:''+notFav,w:60}]},
+    {prompt:'Étape 3 — Calcule P(Ā) avec la formule P(Ā) = 1 − P(A).',
+     aide:'P(Ā) = 1 − '+fav+'/'+total+' = '+notFav+'/'+total,
+     parts:['P(Ā) = ',{frac:[[{b:1,kind:'num',ans:notFav/g2,show:''+(notFav/g2),w:50,mini:true}],[{b:1,kind:'num',ans:total/g2,show:''+(total/g2),w:50,mini:true}]]}]},
+    {prompt:'Étape 4 — Vérifie : P(A) + P(Ā) doit valoir…',
+     aide:'P(A) + P(Ā) = 1 toujours.',
+     parts:['P(A) + P(Ā) = ',{b:1,kind:'num',ans:1,show:'1',w:50}]}
+  ];
+  return {type:'cascade',cat:'complementaire',sig:'Comp'+fav+'/'+total,
+    text:contextTxt+' Calcule P(A) puis P(Ā).',
+    viz:null,steps:steps};
+}
+
+/* ===== CASCADE : tableau double entrée ===== */
+function genTableauDouble(){
+  var sport=rint(12,25),pasport=rint(8,18);
+  var filles_sport=rint(Math.floor(sport*0.3),Math.floor(sport*0.7));
+  var garcons_sport=sport-filles_sport;
+  var filles_pas=rint(Math.floor(pasport*0.3),Math.floor(pasport*0.7));
+  var garcons_pas=pasport-filles_pas;
+  var total_f=filles_sport+filles_pas,total_g=garcons_sport+garcons_pas;
+  var total=sport+pasport;
+  var svgTab='<div style="overflow-x:auto"><table class="dtable"><tr><th></th><th>Sport</th><th>Pas de sport</th><th>Total</th></tr>'
+    +'<tr><td><b>Filles</b></td><td>'+filles_sport+'</td><td>'+filles_pas+'</td><td>'+total_f+'</td></tr>'
+    +'<tr><td><b>Garçons</b></td><td>'+garcons_sport+'</td><td>'+garcons_pas+'</td><td>'+total_g+'</td></tr>'
+    +'<tr><td><b>Total</b></td><td>'+sport+'</td><td>'+pasport+'</td><td>'+total+'</td></tr></table></div>';
+  var g1=gcd(filles_sport,total),g2=gcd(sport,total),g3=gcd(filles_sport,total_f);
+  var steps=[
+    {prompt:'Étape 1 — Combien y a-t-il d\'élèves en tout dans cette enquête ?',
+     aide:'Lis la case Total / Total dans le tableau.',
+     parts:['Total = ',{b:1,kind:'num',ans:total,show:''+total,w:60}]},
+    {prompt:'Étape 2 — Quelle est la probabilité de choisir au hasard une fille qui fait du sport ?',
+     aide:'P(fille ∩ sport) = '+filles_sport+' ÷ '+total,
+     parts:['P(fille ∩ sport) = ',{frac:[[{b:1,kind:'num',ans:filles_sport/g1,show:''+(filles_sport/g1),w:50,mini:true}],[{b:1,kind:'num',ans:total/g1,show:''+(total/g1),w:50,mini:true}]]}]},
+    {prompt:'Étape 3 — Quelle est la probabilité de choisir un élève qui fait du sport ?',
+     aide:'P(sport) = '+sport+' ÷ '+total,
+     parts:['P(sport) = ',{frac:[[{b:1,kind:'num',ans:sport/g2,show:''+(sport/g2),w:50,mini:true}],[{b:1,kind:'num',ans:total/g2,show:''+(total/g2),w:50,mini:true}]]}]},
+    {prompt:'Étape 4 — Parmi les filles seulement, quelle fraction fait du sport ?',
+     aide:'P(sport | fille) = '+filles_sport+' ÷ '+total_f,
+     parts:['P(sport|fille) = ',{frac:[[{b:1,kind:'num',ans:filles_sport/g3,show:''+(filles_sport/g3),w:50,mini:true}],[{b:1,kind:'num',ans:total_f/g3,show:''+(total_f/g3),w:50,mini:true}]]}]}
+  ];
+  return {type:'cascade',cat:'tableaudouble',sig:'TD'+filles_sport+'/'+total_f+'/'+total,
+    text:'Un sondage sur '+total+' élèves est résumé dans le tableau ci-dessous.',
+    viz:svgTab,steps:steps};
+}
+
+/* ===== QCM : fréquence vs probabilité ===== */
+function genFreqVsProba(){
+  var pool=[
+    {t:'La fréquence expérimentale est calculée…',o:["en répétant l'expérience et en divisant par le nombre d'essais","à partir de la définition théorique","en comptant les issues de l'univers"],c:0,e:"La fréquence = nb apparitions ÷ nb essais. Elle nécessite d'avoir réalisé l'expérience."},
+    {t:'La probabilité théorique est calculée…',o:["à partir de la situation sans faire l'expérience","en répétant l'expérience","en additionnant toutes les fréquences"],c:0,e:"La probabilité théorique se calcule avec la formule P = favorables / total, sans expérience réelle."},
+    {t:'On lance un dé 600 fois. On obtient 6 exactement 95 fois. La fréquence de 6 est…',o:['95/600 ≈ 0,158','1/6 ≈ 0,167','95/6'],c:0,e:"Fréquence = 95 ÷ 600 ≈ 0,158. La probabilité théorique est 1/6 ≈ 0,167."},
+    {t:'Quand le nombre d\'essais augmente, la fréquence observée…',o:["se rapproche de la probabilité théorique","s'éloigne de la probabilité","reste constante"],c:0,e:"C'est la loi des grands nombres : plus on répète, plus f → P."},
+    {t:'P(pile) pour une pièce équilibrée = 0,5. Après 10 lancers on obtient 7 fois pile. C\'est…',o:["normal, avec peu d'essais la fréquence fluctue","impossible, f doit être exactement 0,5","une erreur de calcul"],c:0,e:"Avec seulement 10 essais, la variabilité est grande. La fréquence se stabilise à 0,5 seulement pour un grand nombre de lancers."},
+    {t:'Une urne a 3 rouges et 7 bleues. P(rouge) = ?',o:['3/10','3/7','7/10'],c:0,e:"P(rouge) = 3 favorables ÷ 10 total = 3/10."},
+    {t:'On tire 200 fois d\'une urne. On obtient rouge 62 fois. La fréquence de rouge est…',o:['62/200 = 0,31','62/138','1/3'],c:0,e:"Fréquence = 62 ÷ 200 = 0,31. La probabilité théorique serait 3/10 = 0,30 : la fréquence en est très proche."},
+    {t:'La différence principale entre fréquence et probabilité est…',o:["la fréquence vient de l'expérience réelle, la probabilité du calcul théorique","elles sont toujours égales","la probabilité est toujours plus grande"],c:0,e:"Fréquence → expérimentale. Probabilité → théorique."}
+  ];
+  var q=pick(pool);
+  var opts=shuffle(q.o);
+  return {type:'qcm',cat:'freqvsproba',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== GEN map ===== */
-var GEN={vocabulaire:genVocabulaire,probabilite:genProbabilite,frequence:genFrequence,arbre:genArbre,conditionnelle:genConditionnelle,redaction:genRedaction};
+var GEN={vocabulaire:genVocabulaire,probabilite:genProbabilite,frequence:genFrequence,arbre:genArbre,conditionnelle:genConditionnelle,redaction:genRedaction,complementaire:genComplementaire,tableaudouble:genTableauDouble,freqvsproba:genFreqVsProba};
 
 /* ===== MOTEUR ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});(function(el){setTimeout(function(){el.remove();},fall);})(d);}}

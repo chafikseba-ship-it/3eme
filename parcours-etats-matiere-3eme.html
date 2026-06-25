@@ -944,7 +944,111 @@ function genModele(){
   };
 }
 
-var GEN={intro:genIntro,changements:genChangements,temperature:genTemperature,modele:genModele};
+/* ===== GÉNÉRATEUR 5 : TEMPÉRATURES DE FUSION ===== */
+function genFusion(){
+  var mode=pick(['qcm_fusion','cascade_fusion','qcm_comparaison']);
+  var substances=[
+    {nom:'l\'eau',tfusion:0,tebul:100,unite:'°C'},
+    {nom:'le fer',tfusion:1538,tebul:2861,unite:'°C'},
+    {nom:'l\'éthanol',tfusion:-114,tebul:78,unite:'°C'},
+    {nom:'le plomb',tfusion:327,tebul:1749,unite:'°C'},
+    {nom:'l\'azote liquide',tfusion:-210,tebul:-196,unite:'°C'},
+    {nom:'l\'aluminium',tfusion:660,tebul:2470,unite:'°C'}
+  ];
+  if(mode==='qcm_fusion'){
+    var pools=[
+      {t:'Un corps est à l\'état <b>liquide</b> si sa température est…',o:['supérieure à sa température de fusion et inférieure à sa température d\'ébullition','inférieure à sa température de fusion','supérieure à sa température d\'ébullition','égale à sa température de fusion'],c:0,e:'Liquide = entre t_fusion et t_ébullition. En dessous → solide. Au-dessus → gaz.'},
+      {t:'Le fer a une température de fusion de 1 538 °C. À 1 000 °C, le fer est…',o:['solide','liquide','gazeux','plasma'],c:0,e:'1 000 °C < 1 538 °C (t_fusion du fer) → le fer est encore SOLIDE à 1 000 °C.'},
+      {t:'L\'azote a une température d\'ébullition de −196 °C. À température ambiante (20 °C), l\'azote est…',o:['gazeux','liquide','solide','plasma'],c:0,e:'20 °C > −196 °C (t_ébullition de l\'azote) → l\'azote est à l\'état GAZEUX à température ambiante.'},
+      {t:'L\'éthanol a une température de fusion de −114 °C. Dans un congélateur (−18 °C), l\'éthanol est…',o:['liquide','solide','gazeux','cristallisé'],c:0,e:'−18 °C > −114 °C (t_fusion) → l\'éthanol reste LIQUIDE dans un congélateur.'},
+      {t:'La température de fusion est la même que la température de…',o:['solidification','vaporisation','sublimation','condensation'],c:0,e:'La fusion (solide → liquide) et la solidification (liquide → solide) ont lieu à la MÊME température !'},
+      {t:'La température de fusion d\'un corps pur est…',o:['unique et caractéristique de ce corps','variable selon la pression','aléatoire','identique pour tous les corps'],c:0,e:'Chaque corps pur a sa propre température de fusion — c\'est une propriété caractéristique !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'temperature',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_fusion'){
+    var sub=pick(substances.slice(0,4));
+    return {
+      type:'cascade',cat:'temperature',sig:'TF'+sub.nom,
+      text:'La température de fusion de <b>'+sub.nom+'</b> est <b>'+sub.tfusion+' °C</b>.<br>À quelle température sa solidification se produit-elle ?',
+      steps:[
+        {prompt:'La température de solidification est-elle différente de la température de fusion ?',
+         aide:'Non ! La fusion et la solidification se produisent à la MÊME température.',
+         parts:['Température de solidification de '+sub.nom+' : ',{b:1,kind:'num',ans:sub.tfusion,show:''+sub.tfusion,w:80,tol:0},' °C']},
+        {prompt:'Si le corps est à '+(sub.tfusion+10)+' °C, est-il solide, liquide ou gazeux ?',
+         aide:sub.nom+' est liquide entre '+sub.tfusion+' °C et '+sub.tebul+' °C.',
+         parts:['État de '+sub.nom+' à '+(sub.tfusion+10)+' °C : ',{b:1,kind:'txt',accept:['liquide'],show:'liquide',w:120}]}
+      ]
+    };
+  }
+  /* qcm_comparaison */
+  var pools2=[
+    {t:'Quel matériau a la température de fusion la plus élevée parmi ces quatre ?',o:['Le fer (1 538 °C)','L\'aluminium (660 °C)','Le plomb (327 °C)','L\'eau (0 °C)'],c:0,e:'Le fer fond à 1 538 °C — beaucoup plus haut que les autres ! C\'est pour ça que les fourneaux industriels atteignent des températures extrêmes.'},
+    {t:'Parmi ces substances, laquelle est liquide à −50 °C ?',o:['L\'éthanol (t_fusion = −114 °C)','L\'eau (t_fusion = 0 °C)','L\'azote (t_ébullition = −196 °C)','Le fer (t_fusion = 1 538 °C)'],c:0,e:'−50 °C > −114 °C (t_fusion éthanol) et −50 °C < 78 °C (t_ébullition éthanol) → l\'éthanol est LIQUIDE à −50 °C.'},
+    {t:'La glace (eau solide) fond à 0 °C. Pourquoi le sel répandu sur la route fait fondre la glace en hiver ?',o:['Le sel abaisse la température de fusion de l\'eau (en dessous de 0 °C)','Le sel produit de la chaleur','Le sel absorbe la lumière solaire','Le sel évapore directement la glace'],c:0,e:'Le sel dissous dans l\'eau abaisse sa t_fusion. La glace fond même en dessous de 0 °C.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'temperature',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 6 : COURBE DE REFROIDISSEMENT ===== */
+function genCourbe(){
+  var mode=pick(['qcm_lecture_courbe','cascade_courbe','qcm_plateau']);
+  if(mode==='qcm_lecture_courbe'){
+    var pools=[
+      {t:'Sur une courbe de refroidissement de l\'eau, la partie horizontale à 0 °C correspond à…',o:['la solidification (liquide → solide)','la fusion (solide → liquide)','l\'ébullition','l\'évaporation'],c:0,e:'Lors du REFROIDISSEMENT, l\'eau passe de liquide à solide à 0 °C → c\'est la solidification. Le palier horizontal indique que la température reste à 0 °C pendant tout ce changement.'},
+      {t:'Sur une courbe de chauffage de l\'eau, que représente la partie horizontale à 100 °C ?',o:['L\'ébullition (liquide → vapeur)','La fusion (solide → liquide)','La solidification','La condensation'],c:0,e:'Pendant l\'ébullition (100 °C pour l\'eau à pression normale), la température reste constante → palier horizontal.'},
+      {t:'La partie DESCENDANTE d\'une courbe de refroidissement correspond à…',o:['Le corps se refroidit sans changer d\'état','Un changement d\'état en cours','La fusion du corps','L\'évaporation'],c:0,e:'Quand la courbe descend, la température baisse → le corps se refroidit sans changement d\'état.'},
+      {t:'Sur une courbe de refroidissement, combien observe-t-on de paliers pour l\'eau entre 110 °C et −10 °C ?',o:['2 paliers (à 100 °C et à 0 °C)','1 seul palier (à 0 °C)','3 paliers','Aucun palier'],c:0,e:'2 paliers : à 100 °C (condensation gaz → liquide) et à 0 °C (solidification liquide → solide).'},
+      {t:'Pendant un palier sur une courbe température/temps, la température…',o:['reste constante','monte','descend','fluctue aléatoirement'],c:0,e:'Palier = température CONSTANTE. Tout l\'apport ou retrait d\'énergie sert uniquement au changement d\'état.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'temperature',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_courbe'){
+    return {
+      type:'cascade',cat:'temperature',sig:'CC_refroid',
+      text:'On laisse refroidir de l\'eau liquide depuis 20 °C. À 0 °C, on observe un palier.<br>Réponds aux questions sur cette courbe de refroidissement :',
+      steps:[
+        {prompt:'Que signifie le palier à 0 °C sur cette courbe de refroidissement ?',
+         aide:'Le palier indique un changement d\'état. La température reste à 0 °C pendant la solidification.',
+         parts:['C\'est la ',{b:1,kind:'txt',accept:['solidification','solidifi'],show:'solidification',w:180},'.']},
+        {prompt:'Pendant le palier, la température est-elle constante ou variable ?',
+         aide:'Pendant tout changement d\'état, la température est toujours constante (palier).',
+         parts:['La température est ',{b:1,kind:'txt',accept:['constante','constant','stable'],show:'constante',w:160},'.']},
+        {prompt:'À quelle température se produit cette solidification pour l\'eau ? (en °C)',
+         aide:'La solidification de l\'eau se produit à 0 °C.',
+         parts:['Température : ',{b:1,kind:'num',ans:0,show:'0',w:70,tol:0},' °C']}
+      ]
+    };
+  }
+  /* qcm_plateau */
+  var pools2=[
+    {t:'Un corps pur et un mélange se distinguent sur leur courbe de fusion car…',o:['Le corps pur a un palier net ; le mélange fond sur un intervalle de températures','Le mélange a un palier net ; le corps pur fond progressivement','Les deux ont des paliers identiques','Un mélange ne fond pas'],c:0,e:'Corps pur → palier horizontal net. Mélange → fusion progressive sur un intervalle (critère de pureté !).'},
+    {t:'Si on mesure la température d\'un corps pendant sa fusion et qu\'elle ne forme pas de palier net, c\'est…',o:['Un mélange (plusieurs substances)','Un corps pur','De l\'eau pure','Impossible'],c:0,e:'Absence de palier net = MÉLANGE. La pureté d\'un corps se vérifie par l\'observation d\'un palier horizontal.'},
+    {t:'Pourquoi la durée du palier est-elle plus longue pour une grande quantité de substance ?',o:['Il faut plus d\'énergie pour changer l\'état de plus de matière','La température monte plus vite','Le palier dure toujours le même temps','La substance est plus dense'],c:0,e:'Plus de matière → plus d\'énergie nécessaire pour tout changer d\'état → le palier dure plus longtemps !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'temperature',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 7 : PRESSION ET ÉTATS ===== */
+function genPression(){
+  var pools=[
+    {t:'À haute altitude, l\'eau bout à une température inférieure à 100 °C car…',o:['La pression atmosphérique est plus faible','La température de l\'air est plus basse','Il y a moins d\'oxygène','La gravité est plus faible'],c:0,e:'La pression influe sur la température d\'ébullition. Moins de pression → ébullition à plus basse température !'},
+    {t:'Dans un autocuiseur (cocotte-minute), l\'eau bout à plus de 100 °C car…',o:['La pression à l\'intérieur est plus élevée','L\'autocuiseur chauffe plus fort','Il y a moins d\'eau','Le métal change la température d\'ébullition'],c:0,e:'L\'autocuiseur augmente la pression → la température d\'ébullition dépasse 100 °C → cuisson plus rapide !'},
+    {t:'L\'eau bout à 100 °C dans quelles conditions ?',o:['À pression atmosphérique normale (au niveau de la mer)','Toujours à 100 °C','Uniquement dans un récipient fermé','À 0 °C de température extérieure'],c:0,e:'100 °C est la température d\'ébullition de l\'eau à PRESSION NORMALE (1 atm, niveau de la mer).'},
+    {t:'Parmi ces affirmations sur la pression et les changements d\'état, laquelle est vraie ?',o:['Une pression plus élevée augmente la température d\'ébullition','Une pression plus élevée diminue la température d\'ébullition','La pression n\'a aucun effet sur les changements d\'état','La pression modifie uniquement la fusion, pas l\'ébullition'],c:0,e:'Pression plus élevée → température d\'ébullition plus haute (principe de l\'autocuiseur).'},
+    {t:'La neige carbonique (CO₂ solide) passe directement de l\'état solide à l\'état gazeux. Ce phénomène s\'appelle…',o:['sublimation','fusion','vaporisation','condensation'],c:0,e:'Solide → gaz directement, sans passer par l\'état liquide = SUBLIMATION ! La neige carbonique sublime à pression normale.'},
+    {t:'Un gaz se comprime facilement parce que…',o:['Les particules d\'un gaz sont très éloignées les unes des autres','Les particules d\'un gaz sont très proches','Les particules sont immobiles','Le gaz n\'a pas de particules'],c:0,e:'Dans un gaz, les particules sont très éloignées → beaucoup d\'espace vide → on peut les rapprocher en comprimant.'},
+    {t:'Pourquoi est-il dangereux de jeter un aérosol dans un feu ?',o:['La chaleur augmente la pression du gaz à l\'intérieur → explosion','Le gaz est toxique','La bombe s\'éteint le feu','Le métal fond'],c:0,e:'La chaleur fait monter la température → pression du gaz augmente → la bombe peut exploser si la pression dépasse la résistance du métal !'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'temperature',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+var GEN={intro:genIntro,changements:genChangements,temperature:genTemperature,modele:genModele,fusion:genFusion,courbe:genCourbe,pression:genPression};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,lastSig:'',timer:0,casc:null};

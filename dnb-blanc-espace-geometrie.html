@@ -1487,6 +1487,318 @@ function genSolide(){
   return {titre:'Pave droit — volume et aire',enonceHTML,dessiner,etapes};
 }
 
+/* ===== SITUATION : Pythagore — trouver un côté quelconque ===== */
+function genPythagoreCoté(){
+  // On donne hypoténuse et un côté → trouver l'autre côté
+  const configs=[
+    {hyp:13,c1:5,c2:12},
+    {hyp:17,c1:8,c2:15},
+    {hyp:25,c1:7,c2:24},
+    {hyp:10,c1:6,c2:8}
+  ];
+  const cfg=choix(configs);
+  const hyp=cfg.hyp, c1=cfg.c1, c2=cfg.c2;
+  const [lA,lB,lC]=lettresDistinctes(3);
+  const segHyp=seg(lA,lC), segC1=seg(lA,lB), segC2=seg(lB,lC);
+  const enonceHTML=`Le triangle <b>${lA}${lB}${lC}</b> est rectangle en <b>${lB}</b>. On sait que <b>${lA}${lC} = ${hyp} cm</b> et <b>${lA}${lB} = ${c1} cm</b>.<br>Calcule la longueur ${lB}${lC}.`;
+  const etapes=[
+    {
+      question:`Question 1 — Écrire le théorème de Pythagore`,
+      role:'Identifier hypoténuse et côtés',
+      q:`Le triangle est rectangle en ${lB}. Écris l'égalité de Pythagore (hypoténuse² = côté² + côté²).`,
+      verif:inp=>{
+        const g=norm(inp).split('=');
+        if(g.length<2)return false;
+        const G=segsCarres(g[0]),D=segsCarres(g.slice(1).join('='));
+        return G.length===1&&G[0]===segHyp&&D.length===2&&memeEnsemble(D,[segC1,segC2]);
+      },
+      aide:`L'hypoténuse est ${lA}${lC}. Forme : ${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`,
+      solutionHTML:`${lA}${lC}² = ${lA}${lB}² + ${lB}${lC}²`
+    },
+    {
+      role:'Isoler le côté inconnu',
+      clavier:['²','-','='],
+      q:`Isole ${lB}${lC}² : ${lB}${lC}² = ${lA}${lC}² − ${lA}${lB}² = ${hyp}² − ${c1}².`,
+      verif:inp=>{
+        const ns=nbs(inp);
+        return ns.some(x=>Math.abs(x-hyp*hyp)<0.5)&&ns.some(x=>Math.abs(x-c1*c1)<0.5);
+      },
+      aide:`${lB}${lC}² = ${hyp}² − ${c1}² = ${hyp*hyp} − ${c1*c1} = ${hyp*hyp-c1*c1}`,
+      solutionHTML:`${lB}${lC}² = ${hyp*hyp} − ${c1*c1} = ${hyp*hyp-c1*c1}`
+    },
+    {
+      role:'Calculer la longueur',
+      clavier:['√','='],
+      q:`Calcule ${lB}${lC} = √${hyp*hyp-c1*c1}.`,
+      verif:inp=>nbs(inp).some(x=>Math.abs(x-c2)<=0.05),
+      aide:`√${hyp*hyp-c1*c1} = ${c2} cm`,
+      solutionHTML:`${lB}${lC} = ${c2} cm`
+    }
+  ];
+  return {
+    titre:'Théorème de Pythagore — trouver un côté',
+    enonceHTML,
+    dessiner:(id)=>dessinerEchelle(id,{s1:lA,droit:lB,s2:lC,cote1Label:`${c1} cm`,cote2Label:``,hypLabel:`${hyp} cm`}),
+    etapes
+  };
+}
+
+/* ===== SITUATION : Thalès — calculer une longueur ===== */
+function genThalesLongueur(){
+  const configs=[
+    {om:4,on:6,ma:3,nbCalc:4.5},
+    {om:3,on:9,ma:4,nbCalc:12},
+    {om:5,on:10,ma:6,nbCalc:12},
+    {om:6,on:8,ma:9,nbCalc:12}
+  ];
+  const cfg=choix(configs);
+  const om=cfg.om,on=cfg.on,ma=cfg.ma,nb=cfg.nbCalc;
+  const ratio=Math.round(on/om*100)/100;
+  const enonceHTML=`Dans la figure ci-dessous, les droites <b>(MA)</b> et <b>(NB)</b> sont parallèles. On a :<br>`
+    +`&bull; OM = <b>${om} m</b>, ON = <b>${on} m</b>, MA = <b>${ma} m</b>.<br>`
+    +`Calcule NB en utilisant le théorème de Thalès.`;
+  const etapes=[
+    {
+      question:'Question 1 — Énoncer le théorème',
+      role:'Rappeler la configuration de Thalès',
+      q:`Les droites (MA) et (NB) sont parallèles et l'on a O, M, N alignés avec M entre O et N. Quel rapport peut-on écrire ?`,
+      verif:inp=>{const t=norm(inp);return t.includes('om')&&t.includes('on')&&t.includes('ma')&&t.includes('nb');},
+      aide:`OM/ON = MA/NB (ou équivalence croisée)`,
+      solutionHTML:`OM/ON = MA/NB`
+    },
+    {
+      question:'Question 2 — Calcul de NB',
+      role:'Résoudre la proportion',
+      clavier:['×','÷','='],
+      q:`De OM/ON = MA/NB, on déduit NB = MA × ON ÷ OM = ${ma} × ${on} ÷ ${om}. Calcule.`,
+      verif:inp=>nbs(inp).some(x=>Math.abs(x-nb)<=0.1),
+      aide:`NB = ${ma} × ${on} ÷ ${om} = ${fr(nb)} m`,
+      solutionHTML:`NB = ${ma} × ${on} ÷ ${om} = ${fr(nb)} m`
+    },
+    {
+      question:'Question 3 — Vérifier par le rapport',
+      role:'Confirmer le résultat',
+      q:`Vérifie que OM/ON = MA/NB : calcule ${om}/${on} et ${ma}/${fr(nb)}, sont-ils égaux ?`,
+      verif:inp=>nbs(inp).some(x=>Math.abs(x-om/on)<0.01)||nbs(inp).some(x=>Math.abs(x-ma/nb)<0.01),
+      aide:`${om}/${on} = ${fr(Math.round(om/on*1000)/1000)} et ${ma}/${fr(nb)} = ${fr(Math.round(ma/nb*1000)/1000)} ✓`,
+      solutionHTML:`${om}/${on} = ${ma}/${fr(nb)} = ${fr(Math.round(om/on*1000)/1000)} ✓`
+    }
+  ];
+  return {
+    titre:'Théorème de Thalès — longueur inconnue',
+    enonceHTML,
+    dessiner:(id)=>dessinerThales(id,{O:'O',M:'M',A:'A',N:'N',B:'B',om,on,ma,nb:'?'}),
+    etapes
+  };
+}
+
+/* ===== SITUATION : Aire d'un disque ===== */
+function genAireDisque(){
+  const configs=[
+    {r:5,contexte:'une pizza ronde'},
+    {r:7,contexte:'une fontaine circulaire'},
+    {r:3,contexte:'un couvercle rond'},
+    {r:4,contexte:'une table circulaire'}
+  ];
+  const cfg=choix(configs);
+  const r=cfg.r;
+  const r2=r*r;
+  const aire=Math.round(Math.PI*r2*100)/100;
+  const aireCm2=Math.round(aire);
+  const d=2*r;
+  const circ=Math.round(2*Math.PI*r*100)/100;
+  const enonceHTML=`On étudie ${cfg.contexte} de rayon <b>r = ${r} cm</b>.<br>`
+    +`<b>1.</b> Rappelle la formule de l'aire d'un disque et calcule cette aire (arrondie au cm²).<br>`
+    +`<b>2.</b> Calcule la circonférence (périmètre) de ce disque.<br>`
+    +`<b>3.</b> Si le rayon est multiplié par 2, par quel nombre l'aire est-elle multipliée ? Justifie.<br>`
+    +`<i>Rappel : π ≈ 3,14</i>`;
+  const aire2r=Math.round(Math.PI*(2*r)*(2*r)*100)/100;
+  const facteur=Math.round(aire2r/aire*10)/10;
+  const etapes=[
+    {
+      question:'Question 1 — Aire du disque',
+      role:'Rappeler et appliquer la formule A = π × r²',
+      clavier:['π','²','×','='],
+      q:`Écris la formule de l'aire d'un disque, puis calcule avec r = ${r} cm.`,
+      verif:inp=>{
+        const t=norm(inp);
+        const hasPi=t.includes('pi')||t.includes('π');
+        return (hasPi&&nbs(inp).some(x=>Math.abs(x-r2)<0.5))||nbs(inp).some(x=>Math.abs(x-aireCm2)<=2);
+      },
+      aide:`A = π × r² = π × ${r}² = π × ${r2} ≈ ${fr(aire)} cm²`,
+      solutionHTML:`A = π × ${r2} ≈ ${fr(aire)} cm²`
+    },
+    {
+      question:'Question 2 — Circonférence',
+      role:'Appliquer C = 2 × π × r',
+      clavier:['π','×','='],
+      q:`Calcule la circonférence : C = 2 × π × ${r}.`,
+      verif:inp=>nbs(inp).some(x=>Math.abs(x-circ)<=0.2),
+      aide:`C = 2 × π × ${r} = 2 × ${r} × π ≈ ${fr(circ)} cm`,
+      solutionHTML:`C = 2 × π × ${r} ≈ ${fr(circ)} cm`
+    },
+    {
+      question:'Question 3 — Doublement du rayon',
+      role:'Analyser l\'effet sur l\'aire',
+      q:`Calcule l'aire avec r = ${2*r} cm. Par quel facteur l'aire a-t-elle été multipliée ?`,
+      verif:inp=>{
+        const ns=nbs(inp);
+        return ns.some(x=>Math.abs(x-facteur)<=0.1)||ns.some(x=>Math.abs(x-aire2r)<=2);
+      },
+      aide:`A' = π × ${2*r}² = π × ${4*r2} ≈ ${fr(aire2r)} cm². Facteur = ${fr(aire2r)}/${fr(aire)} = ${fr(facteur)} = 4.`,
+      solutionHTML:`A' ≈ ${fr(aire2r)} cm² : l'aire est multipliée par 4 (= 2²)`
+    }
+  ];
+  return {
+    titre:`Aire d'un disque — ${cfg.contexte}`,
+    enonceHTML,
+    dessiner:(id)=>{
+      const W=340,H=280,cx=170,cy=130,R=r*14;
+      const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Disque">`
+        +`<circle cx="${cx}" cy="${cy}" r="${R}" fill="#d8edf8" stroke="#4FA3D1" stroke-width="2.5"/>`
+        +`<line x1="${cx}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="#E07A1F" stroke-width="2.5"/>`
+        +`<circle cx="${cx}" cy="${cy}" r="4" fill="#E07A1F"/>`
+        +svgTxt(cx+R/2,cy-16,`r = ${r} cm`,14,'#E07A1F')
+        +svgTxt(cx,cy+R+22,`Aire ≈ ${fr(aire)} cm²`,13,'#4FA3D1')
+        +svgNonEchelle(W,H)
+        +`</svg>`;
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes
+  };
+}
+
+/* ===== SITUATION : Volume d'un cône ou d'une pyramide ===== */
+function genVolumeSolide(){
+  const choixSolide=rnd(2);
+  if(choixSolide===0){
+    // Pyramide à base carrée
+    const cfgs=[{c:6,h:8},{c:9,h:6},{c:4,h:12},{c:10,h:5}];
+    const cfg=choix(cfgs);
+    const c=cfg.c,h=cfg.h;
+    const airBase=c*c;
+    const vol=Math.round(airBase*h/3*100)/100;
+    const enonceHTML=`Une pyramide à base carrée a un côté de base <b>c = ${c} cm</b> et une hauteur <b>h = ${h} cm</b>.<br>`
+      +`<b>1.</b> Calcule l'aire de la base.<br>`
+      +`<b>2.</b> Rappelle la formule du volume d'une pyramide et calcule ce volume.<br>`
+      +`<b>3.</b> Si la hauteur était doublée, quel serait le nouveau volume ?<br>`
+      +`<i>Rappel : V = (1/3) × Aire<sub>base</sub> × h</i>`;
+    const etapes=[
+      {
+        question:'Question 1 — Aire de la base',
+        role:'Calculer c²',
+        clavier:['²','×','='],
+        q:`Calcule l'aire de la base : c² = ${c}².`,
+        verif:inp=>nbs(inp).some(x=>Math.abs(x-airBase)<=0.5),
+        aide:`${c}² = ${airBase} cm²`,
+        solutionHTML:`A<sub>base</sub> = ${c}² = ${airBase} cm²`
+      },
+      {
+        question:'Question 2 — Volume de la pyramide',
+        role:'Appliquer V = (1/3) × Abase × h',
+        clavier:['÷','×','='],
+        q:`Calcule V = (1/3) × ${airBase} × ${h}.`,
+        verif:inp=>nbs(inp).some(x=>Math.abs(x-vol)<=1),
+        aide:`V = ${airBase} × ${h} ÷ 3 = ${fr(vol)} cm³`,
+        solutionHTML:`V = ${airBase} × ${h} ÷ 3 = ${fr(vol)} cm³`
+      },
+      {
+        question:'Question 3 — Hauteur doublée',
+        role:'Calculer le nouveau volume',
+        clavier:['×','÷','='],
+        q:`Si h = ${2*h} cm, calcule le nouveau volume V = (1/3) × ${airBase} × ${2*h}.`,
+        verif:inp=>nbs(inp).some(x=>Math.abs(x-vol*2)<=1),
+        aide:`V' = ${airBase} × ${2*h} ÷ 3 = ${fr(vol*2)} cm³ (le double)`,
+        solutionHTML:`V' = ${fr(vol*2)} cm³`
+      }
+    ];
+    return {
+      titre:'Volume d\'une pyramide à base carrée',
+      enonceHTML,
+      dessiner:(id)=>{
+        const W=360,H=260;
+        const bx=60,by=200,bw=160,off=55,offv=36,apexX=bx+bw/2+10,apexY=48;
+        const A={x:bx,y:by},B={x:bx+bw,y:by},C={x:bx+bw+off,y:by-offv},D={x:bx+off,y:by-offv};
+        const base=`<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" fill="#FFE7B0" stroke="#E0A415" stroke-width="2.5"/>`;
+        const lats=`<line x1="${A.x}" y1="${A.y}" x2="${apexX}" y2="${apexY}" stroke="#E0A415" stroke-width="2"/>`
+          +`<line x1="${B.x}" y1="${B.y}" x2="${apexX}" y2="${apexY}" stroke="#E0A415" stroke-width="2"/>`
+          +`<line x1="${C.x}" y1="${C.y}" x2="${apexX}" y2="${apexY}" stroke="#E0A415" stroke-width="2"/>`
+          +`<line x1="${D.x}" y1="${D.y}" x2="${apexX}" y2="${apexY}" stroke="#E0A415" stroke-width="2" stroke-dasharray="5,4"/>`;
+        const hline=`<line x1="${apexX}" y1="${apexY}" x2="${apexX}" y2="${Math.round((A.y+C.y)/2)}" stroke="#8A744C" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+        const labels=svgTxt((A.x+B.x)/2,A.y+16,`c = ${c} cm`,14,'#E07A1F')+svgTxt(apexX+36,(apexY+by)/2,`h = ${h} cm`,14,'#E07A1F');
+        const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pyramide">${base}${lats}${hline}${labels}${svgNonEchelle(W,H)}</svg>`;
+        document.getElementById(id).innerHTML=svg;
+      },
+      etapes
+    };
+  } else {
+    // Cône
+    const cfgs=[{r:6,h:8},{r:9,h:12},{r:5,h:10},{r:4,h:9}];
+    const cfg=choix(cfgs);
+    const r=cfg.r,h=cfg.h;
+    const r2=r*r;
+    const vol=Math.round(Math.PI*r2*h/3*100)/100;
+    const volArrondi=Math.round(vol*10)/10;
+    const enonceHTML=`Un cône a un rayon de base <b>r = ${r} cm</b> et une hauteur <b>h = ${h} cm</b>.<br>`
+      +`<b>1.</b> Calcule r².<br>`
+      +`<b>2.</b> Rappelle et applique la formule du volume d'un cône.<br>`
+      +`<b>3.</b> Donne une valeur approchée du volume arrondie au dixième.<br>`
+      +`<i>Rappel : V = (1/3) × π × r² × h</i>`;
+    const etapes=[
+      {
+        question:'Question 1 — Calcul de r²',
+        role:'Calculer r²',
+        clavier:['²','='],
+        q:`Calcule r² = ${r}².`,
+        verif:inp=>nbs(inp).some(x=>Math.abs(x-r2)<=0.5),
+        aide:`${r}² = ${r2}`,
+        solutionHTML:`r² = ${r2}`
+      },
+      {
+        question:'Question 2 — Formule et application',
+        role:'Écrire le volume exact',
+        clavier:['π','×','÷','='],
+        q:`Écris V = (1/3) × π × ${r2} × ${h}.`,
+        verif:inp=>{
+          const ns=nbs(inp);
+          const t=norm(inp);
+          return ns.some(x=>Math.abs(x-r2)<0.5)&&ns.some(x=>Math.abs(x-h)<0.5)&&(t.includes('pi')||t.includes('π'));
+        },
+        aide:`V = (1/3) × π × ${r2} × ${h}`,
+        solutionHTML:`V = <span class="frac"><span class="num">1</span><span class="den">3</span></span> × π × ${r2} × ${h}`
+      },
+      {
+        question:'Question 3 — Valeur approchée',
+        role:'Calculer numériquement',
+        clavier:['π','×','÷','≈','='],
+        q:`Calcule V ≈ ? cm³ (arrondi au dixième).`,
+        verif:inp=>nbs(inp).some(x=>Math.abs(x-volArrondi)<=0.5),
+        aide:`V = π × ${r2} × ${h} ÷ 3 ≈ ${fr(volArrondi)} cm³`,
+        solutionHTML:`V ≈ ${fr(volArrondi)} cm³`
+      }
+    ];
+    return {
+      titre:'Volume d\'un cône',
+      enonceHTML,
+      dessiner:(id)=>{
+        const W=360,H=260,cx=180,botY=210,topY=52,rx=88,ry=22;
+        const ellBase=`<ellipse cx="${cx}" cy="${botY}" rx="${rx}" ry="${ry}" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>`;
+        const sides=`<line x1="${cx-rx}" y1="${botY}" x2="${cx}" y2="${topY}" stroke="#E0A415" stroke-width="2.5"/>`
+          +`<line x1="${cx+rx}" y1="${botY}" x2="${cx}" y2="${topY}" stroke="#E0A415" stroke-width="2.5"/>`;
+        const apex=`<circle cx="${cx}" cy="${topY}" r="4" fill="#E07A1F"/>`;
+        const labelR=`<line x1="${cx}" y1="${botY}" x2="${cx+rx}" y2="${botY}" stroke="#E07A1F" stroke-width="2" stroke-dasharray="4,3"/>`
+          +svgTxt(cx+rx/2,botY+18,`r = ${r} cm`,14,'#E07A1F');
+        const midH=(topY+botY)/2;
+        const labelH=`<line x1="${cx}" y1="${topY}" x2="${cx}" y2="${botY}" stroke="#8A744C" stroke-width="1.5" stroke-dasharray="4,3"/>`
+          +svgTxt(cx-32,midH,`h = ${h} cm`,14,'#E07A1F');
+        const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cône">${ellBase}${sides}${apex}${labelR}${labelH}${svgNonEchelle(W,H)}</svg>`;
+        document.getElementById(id).innerHTML=svg;
+      },
+      etapes
+    };
+  }
+}
+
 /* ===== BANQUE ===== */
 const BANQUE=[
   {notion:'rampe',gen:genRampe},
@@ -1502,7 +1814,11 @@ const BANQUE=[
   {notion:'thalesOmbre',gen:genThalesOmbre},
   {notion:'trigono',gen:genTrigono},
   {notion:'transfo',gen:genTransfo},
-  {notion:'solide',gen:genSolide}
+  {notion:'solide',gen:genSolide},
+  {notion:'pythagoreCoté',gen:genPythagoreCoté},
+  {notion:'thalesLongueur',gen:genThalesLongueur},
+  {notion:'aireDisque',gen:genAireDisque},
+  {notion:'volumeSolide',gen:genVolumeSolide}
 ];
 
 let SUJET=[],ecrans=[],ecranActuel=0;

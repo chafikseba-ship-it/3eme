@@ -866,8 +866,106 @@ function genEquation(){
   return {type:'qcm',cat:'Équation bilan',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : RÉACTIF LIMITANT ===== */
+function genReactifLimitant(){
+  var mode=pick(['qcm_limitant','cascade_limitant','qcm_stoechio']);
+  if(mode==='qcm_limitant'){
+    var pools=[
+      {t:'Le réactif limitant est…',o:['celui qui est totalement consommé en premier (la réaction s\'arrête quand il est épuisé)','celui qui est en plus grande quantité','celui qui se forme en dernier','le produit de la réaction'],c:0,e:'Le réactif limitant est ÉPUISÉ en premier → il détermine quand la réaction s\'arrête. L\'autre réactif est "en excès".'},
+      {t:'Dans une réaction, un réactif est "en excès". Cela signifie que…',o:['Il reste du réactif en excès après la fin de la réaction','Il manque du réactif en excès','Le réactif en excès est plus puissant','La réaction continue indéfiniment'],c:0,e:'En excès = il en reste à la fin de la réaction. Seul le réactif LIMITANT est entièrement consommé.'},
+      {t:'On mélange 10 g de fer avec 4 g de dioxygène. La réaction : fer + O₂ → oxyde de fer consomme le fer et O₂. Si 8 g de fer réagissent avec 4 g d\'O₂, alors…',o:['O₂ est le réactif limitant (il est épuisé), 2 g de fer restent','Le fer est le réactif limitant','Les deux sont épuisés','Aucun ne réagit'],c:0,e:'4 g d\'O₂ sont entièrement consommés → O₂ est limitant. Il reste 10 − 8 = 2 g de fer (en excès).'},
+      {t:'On veut faire un maximum de gâteaux avec 6 œufs et 2 paquets de farine. Chaque gâteau nécessite 3 œufs et 1 paquet de farine. Quel est le "réactif limitant" ?',o:['Les œufs (6 œufs → 2 gâteaux ; 2 paquets farine → 2 gâteaux → les œufs sont limitants)','La farine','Les deux ensemble','Aucun des deux'],c:0,e:'6 œufs ÷ 3 = 2 gâteaux. 2 paquets ÷ 1 = 2 gâteaux. Les deux sont épuisés en même temps → aucun n\'est vraiment limitant ici, mais c\'est la même logique.'},
+      {t:'La quantité de produit formé lors d\'une réaction est déterminée par…',o:['La quantité du réactif limitant','La quantité du réactif en excès','La température','La couleur des réactifs'],c:0,e:'Plus il y a de réactif limitant, plus on obtient de produit. Le réactif en excès ne change rien à la quantité finale.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Équation bilan',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_limitant'){
+    var mFer=rint(5,20);var mO2=rint(2,8);
+    /* Simplification : réaction Fe + O₂ → FeO : 1 g Fe réagit avec 0,3 g O₂ environ */
+    var o2NeededForFer=round2(mFer*16/56);
+    var ferNeededForO2=round2(mO2*56/16);
+    var limitant=o2NeededForFer<=mO2?'fer':'dioxygène';
+    var enExces=limitant==='fer'?'dioxygène':'fer';
+    return {
+      type:'cascade',cat:'Équation bilan',sig:'RL'+mFer+'O'+mO2,
+      text:'On mélange <b>'+mFer+' g</b> de fer avec <b>'+mO2+' g</b> de dioxygène.<br>La réaction : fer + dioxygène → oxyde de fer.',
+      steps:[
+        {prompt:'Qu\'est-ce que le réactif limitant ?',
+         aide:'Le réactif limitant est celui qui sera totalement consommé en premier — il stoppe la réaction.',
+         parts:['Le réactif limitant est celui qui est ',{b:1,kind:'txt',accept:['épuisé','consommé','consomme','epuise'],show:'épuisé en premier',w:200},'.']},
+        {prompt:'Dans cette réaction, quel est le réactif limitant ? (fer ou dioxygène)',
+         aide:'On compare les proportions réelles aux proportions stœchiométriques. Le réactif limitant est le '+limitant+'.',
+         parts:['Réactif limitant : ',{b:1,kind:'txt',accept:[limitant,limitant.slice(0,3)],show:limitant,w:180}]},
+        {prompt:'Quel réactif est en excès (il en reste à la fin) ?',
+         aide:'Si le '+limitant+' est épuisé, il reste du '+enExces+'.',
+         parts:['Réactif en excès : ',{b:1,kind:'txt',accept:[enExces,enExces.slice(0,3)],show:enExces,w:180}]}
+      ]
+    };
+  }
+  /* qcm_stoechio */
+  var pools2=[
+    {t:'La combustion du méthane : CH₄ + 2 O₂ → CO₂ + 2 H₂O<br>Pour brûler 1 molécule de méthane, combien de molécules de O₂ faut-il ?',o:['2 molécules de O₂','1 molécule de O₂','4 molécules de O₂','3 molécules de O₂'],c:0,e:'Le "2" devant O₂ dans l\'équation indique qu\'il faut 2 fois plus de molécules de O₂ que de CH₄.'},
+    {t:'Si on dispose de 8 g de méthane et de 100 g de O₂ pour la combustion du méthane, le réactif limitant est probablement…',o:['Le méthane (il y a largement assez d\'O₂ pour tout brûler)','Le dioxygène (pas assez de O₂)','Les deux simultanément','Aucun des deux'],c:0,e:'8 g de méthane nécessite environ 32 g d\'O₂ pour brûler complètement. On a 100 g d\'O₂ → largement en excès. Méthane = limitant.'},
+    {t:'On double la quantité de réactif limitant. La quantité de produit…',o:['double','reste la même','quadruple','est divisée par 2'],c:0,e:'Quantité de produit ∝ quantité de réactif limitant. Si réactif limitant × 2 → produit × 2.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Équation bilan',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 6 : ÉQUATIONS BILAN AVANCÉES ===== */
+function genEquationAvancee(){
+  var mode=pick(['cascade_bilan','qcm_lecture_avance','qcm_prod_forme']);
+  var REACTIONS=[
+    {eq:'méthane + dioxygène → dioxyde de carbone + eau',r:['méthane','dioxygène'],p:['dioxyde de carbone','eau'],nom:'combustion du méthane'},
+    {eq:'propane + dioxygène → dioxyde de carbone + eau',r:['propane','dioxygène'],p:['dioxyde de carbone','eau'],nom:'combustion du propane'},
+    {eq:'fer + dioxygène → oxyde de fer',r:['fer','dioxygène'],p:['oxyde de fer'],nom:'oxydation du fer'},
+    {eq:'zinc + acide chlorhydrique → chlorure de zinc + dihydrogène',r:['zinc','acide chlorhydrique'],p:['chlorure de zinc','dihydrogène'],nom:'réaction zinc/acide'},
+    {eq:'dioxyde de carbone + eau → glucose + dioxygène',r:['dioxyde de carbone','eau'],p:['glucose','dioxygène'],nom:'photosynthèse'}
+  ];
+  if(mode==='cascade_bilan'){
+    var rx=pick(REACTIONS);
+    return {
+      type:'cascade',cat:'Équation bilan',sig:'EB'+rx.nom.slice(0,6),
+      text:'Réaction : <b>'+rx.eq+'</b>',
+      steps:[
+        {prompt:'Quels sont les réactifs (substances AVANT la flèche →) ?',
+         aide:'Avant → : '+rx.r.join(' + ')+'. Ce sont les réactifs.',
+         parts:['Réactifs : ',{b:1,kind:'txt',accept:rx.r.concat([rx.r.join('+'),rx.r.join(' + ')]),show:rx.r.join(' + '),w:300}]},
+        {prompt:'Quels sont les produits (substances APRÈS la flèche →) ?',
+         aide:'Après → : '+rx.p.join(' + ')+'. Ce sont les produits.',
+         parts:['Produits : ',{b:1,kind:'txt',accept:rx.p.concat([rx.p.join('+'),rx.p.join(' + ')]),show:rx.p.join(' + '),w:300}]},
+        {prompt:'La masse totale des produits est-elle égale, supérieure ou inférieure à celle des réactifs ?',
+         aide:'Loi de Lavoisier : m_réactifs = m_produits. La masse se conserve toujours.',
+         parts:['m_produits ',{b:1,kind:'txt',accept:['égale','egale','=','identique'],show:'égale',w:120},' à m_réactifs.']},
+      ]
+    };
+  }
+  if(mode==='qcm_lecture_avance'){
+    var rx=pick(REACTIONS);
+    var askProd=pick([true,false]);
+    var correct=askProd?rx.p[0]:rx.r[0];
+    var wrong=[].concat(askProd?rx.r:rx.p,['sel','aluminium','eau gazeuse','cuivre']).filter(function(x){return x!==correct;});
+    var opts=shuffle([correct,wrong[0],wrong[1],wrong[2]]);
+    return {
+      type:'qcm',cat:'Équation bilan',
+      text:'Équation : <b>'+rx.eq+'</b><br>Quel est l\'un des '+(askProd?'<b>produits</b>':'<b>réactifs</b>')+' ?',
+      options:opts,correct:opts.indexOf(correct),
+      explain:(askProd?'Produits (après →) : ':'Réactifs (avant →) : ')+'<b>'+correct+'</b>. '+rx.nom+'.'
+    };
+  }
+  /* qcm_prod_forme */
+  var pools2=[
+    {t:'Lors de toute combustion complète d\'un hydrocarbure, quels sont TOUJOURS les produits ?',o:['Dioxyde de carbone (CO₂) + eau (H₂O)','Méthane + dioxygène','Oxyde de carbone (CO) uniquement','Carbone + hydrogène'],c:0,e:'Combustion complète d\'un hydrocarbure = CO₂ + H₂O. Toujours ! Les hydrocarbures contiennent du carbone (C) et de l\'hydrogène (H).'},
+    {t:'La réaction de la rouille : Fer + Dioxygène → Oxyde de fer. C\'est une réaction…',o:['d\'oxydation (combustion lente)','de dissolution','de combustion rapide','de précipitation'],c:0,e:'La rouille = oxydation LENTE du fer par l\'O₂. C\'est une réaction chimique — un nouveau corps (oxyde de fer) est créé.'},
+    {t:'Lors de la photosynthèse (CO₂ + H₂O → glucose + O₂), le dioxygène O₂ est…',o:['un produit — il est créé lors de la réaction','un réactif — il est consommé','un catalyseur','absent de cette réaction'],c:0,e:'Dans la photosynthèse, le O₂ est PRODUIT par les plantes. C\'est pour ça que les plantes enrichissent l\'air en O₂ !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Équation bilan',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== DISPATCH GEN ===== */
-var GEN={transformation:genTransformation,reactifs:genReactifs,conservation:genConservation,equation:genEquation};
+var GEN={transformation:genTransformation,reactifs:genReactifs,conservation:genConservation,equation:genEquation,reactifLimitant:genReactifLimitant,equationAvancee:genEquationAvancee};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

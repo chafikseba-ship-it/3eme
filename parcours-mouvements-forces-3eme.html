@@ -786,8 +786,141 @@ function genInertie(){
   return {type:'qcm',cat:'Principe d\'inertie',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : VITESSE AVANCÉE ===== */
+function genVitesseAvancee(){
+  var mode=pick(['cascade_uniforme','qcm_compare','calc_km_h']);
+  if(mode==='cascade_uniforme'){
+    /* Mouvement uniforme : vérification v = constante */
+    var v=pick([2,4,5,8,10,20,25]);
+    var t1=pick([5,10,15,20]);var t2=t1+pick([5,10,15,20]);
+    var d1=v*t1;var d2=v*t2;
+    return {
+      type:'cascade',cat:'Vitesse',sig:'VU'+v+'T'+t1,
+      text:'Un objet se déplace à vitesse constante <b>v = '+v+' m/s</b>.',
+      steps:[
+        {prompt:'Quelle distance parcourt-il en '+t1+' s ?',
+         aide:'d = v × t = '+v+' × '+t1+' = '+d1+' m',
+         parts:['d = ',{b:1,kind:'num',ans:d1,show:''+d1,w:90,tol:0},' m']},
+        {prompt:'Quelle distance parcourt-il en '+t2+' s ?',
+         aide:'d = v × t = '+v+' × '+t2+' = '+d2+' m',
+         parts:['d = ',{b:1,kind:'num',ans:d2,show:''+d2,w:90,tol:0},' m']},
+        {prompt:'De quel type de mouvement s\'agit-il (vitesse constante, ligne droite) ?',
+         aide:'Vitesse constante + ligne droite = Mouvement Rectiligne Uniforme (MRU).',
+         parts:['Type : ',{b:1,kind:'txt',accept:['MRU','rectiligne uniforme','mouvement rectiligne uniforme','uniforme'],show:'MRU',w:200}]}
+      ]
+    };
+  }
+  if(mode==='qcm_compare'){
+    var pools=[
+      {t:'Un véhicule roule à 90 km/h. Un autre roule à 30 m/s. Lequel va le plus vite ?',o:['30 m/s = 108 km/h → le deuxième','90 km/h = 25 m/s → le premier','Ils vont à la même vitesse','Impossible à comparer'],c:0,e:'30 m/s × 3,6 = 108 km/h > 90 km/h. Le second va plus vite !'},
+      {t:'Un marcheur rapide fait 6 km/h. En m/s, sa vitesse est…',o:['1,67 m/s','6 m/s','0,6 m/s','21,6 m/s'],c:0,e:'6 ÷ 3,6 = 1,67 m/s. Un marcheur rapide, c\'est environ 1,7 m/s.'},
+      {t:'La vitesse du son est 340 m/s. En km/h, c\'est…',o:['1 224 km/h','340 km/h','34 km/h','94 km/h'],c:0,e:'340 × 3,6 = 1 224 km/h. C\'est pour ça qu\'on entend le tonnerre APRÈS l\'éclair !'},
+      {t:'Un cycliste roule à 36 km/h. En m/s, sa vitesse est…',o:['10 m/s','36 m/s','3,6 m/s','100 m/s'],c:0,e:'36 ÷ 3,6 = 10 m/s. Retenir : 36 km/h = 10 m/s.'},
+      {t:'Un sprinter court à 10 m/s. En km/h, c\'est…',o:['36 km/h','100 km/h','10 km/h','3,6 km/h'],c:0,e:'10 × 3,6 = 36 km/h. Un sprinter en compétition peut dépasser 40 km/h (≈ 11 m/s) !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Vitesse',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* calc_km_h : durée d'un trajet en km/h */
+  var vkmh=pick([60,80,90,100,110,120,130]);
+  var dkm=pick([60,80,100,120,150,180,200,240,300]);
+  var th=round2(dkm/vkmh);
+  var thStr=String(th).replace('.',',');
+  return {
+    type:'num',cat:'Vitesse',answer:th,tol:0.02,
+    text:'Une voiture roule à <b>'+vkmh+' km/h</b> sur '+dkm+' km.<br>Combien de temps dure le trajet (en heures) ?<br><i>v = d/t → t = d/v</i>',
+    explain:'t = d ÷ v = '+dkm+' ÷ '+vkmh+' = <b>'+thStr+' h</b>.'
+  };
+}
+
+/* ===== GÉNÉRATEUR 6 : MOUVEMENTS ACCÉLÉRÉ / DÉCÉLÉRÉ ===== */
+function genMouvementsTypes(){
+  var mode=pick(['qcm_type_qcm','cascade_chrono','qcm_vie_courante']);
+  if(mode==='qcm_type_qcm'){
+    var pools=[
+      {t:'Un objet qui accélère a une vitesse…',o:['croissante avec le temps','constante','décroissante','nulle'],c:0,e:'Accéléré = vitesse qui AUGMENTE avec le temps. Les forces ne sont pas compensées.'},
+      {t:'Un objet qui décélère (freine) a une vitesse…',o:['décroissante avec le temps','constante','croissante','nulle'],c:0,e:'Décéléré = vitesse qui DIMINUE avec le temps. C\'est un mouvement "ralenti".'},
+      {t:'Une voiture part de l\'arrêt et atteint 100 km/h en 10 s. Son mouvement est…',o:['rectiligne accéléré','rectiligne uniforme','circulaire','décéléré'],c:0,e:'Vitesse croissante de 0 à 100 km/h → mouvement ACCÉLÉRÉ. Les forces ne sont pas compensées.'},
+      {t:'Un train freine en entrant en gare. Son mouvement est…',o:['rectiligne décéléré','rectiligne uniforme','circulaire uniforme','rectiligne accéléré'],c:0,e:'La vitesse diminue jusqu\'à 0 → mouvement DÉCÉLÉRÉ (ou ralenti).'},
+      {t:'Sur un graphique vitesse/temps, un mouvement uniforme se représente comment ?',o:['Une droite horizontale (v = constante)','Une droite montante','Une courbe','Une droite descendante'],c:0,e:'Uniforme = v constante = droite horizontale. Accéléré = droite montante. Décéléré = droite descendante.'},
+      {t:'Sur un graphique vitesse/temps, un mouvement accéléré uniforme se représente comment ?',o:['Une droite montante (pente positive)','Une droite horizontale','Une courbe parabolique','Une droite descendante'],c:0,e:'Accéléré uniforme = vitesse augmente de façon constante = droite montante sur le graphique v = f(t).'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Mouvement & trajectoire',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_chrono'){
+    /* Tableau de distances entre flashs : MRU → distances égales, MRA → distances croissantes */
+    return {
+      type:'cascade',cat:'Mouvement & trajectoire',sig:'CHRON_MRU',
+      text:'Un objet est photographié toutes les secondes.<br>Distances parcourue entre chaque photo : <b>10 m, 10 m, 10 m, 10 m</b>.',
+      steps:[
+        {prompt:'Les distances entre deux photos consécutives sont-elles égales ou inégales ?',
+         aide:'10, 10, 10, 10 : toutes les distances sont égales.',
+         parts:['Les distances sont ',{b:1,kind:'txt',accept:['égales','egales','identiques'],show:'égales',w:140},'.']},
+        {prompt:'Que peut-on en conclure sur le type de mouvement ?',
+         aide:'Distances égales = vitesse constante = Mouvement Rectiligne Uniforme (MRU).',
+         parts:['C\'est un mouvement ',{b:1,kind:'txt',accept:['uniforme','MRU','rectiligne uniforme'],show:'uniforme (MRU)',w:200},'.']},
+        {prompt:'Quelle est la vitesse de l\'objet ? (distances = 10 m, intervalle = 1 s)',
+         aide:'v = d/t = 10 m / 1 s = 10 m/s',
+         parts:['v = ',{b:1,kind:'num',ans:10,show:'10',w:70,tol:0},' m/s']}
+      ]
+    };
+  }
+  /* qcm_vie_courante */
+  var pools2=[
+    {t:'Une bille lâchée du haut d\'un toboggan accélère. C\'est un mouvement…',o:['curviligne accéléré','rectiligne uniforme','circulaire','rectiligne décéléré'],c:0,e:'Le toboggan est courbe (curviligne) et la bille accélère sous l\'effet de la pesanteur → curviligne accéléré.'},
+    {t:'Un parachutiste qui a atteint sa vitesse limite chute à vitesse constante. Son mouvement est…',o:['rectiligne uniforme (forces compensées)','rectiligne accéléré','décéléré','circulaire'],c:0,e:'Vitesse limite = poids = frottements → forces compensées → MRU (chute à vitesse constante).'},
+    {t:'Sur une piste d\'athlétisme ronde, un coureur de vitesse constante effectue un mouvement…',o:['circulaire uniforme','rectiligne uniforme','curviligne accéléré','rectiligne décéléré'],c:0,e:'Trajectoire circulaire + vitesse constante = mouvement CIRCULAIRE UNIFORME.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Mouvement & trajectoire',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 7 : FORCES AVANCÉES ===== */
+function genForcesAvancees(){
+  var mode=pick(['cascade_bilan','qcm_bilan','calc_poids_lune']);
+  if(mode==='cascade_bilan'){
+    var mVals=[2,3,5,8,10];var m=pick(mVals);
+    var P=m*10;
+    return {
+      type:'cascade',cat:'Forces & poids',sig:'BF'+m,
+      text:'Un livre de masse <b>m = '+m+' kg</b> est posé sur une table, immobile.<br>Identifie les forces exercées sur le livre.',
+      steps:[
+        {prompt:'Calcule le poids P du livre (g = 10 N/kg).',
+         aide:'P = m × g = '+m+' × 10 = '+P+' N',
+         parts:['P = ',{b:1,kind:'num',ans:P,show:''+P,w:80,tol:0},' N']},
+        {prompt:'Quelle est la valeur de la réaction R de la table sur le livre (livre immobile) ?',
+         aide:'Livre immobile → forces compensées → R = P = '+P+' N',
+         parts:['R = ',{b:1,kind:'num',ans:P,show:''+P,w:80,tol:0},' N']},
+        {prompt:'Le bilan des forces est-il nul ou non nul ? (le livre est immobile)',
+         aide:'Immobile → bilan = 0. P (vers le bas) + R (vers le haut) = 0 → forces compensées.',
+         parts:['Bilan : ',{b:1,kind:'txt',accept:['nul','0','zéro','zero'],show:'nul',w:100}]}
+      ]
+    };
+  }
+  if(mode==='qcm_bilan'){
+    var pools=[
+      {t:'Un objet est soumis à deux forces égales et opposées. Il est…',o:['Au repos ou en MRU (forces compensées)','En accélération','En chute libre','En rotation'],c:0,e:'Forces égales et opposées = forces compensées = principe d\'inertie → repos ou MRU.'},
+      {t:'La poussée d\'Archimède s\'exerce sur un objet plongé dans un liquide. Elle est dirigée…',o:['vers le haut (opposée au poids)','vers le bas','horizontalement','dans n\'importe quelle direction'],c:0,e:'La poussée d\'Archimède est toujours verticale vers le haut — c\'est elle qui fait flotter les objets moins denses que le liquide !'},
+      {t:'Un objet flotte dans l\'eau. Que peut-on dire des forces qui s\'exercent sur lui ?',o:['Le poids P = la poussée d\'Archimède F_A (forces compensées)','P > F_A (forces non compensées)','P < F_A (forces non compensées)','Il n\'y a aucune force'],c:0,e:'Flotte = immobile = forces compensées. P (vers le bas) = F_A (vers le haut). Si P > F_A → coule.'},
+      {t:'On tire sur un objet avec une force de 20 N, les frottements valent 15 N. La résultante est…',o:['5 N dans le sens du mouvement','35 N','20 N','0 N'],c:0,e:'Résultante = 20 − 15 = 5 N. Les forces ne sont pas compensées → l\'objet accélère.'},
+      {t:'Pour qu\'un objet reste à l\'arrêt, il faut que la somme de TOUTES les forces soit…',o:['nulle (forces compensées)','très grande','positive','supérieure à 10 N'],c:0,e:'Immobile = principe d\'inertie → somme des forces = 0 → forces compensées.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Forces & poids',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* calc_poids_lune */
+  var mVals=[50,60,70,80,100];var m=pick(mVals);
+  var gLune=1.6;var P=round2(m*gLune);
+  return {
+    type:'num',cat:'Forces & poids',answer:P,tol:0.1,
+    text:'Sur la Lune, g = 1,6 N/kg.<br>Un objet a une masse de <b>m = '+m+' kg</b>.<br>Quel est son poids sur la Lune (en N) ?',
+    explain:'P = m × g = '+m+' × 1,6 = <b>'+String(P).replace('.',',')+' N</b>. (Sur Terre il aurait P = '+m*10+' N.)'
+  };
+}
+
 /* ===== DISPATCH ===== */
-var GEN={trajectoire:genTrajectoire,vitesse:genVitesse,forces:genForces,inertie:genInertie};
+var GEN={trajectoire:genTrajectoire,vitesse:genVitesse,forces:genForces,inertie:genInertie,vitesseAvancee:genVitesseAvancee,mouvementsTypes:genMouvementsTypes,forcesAvancees:genForcesAvancees};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

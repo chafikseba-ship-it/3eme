@@ -955,6 +955,54 @@ function genConvCat(cat){
   };
 }
 
+/* ===== GÉNÉRATEURS (ajouts) ===== */
+
+/* Périmètre de figures composées (rectangle + demi-cercle, L en forme de L, etc.) */
+function genPerimCompose(){
+  var sub=pick(['Lshape','rectdemicirc']);
+  if(sub==='Lshape'){
+    // Figure en L : grand rectangle moins un coin
+    var A=pick([6,8,10,12]),B=pick([4,6,8,10]),a=pick([2,3,4]),b=pick([2,3,4]);
+    if(a>=A||b>=B){a=2;b=2;}
+    // Périmètre : 3 segments de A, 3 segments de B, ajustés
+    // La figure en L a 6 côtés : A, B-b, A-a, b, a, B
+    var p=(A)+(B-b)+(A-a)+(b)+(a)+(B);
+    return {q:'Une figure en L a ces dimensions :\n- longueur totale : '+A+' cm\n- largeur totale : '+B+' cm\n- le coin retiré mesure '+a+' cm × '+b+' cm\nQuel est le périmètre de cette figure ? (en cm)',
+      type:'num',rep:p,tol:0.5,
+      explication:'La figure a 6 côtés : '+A+' + '+(B-b)+' + '+(A-a)+' + '+b+' + '+a+' + '+B+' = '+p+' cm'};
+  }
+  // Rectangle + demi-disque collé sur la longueur
+  var L=pick([6,8,10,12]),l=pick([4,6,8]);
+  var r=l/2;
+  var p2=2*L+l+Math.round(3.14*r*10)/10;
+  return {q:'Une figure est formée d\'un rectangle de '+L+' cm × '+l+' cm et d\'un demi-disque collé sur un côté de '+l+' cm.\nQuel est le périmètre total ? (π ≈ 3,14 ; arrondir au dixième)',
+    type:'num',rep:Math.round(p2*10)/10,tol:0.25,
+    explication:'Périmètre = 2 longueurs + 1 largeur + demi-cercle\n= 2×'+L+' + '+l+' + π×'+r+'\n= '+(2*L)+' + '+l+' + '+Math.round(3.14*r*10)/10+' ≈ '+Math.round(p2*10)/10+' cm'};
+}
+
+/* Aire d'un rectangle avec un trou rectangulaire */
+function genAireTrou(){
+  var L=pick([8,10,12,15,20]),l=pick([6,8,10]);
+  if(L<=l)L=l+4;
+  var a=pick([2,3,4]),b=pick([2,3,4]);
+  if(a>=L||b>=l){a=2;b=2;}
+  var aire=L*l-a*b;
+  return {q:'Un rectangle de '+L+' cm × '+l+' cm a un trou rectangulaire de '+a+' cm × '+b+' cm.\nQuelle est l\'aire restante ? (en cm²)',
+    type:'num',rep:aire,tol:0.01,
+    explication:'Aire totale − aire du trou = '+L+'×'+l+' − '+a+'×'+b+' = '+(L*l)+' − '+(a*b)+' = '+aire+' cm²'};
+}
+
+/* Aire d'un triangle quelconque (base et hauteur données) */
+function genAireTriangle(){
+  var b=pick([3,4,5,6,7,8,9,10,12,14,16]);
+  var h=pick([3,4,5,6,7,8,9,10]);
+  var a=b*h/2;
+  var ctx=pick(['un terrain triangulaire','un panneau triangulaire','une voile de bateau','un drapeau triangulaire']);
+  return {q:'Calcule l\'aire de '+ctx+' dont la base mesure '+b+' cm et la hauteur '+h+' cm. (en cm²)',
+    type:'num',rep:a,tol:0.01,
+    explication:'Aire = (base × hauteur) ÷ 2 = ('+b+' × '+h+') ÷ 2 = '+(b*h)+' ÷ 2 = '+a+' cm²'};
+}
+
 /* ===== GÉNÉRATEURS ===== */
 function genAires(){
   var type=pick(['carre','rectangle','triangle','disque']);
@@ -1090,8 +1138,11 @@ function quizGenQuestion(){
   } else if(cat==='longueur6'||cat==='masse6'||cat==='capacite6') qobj=genConversion6([cat]);
   else if(cat==='duree6') qobj=genDuree();
   else if(cat==='aire6'||cat==='volume6'||cat==='agraire6'||cat==='croisee6') qobj=genConvCat(cat);
+  else if(cat==='perimcompose') qobj=genPerimCompose();
+  else if(cat==='airetrou') qobj=genAireTrou();
+  else if(cat==='airetriangleq') qobj=genAireTriangle();
   else if(cat==='mix'){
-    var allCats=['aires','pave','longueur6','masse6','capacite6','duree6','aire6','volume6','agraire6','croisee6'];
+    var allCats=['aires','pave','longueur6','masse6','capacite6','duree6','aire6','volume6','agraire6','croisee6','perimcompose','airetrou','airetriangleq'];
     Q.cats=[pick(allCats)];
     return quizGenQuestion();
   } else qobj=genAires();
@@ -1140,7 +1191,8 @@ function quizNext(){
 function getCatLabel(cat){
   var labels={aires:'Aires des figures',pave:'Pavé droit',conversions:'Conversions',
     longueur6:'Longueur',masse6:'Masse',capacite6:'Capacité',duree6:'Durées',
-    aire6:'Unités d\'aires',volume6:'Unités de volumes',agraire6:'Are & hectare',croisee6:'Volume ↔ Litre',mix:'Mix'};
+    aire6:'Unités d\'aires',volume6:'Unités de volumes',agraire6:'Are & hectare',croisee6:'Volume ↔ Litre',mix:'Mix',
+    perimcompose:'Périmètre composé',airetrou:'Aire avec trou',airetriangleq:'Aire d\'un triangle'};
   return labels[cat]||cat;
 }
 
@@ -1274,7 +1326,7 @@ function startArene(cat){
   document.getElementById('areneMenu').style.display='none';
   document.getElementById('areneJeu').style.display='block';
   var cats;
-  if(cat==='mix') cats=['aires','pave','longueur6','masse6','capacite6','duree6','aire6','volume6','agraire6','croisee6'];
+  if(cat==='mix') cats=['aires','pave','longueur6','masse6','capacite6','duree6','aire6','volume6','agraire6','croisee6','perimcompose','airetrou','airetriangleq'];
   else if(cat==='aires') cats=['aires'];
   else if(cat==='pave') cats=['pave'];
   else if(cat==='conversions') cats=['longueur6','masse6','capacite6','duree6'];

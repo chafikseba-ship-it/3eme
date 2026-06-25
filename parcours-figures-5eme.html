@@ -635,7 +635,82 @@ function genClasser(){const r=Math.random();
    ['Quelle figure a ses diagonales perpendiculaires ET de même longueur ?',['le carré','le losange','le rectangle'],'Perpendiculaires (losange) + égales (rectangle) → le carré.'],
    ['Quelle figure a ses diagonales de même longueur mais non perpendiculaires ?',['le rectangle','le losange','le carré'],'Diagonales égales sans être perpendiculaires → le rectangle.']];
   const q=pick(p);return qcm('classer',q[0],q[1],0,q[2],null);}
-const GEN={para:genPara,rect:genRect,los:genLos,car:genCar,classer:genClasser};
+/* ===== GÉNÉRATEUR : ANGLES ALTERNES-INTERNES ===== */
+function genAlternesInternes(){
+  const angles=[40,45,50,55,60,65,70,75,80,110,120,130];
+  const alpha=pick(angles);
+  const beta=180-alpha;
+  const sub=Math.floor(Math.random()*3);
+  const qs=[
+    ['Deux droites parallèles sont coupées par une sécante. Un angle alterne-interne mesure <b>'+alpha+'°</b>.<br>Quelle est la mesure de l\'angle alterne-interne de l\'autre côté ?',
+     [alpha+'°',beta+'°','90°','180°'],0,'Les angles alternes-internes sont égaux : '+alpha+'°.'],
+    ['Deux droites sont parallèles coupées par une sécante. Un angle co-interne mesure <b>'+alpha+'°</b>.<br>Quel est l\'angle co-interne de l\'autre côté ?',
+     [beta+'°',alpha+'°','90°',(2*alpha)+'°'],0,'Les angles co-internes (ou conjugués) sont supplémentaires : '+alpha+' + '+beta+' = 180°.'],
+    ['Quelle est la propriété des angles alternes-internes formés par deux droites parallèles coupées par une sécante ?',
+     ['Ils sont égaux','Ils sont supplémentaires','Ils sont complémentaires','Ils forment 360°'],0,'Propriété : angles alternes-internes égaux ↔ droites parallèles.']
+  ];
+  const q=qs[sub];
+  return qcm('classer',q[0],q[1],0,q[2],null);
+}
+
+/* ===== GÉNÉRATEUR : SOMME DES ANGLES D'UN TRIANGLE ===== */
+function genSommeAngles(){
+  const sub=Math.floor(Math.random()*3);
+  if(sub===0){
+    const a=pick([30,35,40,45,50,55,60,65,70,75,80]);
+    const b=pick([30,35,40,45,50,55,60,65,70,75,80]);
+    const c=180-a-b;
+    if(c<=0||c>=180)return genSommeAngles();
+    return qcm('classer',
+      'Dans un triangle, deux angles mesurent <b>'+a+'°</b> et <b>'+b+'°</b>. Quel est le troisième angle ?',
+      [c+'°',(a+b)+'°',(180-a)+'°',(90-a)+'°'],0,
+      'La somme des angles d\'un triangle vaut 180°. Troisième angle = 180 − '+a+' − '+b+' = '+c+'°.',null);
+  } else if(sub===1){
+    return qcm('classer',
+      'Quelle est la somme des angles intérieurs d\'un triangle ?',
+      ['180°','360°','90°','270°'],0,
+      'La somme des angles intérieurs d\'un triangle est toujours 180°.',null);
+  } else {
+    const a2=pick([50,55,60,65,70,75,80,85]);
+    const b2=180-2*a2;
+    if(b2<=0)return genSommeAngles();
+    return qcm('classer',
+      'Un triangle isocèle a deux angles de <b>'+a2+'°</b> chacun. Quel est le troisième angle ?',
+      [b2+'°',(a2)+'°',(180-a2)+'°',(2*a2)+'°'],0,
+      '180 − '+a2+' − '+a2+' = '+b2+'°.',null);
+  }
+}
+
+/* ===== GÉNÉRATEUR : CONSTRUCTION DE TRIANGLES PAR CRITÈRES ===== */
+function genConstructionTriangle(){
+  const qs=[
+    ['Quelles informations suffisent pour construire un triangle unique (critère CCC) ?',
+     ['Connaître les 3 côtés','Connaître 2 angles','Connaître 2 côtés seulement','Connaître le périmètre'],0,
+     'CCC (Côté-Côté-Côté) : 3 longueurs de côtés déterminent un triangle unique (si elles satisfont l\'inégalité triangulaire).'],
+    ['Peut-on construire un triangle avec des côtés de 3 cm, 4 cm et 10 cm ?',
+     ['Non, 3+4 < 10','Oui, toujours','Oui, si les angles conviennent','On ne peut pas savoir'],0,
+     'Inégalité triangulaire : la somme de deux côtés doit être > au troisième. Ici 3+4=7 < 10 : impossible.'],
+    ['Pour le critère CAS (Côté-Angle-Côté), que faut-il connaître ?',
+     ['2 côtés et l\'angle entre eux','2 angles et le côté entre eux','3 angles','1 côté et 2 angles'],0,
+     'CAS : 2 côtés et l\'angle qu\'ils forment entre eux déterminent un triangle unique.'],
+    ['Un triangle a des côtés 5 cm, 8 cm et 12 cm. Est-il constructible ?',
+     ['Oui, 5+8=13 > 12','Non, 5+8 < 12','On ne sait pas','Seulement si un angle est donné'],0,
+     '5 + 8 = 13 > 12 ✓. L\'inégalité triangulaire est satisfaite : le triangle est constructible.'],
+    ['Quelle est l\'inégalité triangulaire ?',
+     ['Chaque côté est inférieur à la somme des deux autres','Chaque côté est supérieur à la somme des deux autres','Les trois côtés sont égaux','Les angles sont égaux'],0,
+     'Inégalité triangulaire : a < b + c (pour chaque côté a et les deux autres b, c).']
+  ];
+  const q=pick(qs);
+  return qcm('classer',q[0],q[1],0,q[2],null);
+}
+
+const GEN={para:genPara,rect:genRect,los:genLos,car:genCar,classer:function(){
+  const r=Math.random();
+  if(r<0.40)return genClasser();
+  if(r<0.60)return genAlternesInternes();
+  if(r<0.80)return genSommeAngles();
+  return genConstructionTriangle();
+}};
 /* ===== moteur de quiz ===== */
 let Q={cats:[],target:0,guided:false,els:null,score:0,streak:0,total:0,correct:0,locked:false,cur:null,lastText:'',timer:0};
 function elsTrain(){return{score:gid('tq_score'),streak:gid('tq_streak'),prog:gid('tq_prog'),help:gid('tq_help'),cat:gid('tq_cat'),viz:gid('tq_viz'),text:gid('tq_text'),opts:gid('tq_opts'),ansrow:gid('tq_ansrow'),input:gid('tq_input'),valid:gid('tq_valid'),feed:gid('tq_feed'),stars:gid('tq_stars'),cont:gid('tq_cont')};}

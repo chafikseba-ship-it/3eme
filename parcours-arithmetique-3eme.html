@@ -646,7 +646,96 @@ function genProblemes(){
     ]};
 }
 
-var GEN={diviseurs:genDiviseurs,criteres:genCriteres,premiers:genPremiers,decomp:genDecomp,pgcd:genPgcd,problemes:genProblemes};
+/* ===== CASCADE : algorithme d'Euclide (généré dynamiquement) ===== */
+var EUCLIDE_POOL=[
+  {a:48,b:36,steps:[[48,36,1,12],[36,12,3,0]],pgcd:12},
+  {a:56,b:42,steps:[[56,42,1,14],[42,14,3,0]],pgcd:14},
+  {a:72,b:54,steps:[[72,54,1,18],[54,18,3,0]],pgcd:18},
+  {a:100,b:75,steps:[[100,75,1,25],[75,25,3,0]],pgcd:25},
+  {a:84,b:56,steps:[[84,56,1,28],[56,28,2,0]],pgcd:28},
+  {a:120,b:90,steps:[[120,90,1,30],[90,30,3,0]],pgcd:30},
+  {a:65,b:52,steps:[[65,52,1,13],[52,13,4,0]],pgcd:13},
+  {a:78,b:60,steps:[[78,60,1,18],[60,18,3,6],[18,6,3,0]],pgcd:6}
+];
+function genEuclide(){
+  var item=pick(EUCLIDE_POOL);
+  var a=item.a,b=item.b,pgcdVal=item.pgcd;
+  var csteps=[];
+  item.steps.filter(function(s){return s[3]>0;}).forEach(function(s){
+    csteps.push({
+      prompt:'Calcule le reste de '+s[0]+' ÷ '+s[1]+' (quotient = '+s[2]+').',
+      aide:s[0]+' = '+s[2]+' × '+s[1]+' + ? → '+s[2]+'×'+s[1]+'='+(s[2]*s[1])+', reste = '+s[0]+' − '+(s[2]*s[1])+' = '+s[3],
+      parts:[s[0]+' ÷ '+s[1]+' : reste = ',{b:1,kind:'num',ans:s[3],show:''+s[3],w:60}]
+    });
+  });
+  csteps.push({
+    prompt:'Le reste est 0. Quel est le PGCD('+a+', '+b+') ?',
+    aide:'Quand le reste vaut 0, le PGCD est le dernier diviseur non nul : '+pgcdVal,
+    parts:['PGCD('+a+', '+b+') = ',{b:1,kind:'num',ans:pgcdVal,show:''+pgcdVal,w:70}]
+  });
+  return {type:'cascade',cat:'euclide',sig:'Euc'+a+'/'+b,
+    text:'Calcule PGCD('+a+', '+b+') en appliquant l\'algorithme d\'Euclide.',
+    steps:csteps};
+}
+
+/* ===== CASCADE : décomposition en facteurs premiers ===== */
+var DECOMP2_POOL=[
+  {n:60,steps:[[60,2,30],[30,2,15],[15,3,5],[5,5,1]],show:'2² × 3 × 5'},
+  {n:36,steps:[[36,2,18],[18,2,9],[9,3,3],[3,3,1]],show:'2² × 3²'},
+  {n:45,steps:[[45,3,15],[15,3,5],[5,5,1]],show:'3² × 5'},
+  {n:72,steps:[[72,2,36],[36,2,18],[18,2,9],[9,3,3],[3,3,1]],show:'2³ × 3²'},
+  {n:42,steps:[[42,2,21],[21,3,7],[7,7,1]],show:'2 × 3 × 7'},
+  {n:90,steps:[[90,2,45],[45,3,15],[15,3,5],[5,5,1]],show:'2 × 3² × 5'}
+];
+function genDecompPremiers(){
+  var item=pick(DECOMP2_POOL);var n=item.n;
+  var csteps=[];
+  item.steps.filter(function(s){return s[2]>1;}).forEach(function(s){
+    csteps.push({
+      prompt:'On divise '+s[0]+' par '+s[1]+'. Quel est le résultat ?',
+      aide:s[0]+' ÷ '+s[1]+' = '+s[2],
+      parts:[s[0]+' ÷ '+s[1]+' = ',{b:1,kind:'num',ans:s[2],show:''+s[2],w:60}]
+    });
+  });
+  csteps.push({
+    prompt:'Écris la décomposition complète de '+n+' (ex : 2² × 3).',
+    aide:'La décomposition est : '+item.show,
+    parts:[{b:1,kind:'text',ans:0,show:item.show,w:180,accept:[item.show],mode:'contains'}]
+  });
+  return {type:'cascade',cat:'decompPremiers',sig:'DP'+n,
+    text:'Décompose '+n+' en produit de facteurs premiers, étape par étape.',
+    steps:csteps};
+}
+
+/* ===== CASCADE : fractions irréductibles ===== */
+var FRACTIONS_POOL=[
+  {n:6,d:9,rn:2,rd:3},{n:4,d:10,rn:2,rd:5},{n:15,d:20,rn:3,rd:4},
+  {n:8,d:12,rn:2,rd:3},{n:12,d:18,rn:2,rd:3},{n:10,d:15,rn:2,rd:3},
+  {n:6,d:14,rn:3,rd:7},{n:9,d:21,rn:3,rd:7},{n:20,d:28,rn:5,rd:7}
+];
+function genFractionIrreductible(){
+  var item=pick(FRACTIONS_POOL);
+  var n=item.n,d=item.d,g=gcd(n,d);
+  var steps=[
+    {prompt:'Étape 1 — Calcule PGCD('+n+', '+d+').',
+     aide:'Utilise l\'algorithme d\'Euclide ou les décompositions. PGCD = '+g,
+     parts:['PGCD('+n+', '+d+') = ',{b:1,kind:'num',ans:g,show:''+g,w:60}]},
+    {prompt:'Étape 2 — Divise le numérateur par le PGCD.',
+     aide:n+' ÷ '+g+' = '+item.rn,
+     parts:[n+' ÷ '+g+' = ',{b:1,kind:'num',ans:item.rn,show:''+item.rn,w:60}]},
+    {prompt:'Étape 3 — Divise le dénominateur par le PGCD.',
+     aide:d+' ÷ '+g+' = '+item.rd,
+     parts:[d+' ÷ '+g+' = ',{b:1,kind:'num',ans:item.rd,show:''+item.rd,w:60}]},
+    {prompt:'Étape 4 — Écris la fraction irréductible.',
+     aide:'La fraction irréductible est '+item.rn+'/'+item.rd,
+     parts:[{frac:[[{b:1,kind:'num',ans:item.rn,show:''+item.rn,w:50,mini:true}],[{b:1,kind:'num',ans:item.rd,show:''+item.rd,w:50,mini:true}]]}]}
+  ];
+  return {type:'cascade',cat:'irreductible',sig:'FI'+n+'/'+d,
+    text:'Réduis la fraction '+n+'/'+d+' sous forme irréductible.',
+    steps:steps};
+}
+
+var GEN={diviseurs:genDiviseurs,criteres:genCriteres,premiers:genPremiers,decomp:genDecomp,pgcd:genPgcd,problemes:genProblemes,euclide:genEuclide,decompPremiers:genDecompPremiers,irreductible:genFractionIrreductible};
 
 /* ===== MOTEUR ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});(function(el){setTimeout(function(){el.remove();},fall);})(d);}}

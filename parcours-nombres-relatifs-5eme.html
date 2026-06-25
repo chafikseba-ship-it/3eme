@@ -544,7 +544,146 @@ var HELP={
   soustraire:'Soustraire = ajouter l\'opposé. a − b = a + (−b). Deux moins font un plus.',
   problemes:'Repérer augmentation (+) et diminution (−), écrire l\'opération, appliquer les règles des signes.'
 };
-var GEN={reconn:genReconn,comparer:genComparer,additionner:genAdditionner,soustraire:genSoustraire,problemes:genProblemes};
+/* ===== GÉNÉRATEUR : MULTIPLICATION DE NOMBRES RELATIFS ===== */
+function genMultiplication(){
+  var sub=rnd(3);
+  if(sub===0){
+    // positif × négatif
+    var a=rint(2,10),b=rint(2,10);
+    var res=-(a*b);
+    return {type:'casc',cat:'soustraire',sig:'mul0_'+a+'_'+b,
+      text:'Calcule :<br><b>(+'+a+') × (−'+b+')</b>',viz:'',
+      steps:[
+        {prompt:'Signes différents → résultat négatif. Multiplie les valeurs absolues :',
+         parts:[a+' × '+b+' = ',{kind:'num',ans:a*b,w:70},''],
+         aide:a+' × '+b+' = '+(a*b)},
+        {prompt:'Signe : (+) × (−) = (−). Résultat :',
+         parts:['(+'+a+') × (−'+b+') = ',{kind:'num',ans:res,w:70},''],
+         aide:'Résultat = −'+(a*b)}
+      ]};
+  } else if(sub===1){
+    // négatif × négatif
+    var a2=rint(2,9),b2=rint(2,9);
+    var res2=a2*b2;
+    return {type:'casc',cat:'soustraire',sig:'mul1_'+a2+'_'+b2,
+      text:'Calcule :<br><b>(−'+a2+') × (−'+b2+')</b>',viz:'',
+      steps:[
+        {prompt:'Même signe (tous deux négatifs) → résultat positif. Multiplie les valeurs absolues :',
+         parts:[a2+' × '+b2+' = ',{kind:'num',ans:res2,w:70},''],
+         aide:a2+' × '+b2+' = '+res2},
+        {prompt:'Signe : (−) × (−) = (+). Résultat :',
+         parts:['(−'+a2+') × (−'+b2+') = ',{kind:'num',ans:res2,w:70},''],
+         aide:'Résultat = +'+res2}
+      ]};
+  } else {
+    var a3=rint(1,12),b3=rint(1,12);
+    var signA=rnd(2)===0?1:-1,signB=rnd(2)===0?1:-1;
+    var res3=signA*a3*(signB*b3);
+    var strA=(signA>0?'+':'-')+a3,strB=(signB>0?'+':'-')+b3;
+    return {type:'casc',cat:'soustraire',sig:'mul2_'+strA+'_'+strB,
+      text:'Calcule :<br><b>('+strA+') × ('+strB+')</b>',viz:'',
+      steps:[
+        {prompt:'Détermine le signe : (+)×(+)=+, (−)×(−)=+, signes différents → (−) :',
+         parts:['Signe du résultat : '+(res3>=0?'positif ('+a3+'×'+b3+' = ':'négatif ('+a3+'×'+b3+' = '),{kind:'num',ans:Math.abs(res3),w:70},')'],
+         aide:a3+' × '+b3+' = '+Math.abs(res3)},
+        {prompt:'Résultat final :',
+         parts:['('+strA+') × ('+strB+') = ',{kind:'num',ans:res3,w:70},''],
+         aide:'Résultat = '+res3}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : DIVISION DE NOMBRES RELATIFS ===== */
+function genDivision(){
+  var sub=rnd(3);
+  if(sub===0){
+    var b=rint(2,9),res=rint(2,9);
+    var a=b*res;
+    return {type:'casc',cat:'soustraire',sig:'div0_'+a+'_'+b,
+      text:'Calcule :<br><b>(+'+a+') ÷ (−'+b+')</b>',viz:'',
+      steps:[
+        {prompt:'Divise les valeurs absolues :',
+         parts:[a+' ÷ '+b+' = ',{kind:'num',ans:res,w:70},''],
+         aide:a+' ÷ '+b+' = '+res},
+        {prompt:'Signe : (+) ÷ (−) = (−). Résultat :',
+         parts:['(+'+a+') ÷ (−'+b+') = ',{kind:'num',ans:-res,w:70},''],
+         aide:'Résultat = −'+res}
+      ]};
+  } else if(sub===1){
+    var b2=rint(2,8),res2=rint(2,10);
+    var a2=b2*res2;
+    return {type:'casc',cat:'soustraire',sig:'div1_'+a2+'_'+b2,
+      text:'Calcule :<br><b>(−'+a2+') ÷ (−'+b2+')</b>',viz:'',
+      steps:[
+        {prompt:'Divise les valeurs absolues :',
+         parts:[a2+' ÷ '+b2+' = ',{kind:'num',ans:res2,w:70},''],
+         aide:a2+' ÷ '+b2+' = '+res2},
+        {prompt:'Signe : (−) ÷ (−) = (+). Résultat :',
+         parts:['(−'+a2+') ÷ (−'+b2+') = ',{kind:'num',ans:res2,w:70},''],
+         aide:'Résultat = +'+res2}
+      ]};
+  } else {
+    var b3=rint(2,7),res3=rint(2,8);
+    var a3=b3*res3;
+    return {type:'casc',cat:'problemes',sig:'div2_'+a3+'_'+b3,
+      text:'Calcule :<br><b>(−'+a3+') ÷ (+'+b3+')</b>',viz:'',
+      steps:[
+        {prompt:'Divise les valeurs absolues :',
+         parts:[a3+' ÷ '+b3+' = ',{kind:'num',ans:res3,w:70},''],
+         aide:a3+' ÷ '+b3+' = '+res3},
+        {prompt:'Signe : (−) ÷ (+) = (−). Résultat :',
+         parts:['(−'+a3+') ÷ (+'+b3+') = ',{kind:'num',ans:-res3,w:70},''],
+         aide:'Résultat = −'+res3}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : PETITES ÉQUATIONS AVEC NOMBRES RELATIFS ===== */
+function genEquations(){
+  var sub=rnd(3);
+  if(sub===0){
+    // x + a = b  →  x = b - a
+    var a=pick([-8,-6,-5,-3,-2,2,3,5,6,8]),b=pick([-10,-8,-6,-4,-2,0,2,4,6,8,10]);
+    var sol=b-a;
+    return {type:'casc',cat:'problemes',sig:'eq0_'+a+'_'+b,
+      text:'Résous l\'équation :<br><b>x + ('+a+') = '+b+'</b>',viz:'',
+      steps:[
+        {prompt:'Pour isoler x, soustrait ('+a+') des deux membres : x = '+b+' − ('+a+') :',
+         parts:['x = '+b+' − ('+a+') = ',{kind:'num',ans:sol,w:70},''],
+         aide:b+' − ('+a+') = '+b+' + '+(−a)+' = '+sol}
+      ]};
+  } else if(sub===1){
+    // x - a = b  →  x = b + a
+    var a2=pick([-8,-5,-3,3,5,7,9]),b2=pick([-10,-7,-5,-2,0,3,5,8,10]);
+    var sol2=b2+a2;
+    return {type:'casc',cat:'problemes',sig:'eq1_'+a2+'_'+b2,
+      text:'Résous l\'équation :<br><b>x − ('+a2+') = '+b2+'</b>',viz:'',
+      steps:[
+        {prompt:'Pour isoler x, ajoute ('+a2+') des deux membres :',
+         parts:['x = '+b2+' + ('+a2+') = ',{kind:'num',ans:sol2,w:70},''],
+         aide:b2+' + ('+a2+') = '+sol2}
+      ]};
+  } else {
+    // a·x = b  →  x = b/a
+    var a3=pick([-4,-3,-2,2,3,4]),res3=pick([-5,-4,-3,-2,2,3,4,5]);
+    var b3=a3*res3;
+    return {type:'casc',cat:'problemes',sig:'eq2_'+a3+'_'+b3,
+      text:'Résous l\'équation :<br><b>'+a3+' × x = '+b3+'</b>',viz:'',
+      steps:[
+        {prompt:'Pour isoler x, divise les deux membres par '+a3+' :',
+         parts:['x = '+b3+' ÷ ('+a3+') = ',{kind:'num',ans:res3,w:70},''],
+         aide:b3+' ÷ ('+a3+') = '+res3}
+      ]};
+  }
+}
+
+var GEN={
+  reconn:genReconn,
+  comparer:genComparer,
+  additionner:genAdditionner,
+  soustraire:function(){const r=Math.random();if(r<0.45)return genSoustraire();if(r<0.72)return genMultiplication();return genDivision();},
+  problemes:function(){return Math.random()<0.55?genProblemes():genEquations();}
+};
 var BRIQUE={reconn:{serie:8,seuil:6},comparer:{serie:8,seuil:6},additionner:{serie:8,seuil:6},soustraire:{serie:8,seuil:6},problemes:{serie:8,seuil:6}};
 var THEME_CATS={reconn:['reconn'],comparer:['comparer'],additionner:['additionner'],soustraire:['soustraire'],problemes:['problemes']};
 var CATNOM={reconn:'Reconnaître & repérer',comparer:'Comparer',additionner:'Additionner',soustraire:'Soustraire',problemes:'Problèmes'};

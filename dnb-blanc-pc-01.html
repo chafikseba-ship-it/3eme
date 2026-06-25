@@ -849,6 +849,353 @@ function genCombustion(){
   };
 }
 
+/* ===== GÉNÉRATEUR 8 : Calcul de vitesse ===== */
+function genVitessePC01(){
+  var jeux=[
+    {contexte:'Un coureur parcourt <b>d = 400 m</b> en <b>t = 50 s</b>.',cherche:'vitesse',d:400,t:50,v:8,unite:'m/s',op:'d÷t',calcQ:'Calcule v = 400 ÷ 50.',calcSol:'v = 400 ÷ 50 = 8 m/s',aide_calc:'400 ÷ 50 = 8 m/s'},
+    {contexte:'Une voiture roule à <b>v = 90 km/h</b> pendant <b>t = 2 h</b>.',cherche:'distance',d:180,t:2,v:90,unite:'km',op:'v×t',calcQ:'Calcule d = 90 × 2.',calcSol:'d = 90 × 2 = 180 km',aide_calc:'90 × 2 = 180 km'},
+    {contexte:'Un nageur parcourt <b>d = 1 500 m</b> à <b>v = 1,5 m/s</b>.',cherche:'durée',d:1500,t:1000,v:1.5,unite:'s',op:'d÷v',calcQ:'Calcule t = 1 500 ÷ 1,5.',calcSol:'t = 1 500 ÷ 1,5 = 1 000 s',aide_calc:'1 500 ÷ 1,5 = 1 000 s'},
+    {contexte:'Un avion parcourt <b>d = 3 600 km</b> en <b>t = 4 h</b>.',cherche:'vitesse',d:3600,t:4,v:900,unite:'km/h',op:'d÷t',calcQ:'Calcule v = 3 600 ÷ 4.',calcSol:'v = 3 600 ÷ 4 = 900 km/h',aide_calc:'3 600 ÷ 4 = 900 km/h'}
+  ];
+  var jeu=choix(jeux);
+  var repFin=jeu.cherche==='vitesse'?jeu.v:(jeu.cherche==='distance'?jeu.d:jeu.t);
+  var isoQ=jeu.cherche==='vitesse'?'Isole v dans d = v × t.':(jeu.cherche==='distance'?'Exprime d avec v et t.':'Isole t dans d = v × t.');
+  var isoSol=jeu.cherche==='vitesse'?'v = d ÷ t':(jeu.cherche==='distance'?'d = v × t':'t = d ÷ v');
+  var etapes=[
+    {
+      question:'Q1 — Formule (2 pts)',
+      role:'Rappeler la formule',
+      clavier:['d','=','v','×','t'],
+      q:'Rappelle la formule reliant distance d, vitesse v et durée t.',
+      verif:function(inp){var t=norm(inp);return t.includes('d')&&t.includes('v')&&t.includes('t')&&t.includes('=');},
+      aide:'d = v × t',
+      solutionHTML:'d = v × t'
+    },
+    {
+      question:'Q2 — Isoler la grandeur cherchée (2 pts)',
+      role:'Isoler',
+      clavier:['d','=','v','×','t','÷'],
+      q:isoQ,
+      verif:function(inp){var t=norm(inp);return t.includes('=');},
+      aide:isoSol,
+      solutionHTML:isoSol
+    },
+    {
+      question:'Q3 — Calculer (3 pts)',
+      role:'Calculer avec unité',
+      clavier:['×','÷','='],
+      q:jeu.calcQ,
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-repFin)<=repFin*0.05+0.05;});},
+      aide:jeu.aide_calc,
+      solutionHTML:jeu.calcSol
+    }
+  ];
+  return {
+    titre:'Calcul de vitesse — '+jeu.cherche,
+    enonceHTML:jeu.contexte+'<br>Calcule la '+jeu.cherche+'.<br><i>Rappel : d = v × t</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="420" height="160" fill="#EEF8FF" rx="10"/>';
+      svg+='<rect x="0" y="80" width="420" height="30" fill="#C8C0B0" opacity="0.5"/>';
+      svg+='<line x1="40" y1="60" x2="380" y2="60" stroke="#E07A1F" stroke-width="2.5"/>';
+      svg+='<polygon points="380,55 392,60 380,65" fill="#E07A1F"/>';
+      svg+='<polygon points="40,55 28,60 40,65" fill="#E07A1F"/>';
+      svg+=svgTxt(210,46,'d = '+jeu.d+' '+jeu.unite.replace('/h',''),14,'#E07A1F');
+      svg+=svgTxt(130,120,'v = '+fr(jeu.v)+' '+jeu.unite,13,'#4FA3D1');
+      svg+=svgTxt(300,120,'t = '+fr(jeu.t)+' '+(jeu.unite==='m/s'?'s':'h'),13,'#5A4A2F');
+      svg+=svgTxt(210,148,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 9 : Loi d'Ohm simple ===== */
+function genOhmSimple(){
+  var configs=[
+    {contexte:'lampe de chevet',U:6,R:3,I:2,cherche:'I'},
+    {contexte:'résistance de chauffage',U:12,R:4,I:3,cherche:'R'},
+    {contexte:'moteur électrique',U:9,R:null,I:1.5,cherche:'U',Rcalc:6},
+    {contexte:'circuit de téléphone',U:5,R:2.5,I:2,cherche:'I'}
+  ];
+  var cfg=choix(configs);
+  var R=cfg.R||cfg.Rcalc;
+  var repFin=cfg.cherche==='I'?cfg.I:(cfg.cherche==='U'?cfg.U:cfg.R);
+  var donne=cfg.cherche==='I'?'U = '+cfg.U+' V et R = '+R+' Ω':(cfg.cherche==='U'?'R = '+R+' Ω et I = '+fr(cfg.I)+' A':'U = '+cfg.U+' V et I = '+fr(cfg.I)+' A');
+  var isoQ=cfg.cherche==='I'?'Isole I dans U = R × I.':(cfg.cherche==='U'?'Rappelle la formule U = R × I.':'Isole R dans U = R × I.');
+  var isoSol=cfg.cherche==='I'?'I = U ÷ R':(cfg.cherche==='U'?'U = R × I':'R = U ÷ I');
+  var calcQ=cfg.cherche==='I'?'Calcule I = '+cfg.U+' ÷ '+R+'.':(cfg.cherche==='U'?'Calcule U = '+R+' × '+fr(cfg.I)+'.':'Calcule R = '+cfg.U+' ÷ '+fr(cfg.I)+'.');
+  var calcSol=cfg.cherche==='I'?'I = '+fr(cfg.I)+' A':(cfg.cherche==='U'?'U = '+cfg.U+' V':'R = '+R+' Ω');
+  var etapes=[
+    {
+      question:'Q1 — Loi d\'Ohm (2 pts)',
+      role:'Rappeler la loi d\'Ohm',
+      clavier:['U','=','R','×','I'],
+      q:'Rappelle la loi d\'Ohm reliant U, R et I.',
+      verif:function(inp){var t=norm(inp);return t.includes('u')&&t.includes('r')&&t.includes('i')&&t.includes('=');},
+      aide:'Loi d\'Ohm : U = R × I',
+      solutionHTML:'U = R × I'
+    },
+    {
+      question:'Q2 — Isoler la grandeur cherchée (2 pts)',
+      role:'Isoler',
+      clavier:['÷','×','='],
+      q:isoQ,
+      verif:function(inp){var t=norm(inp);return t.includes('=');},
+      aide:isoSol,
+      solutionHTML:isoSol
+    },
+    {
+      question:'Q3 — Calculer (3 pts)',
+      role:'Appliquer avec les données',
+      clavier:['×','÷','='],
+      q:'Données : '+donne+'. '+calcQ+' Donne le résultat avec son unité.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-repFin)<=repFin*0.05+0.1;});},
+      aide:calcSol,
+      solutionHTML:calcSol
+    }
+  ];
+  return {
+    titre:'Loi d\'Ohm — '+cfg.contexte,
+    enonceHTML:'Un <b>'+cfg.contexte+'</b> est branché dans un circuit.<br>Données : <b>'+donne+'</b>.<br><i>Rappel : Loi d\'Ohm : U = R × I</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="180" fill="#FFF6E6" rx="10"/>';
+      svg+='<polyline points="50,50 330,50 330,140 50,140 50,50" fill="none" stroke="#5A4A2F" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+='<circle cx="50" cy="95" r="20" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+      svg+=svgTxt(50,92,'+',13,'#E07A1F');svg+=svgTxt(50,106,'−',13,'#2A7AB0');
+      svg+=svgTxt(50,160,'U = '+cfg.U+' V',12,'#E07A1F');
+      svg+='<polyline points="140,50 150,36 162,64 174,36 186,64 198,36 210,50" fill="none" stroke="#E07A1F" stroke-width="2.5" stroke-linejoin="round"/>';
+      svg+=svgTxt(175,24,'R = '+R+' Ω',13,'#E07A1F');
+      svg+='<polygon points="90,44 100,50 90,56" fill="#9FD356"/>';
+      svg+=svgTxt(72,38,'I = '+fr(cfg.I)+' A',12,'#6FA52A');
+      svg+=svgTxt(190,168,'Schéma non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 10 : Puissance électrique ===== */
+function genPuissanceElec(){
+  var configs=[
+    {appareil:'bouilloire',U:230,I:9,P:2070},
+    {appareil:'ampoule LED',U:230,I:0.04,P:9.2},
+    {appareil:'télévision',U:230,I:2,P:460},
+    {appareil:'radiateur électrique',U:230,I:7,P:1610}
+  ];
+  var cfg=choix(configs);
+  var I_arrondi=Math.round(cfg.I*100)/100;
+  var etapes=[
+    {
+      question:'Q1 — Formule de la puissance (2 pts)',
+      role:'Rappeler la formule',
+      clavier:['P','=','U','×','I'],
+      q:'Rappelle la formule de la puissance électrique P en fonction de la tension U et de l\'intensité I.',
+      verif:function(inp){var t=norm(inp);return t.includes('p')&&t.includes('u')&&t.includes('i')&&t.includes('=');},
+      aide:'P = U × I',
+      solutionHTML:'P = U × I'
+    },
+    {
+      question:'Q2 — Remplacer les valeurs (2 pts)',
+      role:'Substituer',
+      clavier:['×','='],
+      q:'Remplace U = '+cfg.U+' V et I = '+fr(I_arrondi)+' A dans la formule P = U × I.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.U)<1;})&&ns.some(function(x){return Math.abs(x-cfg.I)<0.01;});},
+      aide:'P = '+cfg.U+' × '+fr(I_arrondi),
+      solutionHTML:'P = '+cfg.U+' × '+fr(I_arrondi)
+    },
+    {
+      question:'Q3 — Résultat (3 pts)',
+      role:'Calculer P',
+      clavier:['×','='],
+      q:'Calcule P = '+cfg.U+' × '+fr(I_arrondi)+'. Donne le résultat en watts (W).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.P)<=cfg.P*0.05+1;});},
+      aide:cfg.U+' × '+fr(I_arrondi)+' = '+fr(cfg.P)+' W',
+      solutionHTML:'P = '+fr(cfg.P)+' W'
+    },
+    {
+      question:'Q4 — Comparer (1 pt)',
+      role:'Situer la puissance',
+      q:'Cette puissance de '+fr(cfg.P)+' W est-elle supérieure ou inférieure à 1 000 W (1 kW) ? Que peut-on en dire sur la consommation de cet appareil ?',
+      verif:function(inp){var t=norm(inp);return t.includes('superieur')||t.includes('inferieur')||t.includes('plus')||t.includes('moins')||t.includes('kw');},
+      aide:cfg.P>1000?'P > 1 000 W : appareil à forte consommation.':'P < 1 000 W : appareil à faible consommation.',
+      solutionHTML:cfg.P>1000?fr(cfg.P)+' W > 1 000 W : appareil très consommateur.':fr(cfg.P)+' W < 1 000 W : faible consommation.'
+    }
+  ];
+  return {
+    titre:'Puissance électrique — '+cfg.appareil,
+    enonceHTML:'Une <b>'+cfg.appareil+'</b> est branchée sous <b>U = '+cfg.U+' V</b>. Elle est parcourue par un courant d\'intensité <b>I = '+fr(I_arrondi)+' A</b>.<br>Calcule la puissance électrique de cet appareil.<br><i>Rappel : P = U × I</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="180" fill="#FFF6E6" rx="10"/>';
+      svg+='<rect x="20" y="20" width="150" height="110" rx="10" fill="#1a1a2e"/>';
+      svg+=svgTxt(95,42,cfg.appareil.toUpperCase(),10,'#FFC93C');
+      svg+='<line x1="20" y1="52" x2="170" y2="52" stroke="rgba(255,255,255,.2)" stroke-width="1"/>';
+      svg+=svgTxt(95,68,'U = '+cfg.U+' V',13,'#fff');
+      svg+=svgTxt(95,88,'I = '+fr(I_arrondi)+' A',13,'#fff');
+      svg+=svgTxt(95,140,'Plaque signalétique',11,'#8A744C');
+      svg+='<rect x="200" y="30" width="160" height="90" rx="8" fill="#FFF0D6" stroke="#E0A415" stroke-width="1.5"/>';
+      svg+=svgTxt(280,52,'Rappel',13,'#E07A1F');
+      svg+=svgTxt(280,74,'P = U × I',13,'#5A4A2F');
+      svg+=svgTxt(280,94,'P = ? W',13,'#E07A1F');
+      svg+=svgTxt(190,168,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 11 : Énergie électrique et conversion kWh ===== */
+function genEnergieElec(){
+  var configs=[
+    {appareil:'lave-linge',U:230,I:5,t_h:1.5,P:1150,E_kWh:1.725},
+    {appareil:'ordinateur portable',U:230,I:1,t_h:3,P:230,E_kWh:0.69},
+    {appareil:'four électrique',U:230,I:10,t_h:0.5,P:2300,E_kWh:1.15},
+    {appareil:'réfrigérateur',U:230,I:0.5,t_h:24,P:115,E_kWh:2.76}
+  ];
+  var cfg=choix(configs);
+  var E_J=Math.round(cfg.P*cfg.t_h*3600);
+  var E_kWh_arrondi=Math.round(cfg.E_kWh*1000)/1000;
+  var t_s=Math.round(cfg.t_h*3600);
+  var etapes=[
+    {
+      question:'Q1 — Puissance (2 pts)',
+      role:'Calculer P = U × I',
+      clavier:['×','='],
+      q:'Calcule la puissance : P = U × I = '+cfg.U+' × '+fr(cfg.I)+'. Donne le résultat en watts (W).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-cfg.P)<=cfg.P*0.05+1;});},
+      aide:cfg.U+' × '+fr(cfg.I)+' = '+cfg.P+' W',
+      solutionHTML:'P = '+cfg.P+' W'
+    },
+    {
+      question:'Q2 — Conversion de la durée (2 pts)',
+      role:'Convertir en secondes',
+      clavier:['×','3600','='],
+      q:'Convertis t = '+fr(cfg.t_h)+' h en secondes (1 h = 3 600 s).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-t_s)<=10;});},
+      aide:fr(cfg.t_h)+' × 3 600 = '+t_s+' s',
+      solutionHTML:'t = '+t_s+' s'
+    },
+    {
+      question:'Q3 — Énergie en joules (2 pts)',
+      role:'Calculer E = P × t',
+      clavier:['×','='],
+      q:'Calcule E = P × t = '+cfg.P+' × '+t_s+'. Donne le résultat en joules (J).',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-E_J)<=E_J*0.05+100;});},
+      aide:cfg.P+' × '+t_s+' = '+E_J+' J',
+      solutionHTML:'E = '+E_J+' J'
+    },
+    {
+      question:'Q4 — Conversion en kWh (2 pts)',
+      role:'Convertir en kilowattheures',
+      clavier:['÷','='],
+      q:'Convertis E = '+E_J+' J en kWh (1 kWh = 3 600 000 J). Arrondi au millième.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-E_kWh_arrondi)<=0.01;});},
+      aide:E_J+' ÷ 3 600 000 ≈ '+fr(E_kWh_arrondi)+' kWh',
+      solutionHTML:'E ≈ '+fr(E_kWh_arrondi)+' kWh'
+    }
+  ];
+  return {
+    titre:'Énergie électrique — '+cfg.appareil,
+    enonceHTML:'Un <b>'+cfg.appareil+'</b> fonctionne sous <b>U = '+cfg.U+' V</b>, intensité <b>I = '+fr(cfg.I)+' A</b>, pendant <b>t = '+fr(cfg.t_h)+' h</b>.<br>'+
+      '<i>Rappels : P = U × I &nbsp;|&nbsp; E = P × t (t en s) &nbsp;|&nbsp; 1 kWh = 3 600 000 J</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="180" fill="#FFF6E6" rx="10"/>';
+      svg+='<rect x="20" y="20" width="155" height="110" rx="10" fill="#1a1a2e"/>';
+      svg+=svgTxt(97,40,cfg.appareil.toUpperCase(),9,'#FFC93C');
+      svg+='<line x1="20" y1="52" x2="175" y2="52" stroke="rgba(255,255,255,.2)" stroke-width="1"/>';
+      svg+=svgTxt(97,65,'U = '+cfg.U+' V',12,'#fff');
+      svg+=svgTxt(97,83,'I = '+fr(cfg.I)+' A',12,'#fff');
+      svg+=svgTxt(97,101,'t = '+fr(cfg.t_h)+' h',12,'#fff');
+      svg+=svgTxt(97,140,'Plaque signalétique',10,'#8A744C');
+      svg+='<rect x="200" y="24" width="160" height="100" rx="8" fill="#FFF0D6" stroke="#E0A415" stroke-width="1.5"/>';
+      svg+=svgTxt(280,44,'Rappels',13,'#E07A1F');
+      svg+=svgTxt(280,64,'P = U × I',12,'#5A4A2F');
+      svg+=svgTxt(280,82,'E = P × t',12,'#5A4A2F');
+      svg+=svgTxt(280,100,'1 kWh = 3,6 MJ',11,'#8A744C');
+      svg+=svgTxt(190,168,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
+/* ===== GÉNÉRATEUR 12 : Masse volumique — identifier le matériau ===== */
+function genMasseVolumiqueID(){
+  var materiaux=[
+    {nom:'aluminium',rho:2.7,unite:'g/cm³',V:100,m:270,couleur:'#B0C4DE'},
+    {nom:'fer',rho:7.8,unite:'g/cm³',V:50,m:390,couleur:'#A9A9A9'},
+    {nom:'liège',rho:0.25,unite:'g/cm³',V:400,m:100,couleur:'#C8A96A'},
+    {nom:'plomb',rho:11.3,unite:'g/cm³',V:30,m:339,couleur:'#708090'}
+  ];
+  var cfg=choix(materiaux);
+  var rho_calc=Math.round(cfg.m/cfg.V*100)/100;
+  var refs=[
+    {nom:'liège',rho:0.25},{nom:'bois de pin',rho:0.55},{nom:'eau',rho:1.0},
+    {nom:'aluminium',rho:2.7},{nom:'fer',rho:7.8},{nom:'plomb',rho:11.3}
+  ];
+  var etapes=[
+    {
+      question:'Q1 — Rappeler la formule (2 pts)',
+      role:'Formule de la masse volumique',
+      clavier:['ρ','=','m','÷','V'],
+      q:'Rappelle la formule de la masse volumique ρ en fonction de la masse m et du volume V.',
+      verif:function(inp){var t=norm(inp);return (t.includes('\u03c1')||t.includes('rho')||t.includes('p'))&&t.includes('m')&&t.includes('v')&&t.includes('=')&&(t.includes('÷')||t.includes('/'));},
+      aide:'ρ = m ÷ V',
+      solutionHTML:'ρ = m ÷ V'
+    },
+    {
+      question:'Q2 — Calculer ρ (3 pts)',
+      role:'Remplacer les valeurs',
+      clavier:['÷','='],
+      q:'Remplace m = '+cfg.m+' g et V = '+cfg.V+' cm³ dans la formule.',
+      verif:function(inp){var ns=nbs(inp);return ns.some(function(x){return Math.abs(x-cfg.m)<1;})&&ns.some(function(x){return Math.abs(x-cfg.V)<1;});},
+      aide:'ρ = '+cfg.m+' ÷ '+cfg.V,
+      solutionHTML:'ρ = '+cfg.m+' ÷ '+cfg.V
+    },
+    {
+      role:'Calculer ρ',
+      clavier:['÷','='],
+      q:'Calcule ρ = '+cfg.m+' ÷ '+cfg.V+'. Donne le résultat en g/cm³.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rho_calc)<=rho_calc*0.05+0.05;});},
+      aide:'ρ = '+fr(rho_calc)+' g/cm³',
+      solutionHTML:'ρ = '+fr(rho_calc)+' g/cm³'
+    },
+    {
+      question:'Q3 — Identifier le matériau (2 pts)',
+      role:'Comparer au tableau de référence',
+      q:'Voici des masses volumiques de référence : liège (0,25), bois (0,55), eau (1,0), aluminium (2,7), fer (7,8), plomb (11,3) en g/cm³. À quel matériau correspond ρ = '+fr(rho_calc)+' g/cm³ ?',
+      verif:function(inp){var t=norm(inp);return t.includes(cfg.nom.substring(0,4));},
+      aide:'Cherche la valeur la plus proche de '+fr(rho_calc)+' g/cm³ dans le tableau.',
+      solutionHTML:'L\'objet est en <b>'+cfg.nom+'</b> (ρ = '+fr(cfg.rho)+' g/cm³).'
+    }
+  ];
+  return {
+    titre:'Masse volumique — identifier le matériau',
+    enonceHTML:'Un objet inconnu a une <b>masse m = '+cfg.m+' g</b> et un <b>volume V = '+cfg.V+' cm³</b>.<br>Calcule sa masse volumique et identifie le matériau.<br><i>Rappel : ρ = m ÷ V</i>',
+    dessiner:function(id){
+      var svg='<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">';
+      svg+='<rect x="0" y="0" width="380" height="200" fill="#FFF6E6" rx="10"/>';
+      svg+='<rect x="130" y="60" width="120" height="90" rx="10" fill="'+cfg.couleur+'" stroke="#5A4A2F" stroke-width="2"/>';
+      svg+=svgTxt(190,105,'m = '+cfg.m+' g',13,'#fff');
+      svg+=svgTxt(60,85,'Objet inconnu',12,'#5A4A2F');
+      svg+=svgTxt(60,105,'V = '+cfg.V+' cm³',13,'#E07A1F');
+      svg+=svgTxt(310,85,'ρ = m ÷ V',13,'#2A7AB0');
+      svg+=svgTxt(310,105,'ρ = ? g/cm³',13,'#E07A1F');
+      svg+=svgTxt(190,175,'Figure non à l\'échelle',11,'#A08B6E');
+      svg+='</svg>';
+      document.getElementById(id).innerHTML=svg;
+    },
+    etapes:etapes
+  };
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'flottaison', gen:genFlottaison},
@@ -857,7 +1204,12 @@ var BANQUE=[
   {notion:'concentration', gen:genConcentration},
   {notion:'archimede', gen:genArchimede},
   {notion:'resistances', gen:genResistances},
-  {notion:'combustion', gen:genCombustion}
+  {notion:'combustion', gen:genCombustion},
+  {notion:'vitessePC01', gen:genVitessePC01},
+  {notion:'ohmSimple', gen:genOhmSimple},
+  {notion:'puissanceElec', gen:genPuissanceElec},
+  {notion:'energieElec', gen:genEnergieElec},
+  {notion:'masseVolumiqueID', gen:genMasseVolumiqueID}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;
@@ -871,7 +1223,7 @@ function construireEcrans(){
     '<div class="exercice-header"><h2>Sujet de Physique-Chimie</h2>'+
     '<div class="bareme">Tirage aléatoire — recharge pour un nouveau sujet</div></div>'+
     '<div class="exercice-body">'+
-    '<p style="font-size:16px;line-height:1.7;">Voici <b>'+mot+'</b> tirés aléatoirement parmi 7 notions :<br>'+
+    '<p style="font-size:16px;line-height:1.7;">Voici <b>'+mot+'</b> tirés aléatoirement parmi 12 notions :<br>'+
     SUJET.map(function(ex,i){return '&bull; Exercice '+(i+1)+' — '+ex.titre;}).join('<br>')+
     '</p>'+
     '<p style="margin-top:10px;font-size:15px;color:var(--brun-clair);">La calculatrice est disponible en bas à droite.</p>'+

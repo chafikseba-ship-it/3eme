@@ -1288,6 +1288,311 @@ function genBudget(){
   return {titre:'Budget familial et pourcentages',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
 }
 
+/* ===== SITUATION : Tableau de proportionnalite ===== */
+function genTableauProportion(){
+  var configs=[
+    {ctx:'Un robinet remplit un reservoir.',item1:'minutes',item2:'litres',x1:3,y1:12},
+    {ctx:'Une imprimante imprime des pages.',item1:'minutes',item2:'pages',x1:5,y1:30},
+    {ctx:'Un cycliste roule a vitesse constante.',item1:'heures',item2:'km',x1:2,y1:90},
+    {ctx:'Un boulanger petrit de la farine.',item1:'heures',item2:'kg de pain',x1:3,y1:18}
+  ];
+  var cfg=choix(configs);
+  var k=cfg.y1/cfg.x1; // coefficient de proportionnalite
+  var x2=cfg.x1+choix([1,2,3]);
+  var x3=choix([1,2]);
+  var y2=k*x2,y3=k*x3;
+  // La case a trouver est y2
+  var enonceHTML=cfg.ctx
+    +'<br>Le tableau ci-dessous est un tableau de proportionnalite :<br><br>'
+    +'<table style="border-collapse:collapse;margin:10px 0;font-size:15px"><tr>'
+    +'<td style="background:#FFC93C;padding:8px 12px;border:2px solid #E0A415;font-weight:700">'+cfg.item1+'</td>'
+    +'<td style="background:#FFE7B0;padding:8px 12px;border:2px solid #E0A415;text-align:center">'+cfg.x1+'</td>'
+    +'<td style="background:#FFE7B0;padding:8px 12px;border:2px solid #E0A415;text-align:center">'+fr(x2)+'</td>'
+    +'<td style="background:#FFE7B0;padding:8px 12px;border:2px solid #E0A415;text-align:center">'+fr(x3)+'</td>'
+    +'</tr><tr>'
+    +'<td style="background:#FFC93C;padding:8px 12px;border:2px solid #E0A415;font-weight:700">'+cfg.item2+'</td>'
+    +'<td style="background:#FFE7B0;padding:8px 12px;border:2px solid #E0A415;text-align:center">'+fr(cfg.y1)+'</td>'
+    +'<td style="background:#FFD98A;padding:8px 12px;border:2px solid #E0A415;text-align:center;font-weight:700"><b>?</b></td>'
+    +'<td style="background:#FFE7B0;padding:8px 12px;border:2px solid #E0A415;text-align:center">'+fr(y3)+'</td>'
+    +'</tr></table>'
+    +'1. Calcule le coefficient de proportionnalite.<br>'
+    +'2. Trouve la valeur manquante (case orange).<br>'
+    +'3. Pour '+fr(x2+2)+' '+cfg.item1+', quelle serait la valeur correspondante ?';
+  var rep3=k*(x2+2);
+  function dessiner(cibleId){
+    var W=420,H=180;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    svg+=svgTxt(W/2,18,'Tableau de proportionnalite',13,'#5A4A2F');
+    var cols=[cfg.x1,x2,x3];
+    var colsY=[cfg.y1,y2,y3];
+    var cx=16,cw=80,rh=44,ry=30;
+    svg+='<rect x="'+cx+'" y="'+ry+'" width="130" height="'+rh+'" fill="#FFC93C" stroke="#E0A415" stroke-width="2"/>';
+    svg+=svgTxt(cx+65,ry+rh/2,cfg.item1,12,'#5A4A2F');
+    svg+='<rect x="'+cx+'" y="'+(ry+rh)+'" width="130" height="'+rh+'" fill="#FFC93C" stroke="#E0A415" stroke-width="2"/>';
+    svg+=svgTxt(cx+65,ry+rh*1.5,cfg.item2,12,'#5A4A2F');
+    for(var ci=0;ci<3;ci++){
+      var bx=cx+130+ci*cw;
+      var isQ=ci===1;
+      svg+='<rect x="'+bx+'" y="'+ry+'" width="'+cw+'" height="'+rh+'" fill="#FFE7B0" stroke="#E0A415" stroke-width="'+(isQ?'2.5':'1.5')+'"/>';
+      svg+=svgTxt(bx+cw/2,ry+rh/2,''+cols[ci],13,'#5A4A2F');
+      svg+='<rect x="'+bx+'" y="'+(ry+rh)+'" width="'+cw+'" height="'+rh+'" fill="'+(isQ?'#FFD98A':'#FFF6E6')+'" stroke="#E0A415" stroke-width="'+(isQ?'2.5':'1.5')+'"/>';
+      svg+=svgTxt(bx+cw/2,ry+rh*1.5,isQ?'?':fr(colsY[ci]),13,isQ?'#E07A1F':'#5A4A2F');
+    }
+    svg+=svgTxt(W/2,H-8,'Coefficient de proportionnalite : '+fr(cfg.y1)+' / '+cfg.x1+' = '+fr(k),12,'#8A744C');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+  var etapes=[
+    {
+      question:'Question 1 - Coefficient de proportionnalite',
+      role:'Calculer le coefficient',
+      q:'Calcule le coefficient k = '+fr(cfg.y1)+' ÷ '+cfg.x1+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-k)<0.01;});},
+      aide:'k = '+fr(cfg.y1)+' ÷ '+cfg.x1+' = '+fr(k)+'.',
+      solutionHTML:'k = '+fr(k)+' '+cfg.item2+' par '+cfg.item1.slice(0,-1),
+      clavier:['÷','=']
+    },
+    {
+      question:'Question 2 - Valeur manquante',
+      role:'Appliquer k pour trouver la valeur manquante',
+      q:'Calcule : '+fr(x2)+' × k = '+fr(x2)+' × '+fr(k)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-y2)<0.1;});},
+      aide:fr(x2)+' × '+fr(k)+' = '+fr(y2)+'.',
+      solutionHTML:''+fr(x2)+' × '+fr(k)+' = '+fr(y2)+' '+cfg.item2,
+      clavier:['×','=']
+    },
+    {
+      question:'Question 3 - Prolonger le tableau',
+      role:'Calculer pour '+fr(x2+2)+' '+cfg.item1,
+      q:'Pour '+fr(x2+2)+' '+cfg.item1+', calcule : '+fr(x2+2)+' × '+fr(k)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rep3)<0.5;});},
+      aide:fr(x2+2)+' × '+fr(k)+' = '+fr(rep3)+'.',
+      solutionHTML:''+fr(x2+2)+' × '+fr(k)+' = '+fr(rep3)+' '+cfg.item2,
+      clavier:['×','=']
+    }
+  ];
+  return {titre:'Tableau de proportionnalite',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Pourcentages d'evolution ===== */
+function genPourcentagesEvol(){
+  var scenarios=[
+    {ctx:'population d\'une ville',init:45000,taux:8,sens:'augmente'},
+    {ctx:'nombre d\'abonnes d\'un reseau social',init:12000,taux:15,sens:'augmente'},
+    {ctx:'prix d\'un appartement',init:180000,taux:5,sens:'diminue'},
+    {ctx:'effectif d\'un lycee',init:850,taux:6,sens:'diminue'}
+  ];
+  var sc=choix(scenarios);
+  var v0=sc.init,t=sc.taux,sens=sc.sens;
+  var coef=sens==='augmente'?1+t/100:1-t/100;
+  var v1=Math.round(v0*coef);
+  var evol=Math.round((v1/v0-1)*1000)/10;
+  // Verification : retrouver le taux
+  var tauxRetrouve=Math.abs(evol);
+  var enonceHTML='Le '+sc.ctx+' etait de <b>'+fr(v0)+'</b>. Il a <b>'+sens+'</b> de <b>'+t+' %</b>.'
+    +'<br>1. Calcule le coefficient multiplicateur correspondant.'
+    +'<br>2. Calcule la nouvelle valeur apres evolution.'
+    +'<br>3. Un an plus tard, la valeur est <b>'+fr(v1)+'</b>. Exprime l\'evolution globale en % par rapport a la valeur initiale.';
+  var etapes=[
+    {
+      question:'Question 1 - Coefficient multiplicateur',
+      role:'Identifier le coefficient',
+      q:'Pour une '+(sens==='augmente'?'hausse':'baisse')+' de '+t+' %, quel est le coefficient multiplicateur ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-coef)<0.005;});},
+      aide:(sens==='augmente'?'Hausse : 1 + '+t+'/100 = 1 + '+fr(t/100)+' = '+fr(coef)+'.'
+        :'Baisse : 1 - '+t+'/100 = 1 - '+fr(t/100)+' = '+fr(coef)+'.'),
+      solutionHTML:'Coefficient multiplicateur = '+fr(coef),
+      clavier:['+','-','÷','=']
+    },
+    {
+      question:'Question 2 - Nouvelle valeur',
+      role:'Appliquer le coefficient',
+      q:'Calcule : '+fr(v0)+' × '+fr(coef)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v1)<1;});},
+      aide:''+fr(v0)+' × '+fr(coef)+' = '+fr(v1)+'.',
+      solutionHTML:'Nouvelle valeur = '+fr(v1),
+      clavier:['×','=']
+    },
+    {
+      question:'Question 3 - Taux d\'evolution global',
+      role:'Calculer (v1 - v0) / v0 × 100',
+      q:'Calcule l\'evolution globale en % : ('+fr(v1)+' - '+fr(v0)+') / '+fr(v0)+' × 100.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-tauxRetrouve)<0.5;});},
+      aide:'('+fr(v1)+' - '+fr(v0)+') / '+fr(v0)+' × 100 = '+fr(v1-v0)+' / '+fr(v0)+' × 100 = '+fr(evol)+' %.',
+      solutionHTML:'Evolution = '+fr(evol)+' %',
+      clavier:['÷','×','-','=']
+    }
+  ];
+  function dessiner(cibleId){
+    var W=420,H=200;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    svg+='<rect x="16" y="30" width="120" height="70" rx="10" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+    svg+=svgTxt(76,65,''+fr(v0),16,'#5A4A2F');
+    svg+=svgTxt(76,88,'valeur initiale',11,'#8A744C');
+    svg+='<line x1="138" y1="65" x2="190" y2="65" stroke="#E07A1F" stroke-width="2.5"/>';
+    svg+='<polygon points="187,59 200,65 187,71" fill="#E07A1F"/>';
+    svg+=svgTxt(169,50,(sens==='augmente'?'+':'-')+t+'%',13,'#E07A1F');
+    svg+=svgTxt(169,78,'× '+fr(coef),12,'#8A744C');
+    svg+='<rect x="202" y="30" width="120" height="70" rx="10" fill="#eef7df" stroke="#6FA52A" stroke-width="2"/>';
+    svg+=svgTxt(262,65,''+fr(v1),16,'#5A4A2F');
+    svg+=svgTxt(262,88,'nouvelle valeur',11,'#8A744C');
+    svg+=svgTxt(W/2,155,'Evolution : '+fr(evol)+' %',13,'#4FA3D1');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+  return {titre:'Pourcentages d\'evolution',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Prix TTC / HT ===== */
+function genTTCHT(){
+  var articles=[
+    {nom:'ordinateur portable',ht:650,tva:20},
+    {nom:'livre scolaire',ht:18,tva:5.5},
+    {nom:'velo electrique',ht:1200,tva:20},
+    {nom:'restauration scolaire',ht:3.50,tva:10}
+  ];
+  var art=choix(articles);
+  var ht=art.ht,tva=art.tva;
+  var montantTVA=Math.round(ht*tva/100*100)/100;
+  var ttc=Math.round((ht+montantTVA)*100)/100;
+  var coefTTC=1+tva/100;
+  // Retour HT depuis TTC
+  var ttc2=choix([ttc,Math.round(ttc*1.1*100)/100,Math.round(ttc*0.9*100)/100]);
+  var ht2=Math.round(ttc2/coefTTC*100)/100;
+  var enonceHTML='Un '+art.nom+' est vendu <b>'+fr(ht)+' € HT</b>. Le taux de TVA est de <b>'+tva+' %</b>.'
+    +'<br>1. Calcule le montant de la TVA.'
+    +'<br>2. Calcule le prix TTC (toutes taxes comprises).'
+    +'<br>3. Un autre article est vendu <b>'+fr(ttc2)+' € TTC</b> avec le meme taux de TVA. Retrouve son prix HT.';
+  var etapes=[
+    {
+      question:'Question 1 - Montant de la TVA',
+      role:'Calculer la TVA',
+      q:'Calcule '+tva+'% de '+fr(ht)+' € : '+fr(ht)+' × '+tva+' / 100.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-montantTVA)<0.05;});},
+      aide:fr(ht)+' × '+tva+' / 100 = '+fr(montantTVA)+' €.',
+      solutionHTML:'TVA = '+fr(montantTVA)+' €',
+      clavier:['×','÷','=']
+    },
+    {
+      question:'Question 2 - Prix TTC',
+      role:'Calculer HT + TVA',
+      q:'Calcule le prix TTC : '+fr(ht)+' + '+fr(montantTVA)+' = ? (ou '+fr(ht)+' × '+fr(coefTTC)+')',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-ttc)<0.05;});},
+      aide:fr(ht)+' + '+fr(montantTVA)+' = '+fr(ttc)+' €.',
+      solutionHTML:'TTC = '+fr(ttc)+' €',
+      clavier:['+','×','=']
+    },
+    {
+      question:'Question 3 - Retrouver le prix HT',
+      role:'Diviser TTC par le coefficient',
+      q:'Coefficient TTC = 1 + '+tva+'/100 = '+fr(coefTTC)+'. Calcule : HT = '+fr(ttc2)+' ÷ '+fr(coefTTC)+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-ht2)<0.1;});},
+      aide:fr(ttc2)+' ÷ '+fr(coefTTC)+' = '+fr(ht2)+' €.',
+      solutionHTML:'HT = '+fr(ttc2)+' ÷ '+fr(coefTTC)+' = '+fr(ht2)+' €',
+      clavier:['÷','=']
+    }
+  ];
+  function dessiner(cibleId){
+    var W=420,H=200;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    var by=40;
+    svg+='<rect x="16" y="'+by+'" width="100" height="60" rx="8" fill="#FFE7B0" stroke="#E0A415" stroke-width="2"/>';
+    svg+=svgTxt(66,by+20,'HT',13,'#8A744C');
+    svg+=svgTxt(66,by+42,fr(ht)+' €',15,'#5A4A2F');
+    svg+='<rect x="156" y="'+by+'" width="100" height="60" rx="8" fill="#C8E8F5" stroke="#4FA3D1" stroke-width="2"/>';
+    svg+=svgTxt(206,by+20,'TVA '+tva+'%',12,'#4FA3D1');
+    svg+=svgTxt(206,by+42,fr(montantTVA)+' €',15,'#5A4A2F');
+    svg+='<rect x="296" y="'+by+'" width="110" height="60" rx="8" fill="#eef7df" stroke="#6FA52A" stroke-width="2.5"/>';
+    svg+=svgTxt(351,by+20,'TTC',13,'#6FA52A');
+    svg+=svgTxt(351,by+42,fr(ttc)+' €',15,'#5A4A2F');
+    svg+='<line x1="118" y1="'+(by+30)+'" x2="154" y2="'+(by+30)+'" stroke="#5A4A2F" stroke-width="2"/>';
+    svg+='<text x="136" y="'+(by+27)+'" font-family="Fredoka" font-size="18" fill="#5A4A2F" text-anchor="middle">+</text>';
+    svg+='<line x1="258" y1="'+(by+30)+'" x2="294" y2="'+(by+30)+'" stroke="#5A4A2F" stroke-width="2"/>';
+    svg+='<text x="276" y="'+(by+27)+'" font-family="Fredoka" font-size="18" fill="#5A4A2F" text-anchor="middle">=</text>';
+    svg+=svgTxt(W/2,155,'x '+fr(coefTTC)+' pour passer de HT a TTC',12,'#8A744C');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+  return {titre:'Prix HT et TTC — TVA',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
+/* ===== SITUATION : Repartition proportionnelle ===== */
+function genRepartition(){
+  var configs=[
+    {ctx:'Trois associes partagent les benefices de 12 000 €',total:12000,parts:[3,4,5],unite:'€'},
+    {ctx:'Un heritier repartit 45 000 € entre ses 3 enfants',total:45000,parts:[2,3,4],unite:'€'},
+    {ctx:'Un club repartit 900 points de fidelite',total:900,parts:[1,2,3],unite:'points'},
+    {ctx:'Une quantite de 360 kg est repartie entre 3 clients',total:360,parts:[2,3,4],unite:'kg'}
+  ];
+  var cfg=choix(configs);
+  var tot=cfg.total;
+  var p=cfg.parts;
+  var somme=p[0]+p[1]+p[2];
+  var vals=p.map(function(pi){return Math.round(tot*pi/somme*100)/100;});
+  var prenoms=['Alice','Bruno','Carla','David','Eva','Farid'];
+  prenoms=melange(prenoms).slice(0,3);
+  var enonceHTML=cfg.ctx+' entre <b>'+prenoms[0]+'</b>, <b>'+prenoms[1]+'</b> et <b>'+prenoms[2]+'</b> dans les proportions <b>'+p[0]+' : '+p[1]+' : '+p[2]+'</b>.'
+    +'<br>1. Calcule la somme totale des parts (total des coefficients).'
+    +'<br>2. Calcule la part unitaire (valeur totale divisee par la somme des coefficients).'
+    +'<br>3. Calcule la part revenant a chaque personne.';
+  var unitePart=Math.round(tot/somme*100)/100;
+  var etapes=[
+    {
+      question:'Question 1 - Somme des coefficients',
+      role:'Additionner les parts',
+      q:'Calcule : '+p[0]+' + '+p[1]+' + '+p[2]+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-somme)<0.5;});},
+      aide:''+p[0]+' + '+p[1]+' + '+p[2]+' = '+somme+'.',
+      solutionHTML:'Somme des coefficients = '+somme,
+      clavier:['+','=']
+    },
+    {
+      question:'Question 2 - Part unitaire',
+      role:'Calculer la valeur d\'une part',
+      q:'Calcule : '+fr(tot)+' ÷ '+somme+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-unitePart)<0.05;});},
+      aide:''+fr(tot)+' ÷ '+somme+' = '+fr(unitePart)+' '+cfg.unite+' par part.',
+      solutionHTML:'Part unitaire = '+fr(unitePart)+' '+cfg.unite,
+      clavier:['÷','=']
+    },
+    {
+      question:'Question 3 - Parts de chacun',
+      role:'Multiplier la part unitaire par le coefficient',
+      q:'Calcule la part de chacun : '+prenoms[0]+' (×'+p[0]+'), '+prenoms[1]+' (×'+p[1]+'), '+prenoms[2]+' (×'+p[2]+').',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-vals[0])<0.5;})&&ns.some(function(x){return Math.abs(x-vals[1])<0.5;});
+      },
+      aide:prenoms[0]+' : '+fr(unitePart)+' × '+p[0]+' = '+fr(vals[0])+' '+cfg.unite+'. '+prenoms[1]+' : '+fr(unitePart)+' × '+p[1]+' = '+fr(vals[1])+' '+cfg.unite+'. '+prenoms[2]+' : '+fr(unitePart)+' × '+p[2]+' = '+fr(vals[2])+' '+cfg.unite+'.',
+      solutionHTML:prenoms[0]+' : '+fr(vals[0])+' '+cfg.unite+' ; '+prenoms[1]+' : '+fr(vals[1])+' '+cfg.unite+' ; '+prenoms[2]+' : '+fr(vals[2])+' '+cfg.unite,
+      clavier:['×','=']
+    }
+  ];
+  function dessiner(cibleId){
+    var W=420,H=200;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+    var colors=['#E07A1F','#4FA3D1','#9FD356'];
+    var bx=16,by=40,bw=Math.round((W-32)/somme);
+    for(var pi=0;pi<3;pi++){
+      for(var bi=0;bi<p[pi];bi++){
+        var xx=bx+(p.slice(0,pi).reduce(function(s,v){return s+v;},0)+bi)*bw;
+        svg+='<rect x="'+xx+'" y="'+by+'" width="'+(bw-3)+'" height="50" rx="4" fill="'+colors[pi]+'" opacity="0.75" stroke="#fff" stroke-width="2"/>';
+      }
+      var midX=bx+(p.slice(0,pi).reduce(function(s,v){return s+v;},0)+p[pi]/2)*bw;
+      svg+=svgTxt(midX,by+65,prenoms[pi],12,'#5A4A2F');
+      svg+=svgTxt(midX,by+82,fr(vals[pi])+' '+cfg.unite,12,colors[pi]);
+    }
+    svg+=svgTxt(W/2,155,'Total : '+fr(tot)+' '+cfg.unite+' reparti en '+p[0]+':'+p[1]+':'+p[2],12,'#8A744C');
+    svg+=svgNonEchelle(W,H);
+    svg+='</svg>';
+    document.getElementById(cibleId).innerHTML=svg;
+  }
+  return {titre:'Repartition proportionnelle',enonceHTML:enonceHTML,dessiner:dessiner,etapes:etapes};
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'moyenne',gen:genMoyenne},
@@ -1302,7 +1607,11 @@ var BANQUE=[
   {notion:'probaUrne',gen:genProba},
   {notion:'statsNotes',gen:genStats},
   {notion:'graphiqueAffine',gen:genGraphiqueAffine},
-  {notion:'budget',gen:genBudget}
+  {notion:'budget',gen:genBudget},
+  {notion:'tableauProportion',gen:genTableauProportion},
+  {notion:'pourcentagesEvol',gen:genPourcentagesEvol},
+  {notion:'ttcht',gen:genTTCHT},
+  {notion:'repartition',gen:genRepartition}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

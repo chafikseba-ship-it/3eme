@@ -404,8 +404,8 @@ const SERIE=10, SEUIL=8;
 const CASCADE_THEMES={test:true,prem1:true,modelisation:true,prod:true,carre:true};
 function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
 function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
-const CATNOM={test:'Tester',prem1:'Premier degré',modelisation:'Modélisation',prod:'Produit nul',carre:'x² = a'};
-const THEME_CATS={test:['test'],prem1:['prem1'],modelisation:['modelisation'],prod:['prod'],carre:['carre']};
+const CATNOM={test:'Tester',prem1:'Premier degré',modelisation:'Modélisation',prod:'Produit nul',carre:'x² = a',parentheses:'Premier degré',deuxMembres:'Premier degré',consecutifs:'Modélisation'};
+const THEME_CATS={test:['test'],prem1:['prem1','parentheses','deuxMembres'],modelisation:['modelisation','consecutifs'],prod:['prod'],carre:['carre']};
 const HELP={
   test:'On remplace x par la valeur dans les deux membres ; si l’égalité est vraie, c’est une solution.',
   prem1:'On regroupe les x d’un côté, les nombres de l’autre, puis on divise.',
@@ -586,7 +586,75 @@ function genCarre(){
       parts:['Les solutions sont ',{b:1,kind:'num',ans:-k,show:''+(-k),w:54},'   et   ',{b:1,kind:'num',ans:k,show:''+k,w:54},'.']}
     ]};
 }
-var GEN={test:genTest,prem1:genPrem1,modelisation:genModelisation,prod:genProd,carre:genCarre};
+/* ===== générateur : équation avec parenthèses k(ax+b)=d ===== */
+function genParentheses(){
+  var k=pick([2,3,4]),a=pick([1,2,3]),b=rint(1,7),s=rint(-5,5);
+  var d=k*(a*s+b);
+  var kas=k*a,kb=k*b;
+  var B2=d-kb;
+  return {type:'cascade',cat:'prem1',sig:'KP'+k+a+b+s,viz:null,
+    text:'Résous l'équation en rédigeant chaque étape :   '+k+'('+side(a,b)+') = '+d,
+    steps:[
+     {prompt:'Étape 1 — Développe le membre de gauche en distribuant '+k+'.',
+      aide:k+'×'+tx(a)+' = '+kas+'x  et  '+k+'×'+b+' = '+kb+'. Donc : '+side(kas,kb)+' = '+d,
+      parts:[{b:1,kind:'num',ans:kas,show:''+kas,w:48},' x + ',{b:1,kind:'num',ans:kb,show:''+kb,w:48},' = ',{b:1,kind:'num',ans:d,show:''+d,w:54}]},
+     {prompt:'Étape 2 — Neutralise le « + '+kb+' » : soustrais '+kb+' des deux côtés.',
+      aide:'À droite : '+d+' − '+kb+' = '+B2+'.',
+      parts:[{b:1,kind:'num',ans:kas,show:''+kas,w:48},' x = ',{b:1,kind:'num',ans:B2,show:''+B2,w:54}]},
+     {prompt:'Étape 3 — Neutralise le « × '+kas+' » : divise par '+kas+'.',
+      aide:'x = '+B2+' ÷ '+kas+'.',
+      parts:['x = ',{frac:[[{b:1,kind:'num',ans:B2,show:''+B2,w:50,mini:true}],[{b:1,kind:'num',ans:kas,show:''+kas,w:50,mini:true}]]}]},
+     {prompt:'Étape 4 — Calcule et conclus.',
+      aide:'Effectue la division.',
+      parts:['La solution est x = ',{b:1,kind:'num',ans:s,show:''+s,w:58},'.']}
+    ]};
+}
+/* ===== générateur : équation ax+b = cx+d ===== */
+function genDeuxMembres(){
+  var a=pick([3,4,5,6]),c=pick([1,2]),s=rint(-4,6),b=rint(-6,6),d=b+(a-c)*s;
+  while(Math.abs(d)>15){b=rint(-6,6);d=b+(a-c)*s;}
+  var B2=d-b;
+  return {type:'cascade',cat:'prem1',sig:'DM'+a+b+c+d+s,viz:null,
+    text:'Résous l'équation en rédigeant chaque étape :   '+side(a,b)+' = '+side(c,d),
+    steps:[
+     {prompt:'Étape 1 — Regroupe les termes en x à gauche : soustrais '+c+'x des deux côtés.',
+      aide:'À gauche : '+a+'x − '+c+'x = '+(a-c)+'x.',
+      parts:[{b:1,kind:'num',ans:a-c,show:''+(a-c),w:50},' x '+(b>=0?'+ ':'− ')+Math.abs(b)+' = ',{b:1,kind:'num',ans:d,show:''+d,w:54}]},
+     {prompt:'Étape 2 — Neutralise le terme constant à gauche.',
+      aide:(b>=0?'Soustrais ':'Ajoute ')+Math.abs(b)+' des deux côtés. À droite : '+d+(b>=0?' − ':' + ')+Math.abs(b)+' = '+B2+'.',
+      parts:[{b:1,kind:'num',ans:a-c,show:''+(a-c),w:50},' x = ',{b:1,kind:'num',ans:B2,show:''+B2,w:54}]},
+     {prompt:'Étape 3 — Divise par '+(a-c)+' des deux côtés.',
+      aide:'x = '+B2+' ÷ '+(a-c)+'.',
+      parts:['x = ',{frac:[[{b:1,kind:'num',ans:B2,show:''+B2,w:50,mini:true}],[{b:1,kind:'num',ans:a-c,show:''+(a-c),w:50,mini:true}]]}]},
+     {prompt:'Étape 4 — Calcule et conclus.',
+      aide:'Effectue la division.',
+      parts:['La solution est x = ',{b:1,kind:'num',ans:s,show:''+s,w:58},'.']}
+    ]};
+}
+/* ===== générateur : problème — trouver deux entiers consécutifs ===== */
+function genConsecutifs(){
+  var n=rint(5,20),s=2*n+1;
+  return {type:'cascade',cat:'modelisation',sig:'CO'+n,viz:null,
+    text:'La somme de deux entiers consécutifs est '+s+'. Quels sont ces deux entiers ? Rédige.',
+    steps:[
+     {prompt:'Étape 1 — Choisis l'inconnue.',
+      aide:'On appelle x le plus petit des deux entiers. L'entier suivant est alors x + 1.',
+      parts:['On pose x = le plus petit entier, et x + 1 = le ',{b:1,kind:'text',accept:['suivant','grand'],mode:'contains',show:'suivant',w:110},'.']},
+     {prompt:'Étape 2 — Écris l'équation (la somme vaut '+s+').',
+      aide:'x + (x + 1) = '+s+'.',
+      parts:['x + (x + 1) = ',{b:1,kind:'num',ans:s,show:''+s,w:54}]},
+     {prompt:'Étape 3 — Réduis le membre de gauche.',
+      aide:'x + x + 1 = 2x + 1.',
+      parts:['2 x + 1 = ',{b:1,kind:'num',ans:s,show:''+s,w:54}]},
+     {prompt:'Étape 4 — Isole x.',
+      aide:'2x = '+s+' − 1 = '+(s-1)+', donc x = '+(s-1)+' ÷ 2 = '+n+'.',
+      parts:['x = ',{b:1,kind:'num',ans:n,show:''+n,w:56}]},
+     {prompt:'Étape 5 — Conclus : donne les deux entiers.',
+      aide:'Les deux entiers sont '+n+' et '+(n+1)+'.',
+      parts:['Les deux entiers sont ',{b:1,kind:'num',ans:n,show:''+n,w:50},' et ',{b:1,kind:'num',ans:n+1,show:''+(n+1),w:50},'.']}
+    ]};
+}
+var GEN={test:genTest,prem1:genPrem1,modelisation:genModelisation,prod:genProd,carre:genCarre,parentheses:genParentheses,deuxMembres:genDeuxMembres,consecutifs:genConsecutifs};
 
 /* ===== moteur de quiz (série notée) ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});setTimeout((function(el){return function(){el.remove();};})(d),fall);}}

@@ -759,7 +759,144 @@ function genInequations(){
   }
 }
 
-var GEN={identites:genIdentites,developper:genDevelopper,factoriser:genFactoriser,racines:genRacines,inequations:genInequations};
+/* ===== GÉNÉRATEUR : FACTORISATION PAR IDENTITÉS REMARQUABLES (QCM + CASCADE) ===== */
+function genFactoIdentites(){
+  var type=pick(['qcm_diff','qcm_carre_plus','qcm_carre_moins','casc_diff']);
+  if(type==='qcm_diff'){
+    // a² − b² QCM
+    var pairs=[[1,3],[2,5],[3,4],[1,7],[2,3],[4,5],[1,6]];
+    var pair=pick(pairs);
+    var a=pair[0],b=pair[1];
+    var a2=a*a, b2=b*b;
+    return {type:'qcm',cat:'identites',sig:'fid_diff_'+a+'_'+b,
+      text:'Factorise '+a2+'x\u00b2 \u2212 '+b2,
+      opts:['('+a+'x \u2212 '+b+')('+a+'x \u2212 '+b+')','('+a+'x + '+b+')('+a+'x \u2212 '+b+')','('+a+'x + '+b+')\u00b2','('+a2+'x \u2212 '+b2+')'],
+      ans:1,correct:1,
+      explain:a2+'x\u00b2 \u2212 '+b2+' = ('+a+'x)\u00b2 \u2212 '+b+'\u00b2. Identit\u00e9 a\u00b2\u2212b\u00b2 = (a+b)(a\u2212b). R\u00e9sultat : ('+a+'x+'+b+')('+a+'x\u2212'+b+').'};
+  } else if(type==='qcm_carre_plus'){
+    // (a+b)² QCM : reconnaître
+    var a=rint(2,5), b=rint(1,4);
+    var A=a*a, B=2*a*b, C=b*b;
+    return {type:'qcm',cat:'identites',sig:'fid_cplus_'+a+'_'+b,
+      text:'Factorise '+A+'x\u00b2 + '+B+'x + '+C,
+      opts:['('+a+'x + '+b+')\u00b2','('+a+'x \u2212 '+b+')\u00b2','('+a+'x + '+b+')('+a+'x \u2212 '+b+')','('+A+'x + '+C+')'],
+      ans:0,correct:0,
+      explain:A+'x\u00b2 + '+B+'x + '+C+' = ('+a+'x)\u00b2 + 2\u00d7'+a+'x\u00d7'+b+' + '+b+'\u00b2 = ('+a+'x+'+b+')\u00b2.'};
+  } else if(type==='qcm_carre_moins'){
+    // (a−b)² QCM
+    var a=rint(2,5), b=rint(1,4);
+    var A=a*a, B=2*a*b, C=b*b;
+    return {type:'qcm',cat:'identites',sig:'fid_cmoins_'+a+'_'+b,
+      text:'Factorise '+A+'x\u00b2 \u2212 '+B+'x + '+C,
+      opts:['('+a+'x + '+b+')\u00b2','('+a+'x \u2212 '+b+')\u00b2','('+a+'x + '+b+')('+a+'x \u2212 '+b+')','Impossible'],
+      ans:1,correct:1,
+      explain:A+'x\u00b2 \u2212 '+B+'x + '+C+' = ('+a+'x)\u00b2 \u2212 2\u00d7'+a+'x\u00d7'+b+' + '+b+'\u00b2 = ('+a+'x\u2212'+b+')\u00b2.'};
+  } else {
+    // CASCADE : factoriser x² − b² étape par étape
+    var b=pick([2,3,4,5,6,7]);
+    var b2=b*b;
+    return {type:'casc',cat:'identites',sig:'fid_casc_diff_'+b,
+      text:'Factorise x\u00b2 \u2212 '+b2+' en utilisant l\'identité a\u00b2 \u2212 b\u00b2 = (a+b)(a\u2212b).',
+      viz:'',
+      steps:[
+        {prompt:'Identifie a et b. Ici a\u00b2 = x\u00b2 donc a = x. Et b\u00b2 = '+b2+' donc b = ?',
+         parts:['b = ',{kind:'num',ans:b,w:55},''],
+         aide:'\u221a'+b2+' = '+b+', donc b = '+b+'.'},
+        {prompt:'Écris le résultat : x\u00b2 \u2212 '+b2+' = (x + ?)(x \u2212 ?)',
+         parts:['(x + ',{kind:'num',ans:b,w:55},')(x \u2212 ',{kind:'num',ans:b,w:55},')'],
+         aide:'a\u00b2\u2212b\u00b2 = (a+b)(a\u2212b) avec a=x et b='+b+'. R\u00e9sultat : (x+'+b+')(x\u2212'+b+').'}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : DÉVELOPPER ET RÉDUIRE (CASCADE) ===== */
+function genDevelopperReduire(){
+  var type=pick(['double','triple_termes']);
+  if(type==='double'){
+    // Développer a(bx + c) + d(ex + f) et réduire
+    var a=pick([2,3,4]), b=pick([1,2,3]), c=pick([-3,-2,-1,1,2,3]);
+    var d=pick([2,3]), e=pick([1,2,3]), f=pick([-4,-3,-2,-1,1,2,3]);
+    var xCoef=a*b+d*e;
+    var cst=a*c+d*f;
+    return {type:'casc',cat:'developper',sig:'dr_double_'+a+b+c+d+e+f,
+      text:'Développe et réduis : '+a+'('+b+'x '+(c>=0?'+ '+c:'\u2212 '+Math.abs(c))+') + '+d+'('+e+'x '+(f>=0?'+ '+f:'\u2212 '+Math.abs(f))+')',
+      viz:'',
+      steps:[
+        {prompt:'Développe le premier produit : '+a+'\u00d7'+b+'x = ? et '+a+'\u00d7('+c+') = ?',
+         parts:[{kind:'num',ans:a*b,w:60},'x  et  ',{kind:'num',ans:a*c,w:60},''],
+         aide:a+'\u00d7'+b+' = '+a*b+' et '+a+'\u00d7('+c+') = '+a*c},
+        {prompt:'Développe le deuxième produit : '+d+'\u00d7'+e+'x = ? et '+d+'\u00d7('+f+') = ?',
+         parts:[{kind:'num',ans:d*e,w:60},'x  et  ',{kind:'num',ans:d*f,w:60},''],
+         aide:d+'\u00d7'+e+' = '+d*e+' et '+d+'\u00d7('+f+') = '+d*f},
+        {prompt:'Réduis les termes en x : '+a*b+'x + '+d*e+'x = ?',
+         parts:[{kind:'num',ans:xCoef,w:60},'x'],
+         aide:a*b+' + '+d*e+' = '+xCoef},
+        {prompt:'Réduis les constantes : '+a*c+' + ('+d*f+') = ?',
+         parts:[{kind:'num',ans:cst,w:60},''],
+         aide:a*c+' + ('+d*f+') = '+cst},
+        {prompt:'Résultat final :',
+         parts:[{kind:'num',ans:xCoef,w:60},'x '+(cst>=0?'+ ':'\u2212 '),{kind:'num',ans:Math.abs(cst),w:60},''],
+         aide:'Résultat : '+xCoef+'x '+(cst>=0?'+ ':'\u2212 ')+Math.abs(cst)}
+      ]};
+  } else {
+    // Développer et réduire (a+b)(c+d) puis ajouter un terme
+    var a=rint(1,4), b=rint(1,5), c=rint(1,3), d=rint(1,4);
+    var extra=rint(-5,5);
+    var full=a*c+extra;
+    var xc=a*d+b*c;
+    var cst=b*d+extra;
+    return {type:'casc',cat:'developper',sig:'dr_triple_'+a+b+c+d+extra,
+      text:'Développe et réduis : ('+a+'x+'+b+')('+c+'x+'+d+') '+(extra>=0?'+ '+extra:'\u2212 '+Math.abs(extra)),
+      viz:'',
+      steps:[
+        {prompt:'Développe ('+a+'x+'+b+')('+c+'x+'+d+') : terme en x\u00b2 = '+a+'\u00d7'+c,
+         parts:[{kind:'num',ans:a*c,w:60},'x\u00b2'],
+         aide:a+'\u00d7'+c+' = '+a*c},
+        {prompt:'Termes en x : '+a+'\u00d7'+d+'+'+b+'\u00d7'+c,
+         parts:[{kind:'num',ans:a*d+b*c,w:60},'x'],
+         aide:a+'x\u00d7'+d+' + '+b+'\u00d7'+c+'x = '+(a*d+b*c)+'x'},
+        {prompt:'Terme constant du produit : '+b+'\u00d7'+d,
+         parts:[{kind:'num',ans:b*d,w:60},''],
+         aide:b+'\u00d7'+d+' = '+b*d},
+        {prompt:'Ajoute le terme '+(extra>=0?extra:'\u2212 '+Math.abs(extra))+' à la constante '+b*d,
+         parts:[{kind:'num',ans:cst,w:60},''],
+         aide:b*d+' + ('+extra+') = '+cst},
+        {prompt:'Résultat final :',
+         parts:[{kind:'num',ans:a*c,w:60},'x\u00b2 + ',{kind:'num',ans:a*d+b*c,w:60},'x + ',{kind:'num',ans:cst,w:60},''],
+         aide:a*c+'x\u00b2 + '+(a*d+b*c)+'x + '+cst}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : ÉQUATION DU 2ND DEGRÉ FACTORISÉE (CASCADE) ===== */
+function genEquationFactorisee(){
+  // Résoudre (ax+b)(cx+d)=0, racines entières
+  var r1=pick([-4,-3,-2,-1,1,2,3,4]);
+  var r2=pick([-4,-3,-2,-1,1,2,3,4]);
+  // éviter r1 = r2
+  while(r2===r1){r2=pick([-4,-3,-2,-1,1,2,3,4]);}
+  // facteurs : (x - r1)(x - r2) = 0
+  var b1=-r1; // x + b1 = 0 → x = r1 (ici b1 = -r1)
+  var b2=-r2;
+  var s1str=b1>=0?'x + '+b1:'x \u2212 '+Math.abs(b1);
+  var s2str=b2>=0?'x + '+b2:'x \u2212 '+Math.abs(b2);
+  return {type:'casc',cat:'inequations',sig:'eq2_'+r1+'_'+r2,
+    text:'R\u00e9sous : ('+s1str+')('+s2str+') = 0',
+    viz:'',
+    steps:[
+      {prompt:'Un produit = 0 signifie qu\'au moins un facteur = 0. Résous '+s1str+' = 0.',
+       parts:['x = ',{kind:'num',ans:r1,w:65},''],
+       aide:s1str+' = 0 → x = '+r1+' (on passe +'+b1+' de l\'autre côté)'},
+      {prompt:'Résous maintenant '+s2str+' = 0.',
+       parts:['x = ',{kind:'num',ans:r2,w:65},''],
+       aide:s2str+' = 0 → x = '+r2},
+      {prompt:'L\'équation a deux solutions. Vérifie les deux :',
+       parts:['x\u2081 = ',{kind:'num',ans:r1,w:60},' ou x\u2082 = ',{kind:'num',ans:r2,w:60},''],
+       aide:'S = {'+r1+' ; '+r2+'}'}
+    ]};
+}
+
+var GEN={identites:genIdentites,developper:genDevelopper,factoriser:genFactoriser,racines:genRacines,inequations:genInequations,factoidentites:genFactoIdentites,developperreduire:genDevelopperReduire,equationfactorisee:genEquationFactorisee};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

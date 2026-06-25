@@ -395,8 +395,8 @@ var SERIE=10,SEUIL=8;
 function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
 function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
 
-var CATNOM={vocabulaire:'Vocabulaire',developper:'D\u00e9velopper',identites:'Identit\u00e9s remarquables',reduire:'R\u00e9duire',factoriser:'Factoriser'};
-var THEME_CATS={vocabulaire:['vocabulaire'],developper:['developper'],identites:['identites'],reduire:['reduire'],factoriser:['factoriser']};
+var CATNOM={vocabulaire:'Vocabulaire',developper:'D\u00e9velopper',identites:'Identit\u00e9s remarquables',reduire:'R\u00e9duire',factoriser:'Factoriser',doubleDistrib:'D\u00e9velopper',factoriserBinomial:'Factoriser',reduire2:'R\u00e9duire'};
+var THEME_CATS={vocabulaire:['vocabulaire'],developper:['developper','doubleDistrib'],identites:['identites'],reduire:['reduire','reduire2'],factoriser:['factoriser','factoriserBinomial']};
 var HELP={
   vocabulaire:'Mon\u00f4me = 1 terme, bin\u00f4me = 2 termes, trin\u00f4me = 3 termes. Degr\u00e9 = plus grand exposant. Coefficient = nombre devant la variable.',
   developper:'Distributivit\u00e9 simple\u00a0: k\u22c5(ax+b) = k\u22c5ax + k\u22c5b. Double\u00a0: (ax+b)(cx+d) \u2192 4 produits puis r\u00e9duire.',
@@ -632,7 +632,60 @@ function genFactoriser(){
   }
 }
 
-var GEN={vocabulaire:genVocabulaire,developper:genDevelopper,identites:genIdentites,reduire:genReduire,factoriser:genFactoriser};
+/* ===== générateur : double distributivité (ax+b)(cx+d) ===== */
+function genDoubleDistrib(){
+  var a=pick([1,2,3]),b=rint(1,6),c=pick([1,2]),d=rint(1,6);
+  var ax2=a*c,coefX=a*d+b*c,cst=b*d;
+  var aStr=a===1?'x':a+'x',cStr=c===1?'x':c+'x';
+  return {type:'cascade',cat:'developper',sig:'DD'+a+b+c+d,
+    text:'D\u00e9veloppe et r\u00e9duis\u00a0: ('+aStr+' + '+b+')('+cStr+' + '+d+')',
+    steps:[
+      {prompt:'Multiplie le 1er terme de chaque facteur : '+aStr+' \u22c5 '+cStr+' = ?',
+       aide:a+'\u00d7'+c+'='+ax2+', donc '+(ax2===1?'x\u00b2':ax2+'x\u00b2'),
+       parts:['terme en x\u00b2\u00a0: coefficient = ',{b:1,kind:'num',ans:ax2,show:''+ax2,w:60}]},
+      {prompt:'Calcule les termes crois\u00e9s : '+aStr+'\u22c5'+d+' + '+b+'\u22c5'+cStr+'. Coefficient de x\u00a0?',
+       aide:a+'×'+d+' + '+b+'×'+c+' = '+coefX,
+       parts:['coefficient de x\u00a0: ',{b:1,kind:'num',ans:coefX,show:''+coefX,w:60}]},
+      {prompt:'Calcule le terme constant : '+b+' \u00d7 '+d+' = ?',
+       aide:b+'\u00d7'+d+' = '+cst,
+       parts:['terme constant\u00a0: ',{b:1,kind:'num',ans:cst,show:''+cst,w:60}]}
+    ]};
+}
+/* ===== générateur : factorisation avec facteur binomial commun ===== */
+function genFactoriserBinomial(){
+  var a=rint(2,5),b=rint(1,5),c=rint(1,5);
+  while(c===1)c=rint(2,5);
+  var t1=a,t2=a*c;
+  return {type:'cascade',cat:'factoriser',sig:'FB'+a+b+c,
+    text:'Factorise\u00a0: '+t1+'(x + '+b+') + '+t2+'(x + '+b+')',
+    steps:[
+      {prompt:'Quel est le facteur commun \u00e0 ces deux termes\u00a0?',
+       aide:'(x + '+b+') appara\u00eet dans les deux termes\u2192 c\'est le facteur commun.',
+       parts:['facteur commun\u00a0: (',{b:1,kind:'text',accept:['x+'+b,'x + '+b],show:'x + '+b,w:80},' )']},
+      {prompt:'Quel est le coefficient restant apr\u00e8s mise en facteur de (x+'+b+')\u00a0?',
+       aide:t1+'(x+'+b+') + '+t2+'(x+'+b+') = (x+'+b+')('+(t1+t2)+').',
+       parts:['(x + '+b+')×(',{b:1,kind:'num',ans:t1+t2,show:''+(t1+t2),w:60},')']}
+    ]};
+}
+/* ===== générateur : réduire avec trois termes ===== */
+function genReduire2(){
+  var k1=rint(2,5),k2=rint(1,3),k3=rint(1,3),b1=rint(1,5),b2=rint(1,5);
+  var coefX=k1-k2+k3,cst=k1*b1-k2*b2;
+  return {type:'cascade',cat:'reduire',sig:'R3'+k1+k2+k3+b1+b2,
+    text:'D\u00e9veloppe et r\u00e9duis\u00a0: '+k1+'(x + '+b1+') \u2212 '+k2+'(x + '+b2+') + '+k3+'x',
+    steps:[
+      {prompt:'D\u00e9veloppe '+k1+'(x + '+b1+').',
+       aide:k1+'x + '+(k1*b1),
+       parts:['r\u00e9sultat\u00a0: ',{b:1,kind:'num',ans:k1,show:''+k1,w:50},'x + ',{b:1,kind:'num',ans:k1*b1,show:''+(k1*b1),w:60}]},
+      {prompt:'D\u00e9veloppe \u2212'+k2+'(x + '+b2+').',
+       aide:'\u2212'+k2+'x \u2212 '+(k2*b2),
+       parts:['r\u00e9sultat\u00a0: \u2212',{b:1,kind:'num',ans:k2,show:''+k2,w:50},'x \u2212 ',{b:1,kind:'num',ans:k2*b2,show:''+(k2*b2),w:60}]},
+      {prompt:'R\u00e9duis tous les termes ensemble. Coefficient de x dans le r\u00e9sultat final\u00a0?',
+       aide:k1+'x \u2212 '+k2+'x + '+k3+'x = '+(k1-k2+k3)+'x.',
+       parts:['coefficient de x\u00a0: ',{b:1,kind:'num',ans:coefX,show:''+coefX,w:60}]}
+    ]};
+}
+var GEN={vocabulaire:genVocabulaire,developper:genDevelopper,identites:genIdentites,reduire:genReduire,factoriser:genFactoriser,doubleDistrib:genDoubleDistrib,factoriserBinomial:genFactoriserBinomial,reduire2:genReduire2};
 
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});(function(el){setTimeout(function(){el.remove();},fall);})(d);}}
 function parseNum(s){s=String(s).trim().replace(/\u2212/g,'-').replace(/\s/g,'').replace(',','.');if(s==='')return null;if(s.indexOf('/')>=0){var p=s.split('/');if(p.length!==2)return null;var a=parseFloat(p[0]),b=parseFloat(p[1]);if(!isFinite(a)||!isFinite(b)||b===0)return null;return a/b;}var v=parseFloat(s);return isFinite(v)?v:null;}

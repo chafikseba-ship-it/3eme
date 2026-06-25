@@ -937,7 +937,109 @@ function genAdditionner(){
   }
 }
 
-var GEN={egales:genEgales,comparer:genComparer,quantite:genQuantite,multiplier:genMultiplier,additionner:genAdditionner};
+/* ===== GÉNÉRATEUR : ADDITION/SOUSTRACTION FRACTIONS (DÉNOMINATEURS NON HOMOGÈNES) ===== */
+function genAddiNonHomo(){
+  var denPairs=[[2,3],[2,5],[3,4],[3,5],[4,5],[2,7],[3,7],[5,6],[4,7]];
+  var pair=pick(denPairs);
+  var p=pair[0],q=pair[1];
+  var a=rint(1,p-1),b=rint(1,q-1);
+  var op=Math.random()<0.5?'+':'-';
+  var lcd=p*q;
+  var anum=a*q,bnum=b*p;
+  var resNum=op==='+'?anum+bnum:anum-bnum;
+  if(resNum<=0){op='+';resNum=anum+bnum;}
+  var red=simplify(resNum,lcd);
+  var nr=red[0],dr=red[1];
+  var needSimp=pgcd(Math.abs(resNum),lcd)>1;
+  return {
+    type:'casc',cat:'additionner',sig:'anh'+a+p+b+q+op,
+    text:'Calcule '+frac(a,p)+' '+op+' '+frac(b,q)+'. Réduis au même dénominateur d\'abord.',
+    viz:'',
+    steps:[
+      {prompt:'<b>Étape 1 :</b> Dénominateur commun = '+p+' × '+q,
+       parts:['Dénominateur commun = ',{kind:'num',ans:lcd,w:70},''],
+       aide:p+' × '+q+' = '+lcd},
+      {prompt:'<b>Étape 2 :</b> '+frac(a,p)+' = '+frac('?',lcd),
+       parts:['Numérateur → ',{kind:'num',ans:anum,w:70},''],
+       aide:a+' × '+q+' = '+anum},
+      {prompt:'<b>Étape 3 :</b> '+frac(b,q)+' = '+frac('?',lcd),
+       parts:['Numérateur → ',{kind:'num',ans:bnum,w:70},''],
+       aide:b+' × '+p+' = '+bnum},
+      {prompt:'<b>Étape 4 :</b> Calcule '+(op==='+'?anum+' + ':anum+' − ')+bnum+(needSimp?' et simplifie':''),
+       parts:['Numérateur = ',{kind:'num',ans:needSimp?nr:resNum,w:70},(needSimp?' Dénominateur = ':''),(needSimp?{kind:'num',ans:dr,w:70}:'')],
+       aide:(op==='+'?anum+' + ':anum+' − ')+bnum+' = '+resNum+(needSimp?' → '+frac(nr,dr):'')}
+    ]
+  };
+}
+
+/* ===== GÉNÉRATEUR : MULTIPLICATION DE FRACTIONS (VARIANTE GUIDÉE) ===== */
+function genMultFrac(){
+  var a=rint(2,7),b=rint(3,9),c=rint(2,6),d=rint(3,8);
+  var numProd=a*c,denProd=b*d;
+  var red=simplify(numProd,denProd);
+  var nr=red[0],dr=red[1];
+  var needSimp=pgcd(numProd,denProd)>1;
+  var steps=[
+    {prompt:'<b>Étape 1 :</b> Numérateur = '+a+' × '+c,
+     parts:['Numérateur = ',{kind:'num',ans:numProd,w:70},''],
+     aide:a+' × '+c+' = '+numProd},
+    {prompt:'<b>Étape 2 :</b> Dénominateur = '+b+' × '+d,
+     parts:['Dénominateur = ',{kind:'num',ans:denProd,w:70},''],
+     aide:b+' × '+d+' = '+denProd}
+  ];
+  if(needSimp){
+    steps.push({
+      prompt:'<b>Étape 3 :</b> Simplifie '+frac(numProd,denProd)+' :',
+      parts:['Numérateur simplifié = ',{kind:'num',ans:nr,w:70},' Dénominateur simplifié = ',{kind:'num',ans:dr,w:70},''],
+      aide:'PGCD('+numProd+','+denProd+') = '+pgcd(numProd,denProd)+' → '+frac(nr,dr)
+    });
+  }
+  return {
+    type:'casc',cat:'multiplier',sig:'mf'+a+b+c+d,
+    text:'Calcule '+frac(a,b)+' × '+frac(c,d)+(needSimp?' puis simplifie le résultat.':'.'),
+    viz:'',
+    steps:steps
+  };
+}
+
+/* ===== GÉNÉRATEUR : FRACTION D'UNE QUANTITÉ (CONTEXTE CONCRET) ===== */
+function genFracQte2(){
+  var contextes=[
+    {unite:'élèves',article:'d\'une classe de'},
+    {unite:'km',article:'d\'un trajet de'},
+    {unite:'€',article:'d\'un budget de'},
+    {unite:'cm',article:'d\'un ruban de'},
+    {unite:'g',article:'d\'un paquet de'}
+  ];
+  var ctx=pick(contextes);
+  var b=pick([3,4,5,6]);
+  var a=rint(1,b-1);
+  var mult=rint(4,12);
+  var Q2=b*mult;
+  var step1=Q2/b;
+  var step2=step1*a;
+  return {
+    type:'casc',cat:'quantite',sig:'fq2_'+a+b+Q2,
+    text:'Calcule '+frac(a,b)+' '+ctx.article+' <b>'+Q2+' '+ctx.unite+'</b>.',
+    viz:'',
+    steps:[
+      {prompt:'<b>Étape 1 :</b> Divise par le dénominateur ('+b+') :',
+       parts:[Q2+' ÷ '+b+' = ',{kind:'num',ans:step1,w:70},' '+ctx.unite],
+       aide:Q2+' ÷ '+b+' = '+step1+' '+ctx.unite},
+      {prompt:'<b>Étape 2 :</b> Multiplie par le numérateur ('+a+') :',
+       parts:[step1+' × '+a+' = ',{kind:'num',ans:step2,w:70},' '+ctx.unite],
+       aide:step1+' × '+a+' = '+step2+' '+ctx.unite}
+    ]
+  };
+}
+
+var GEN={
+  egales:genEgales,
+  comparer:genComparer,
+  quantite:function(){return Math.random()<0.5?genQuantite():genFracQte2();},
+  multiplier:function(){return Math.random()<0.5?genMultiplier():genMultFrac();},
+  additionner:function(){return Math.random()<0.5?genAdditionner():genAddiNonHomo();}
+};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

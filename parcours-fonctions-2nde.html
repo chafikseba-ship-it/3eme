@@ -759,7 +759,147 @@ function genTableauval(){
   };
 }
 
-var GEN={notation:genNotation,image:genImage,antecedent:genAntecedent,variations:genVariations,tableauval:genTableauval};
+/* ===== GÉNÉRATEUR : DOMAINE DE DÉFINITION (QCM) ===== */
+function genDomaine(){
+  var variants=[
+    {
+      type:'qcm',cat:'notation',sig:'dom0',
+      text:'Quel est le domaine de définition de f(x) = 1/(x − 2) ?',
+      opts:['\u211d','\u211d \\ {2}','\u211d \\ {−2}','x > 2'],
+      ans:1,
+      explain:'On ne peut pas diviser par 0. x − 2 = 0 donne x = 2. Donc le domaine est \u211d \\ {2}.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'dom1',
+      text:'Quel est le domaine de définition de f(x) = \u221a(x − 3) ?',
+      opts:['x > 3','x \u2265 3','x \u2260 3','\u211d'],
+      ans:1,
+      explain:'La racine carrée exige que x − 3 \u2265 0, donc x \u2265 3. Domaine : [3 ; +\u221e[.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'dom2',
+      text:'Quel est le domaine de définition de f(x) = 3x\u00b2 − 5x + 1 ?',
+      opts:['\u211d','\u211d \\ {0}','x > 0','x \u2265 0'],
+      ans:0,
+      explain:'Un polynôme est défini pour tout réel x. Domaine = \u211d.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'dom3',
+      text:'Quel est le domaine de définition de f(x) = 1/(x\u00b2 − 4) ?',
+      opts:['\u211d \\ {2}','\u211d \\ {−2}','\u211d \\ {−2 ; 2}','x > 2'],
+      ans:2,
+      explain:'x\u00b2 − 4 = 0 donne x = 2 ou x = −2. Domaine = \u211d \\ {−2 ; 2}.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'dom4',
+      text:'Quel est le domaine de définition de f(x) = \u221ax ?',
+      opts:['x > 0','x \u2265 0','\u211d','x \u2260 0'],
+      ans:1,
+      explain:'\u221ax exige x \u2265 0. Domaine = [0 ; +\u221e[.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'dom5',
+      text:'Quel est le domaine de définition de f(x) = 1/\u221a(x + 5) ?',
+      opts:['x \u2265 −5','x > −5','x \u2265 5','x > 5'],
+      ans:1,
+      explain:'Il faut x + 5 > 0 (strictement, car au dénominateur). Donc x > −5. Domaine = ]−5 ; +\u221e[.'
+    }
+  ];
+  return pick(variants);
+}
+
+/* ===== GÉNÉRATEUR : FONCTION AFFINE vs LINÉAIRE (QCM) ===== */
+function genAffineLineaire(){
+  var variants=[
+    {
+      type:'qcm',cat:'notation',sig:'afl0',
+      text:'f(x) = 3x est une fonction…',
+      opts:['Affine mais pas linéaire','Linéaire (et donc affine)','Constante','Aucune des trois'],
+      ans:1,
+      explain:'f(x) = 3x est de la forme mx (avec b = 0). C\'est une fonction linéaire, cas particulier des fonctions affines.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'afl1',
+      text:'f(x) = 2x + 5 est une fonction…',
+      opts:['Linéaire','Affine mais pas linéaire','Constante','Quadratique'],
+      ans:1,
+      explain:'f(x) = 2x + 5 est affine (forme ax + b) mais pas linéaire car b = 5 \u2260 0.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'afl2',
+      text:'Quelle condition fait qu\'une fonction affine est aussi linéaire ?',
+      opts:['a = 0','b = 0','a = 1','a = b'],
+      ans:1,
+      explain:'f(x) = ax + b est linéaire quand b = 0. Elle passe alors par l\'origine.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'afl3',
+      text:'La représentation graphique d\'une fonction linéaire f(x) = mx passe toujours par…',
+      opts:['Le point (1, 0)','L\'origine (0, 0)','Le point (0, 1)','Le point (m, 0)'],
+      ans:1,
+      explain:'f(0) = m \u00d7 0 = 0. Toute fonction linéaire passe par l\'origine.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'afl4',
+      text:'f(x) = −4x est-elle croissante ou décroissante ?',
+      opts:['Croissante car −4 est non nul','Décroissante car le coefficient est négatif','Constante','On ne peut pas savoir'],
+      ans:1,
+      explain:'Le coefficient directeur est −4 < 0, donc f est strictement décroissante sur \u211d.'
+    },
+    {
+      type:'qcm',cat:'notation',sig:'afl5',
+      text:'Parmi ces fonctions, laquelle est linéaire ?',
+      opts:['f(x) = 3x + 1','f(x) = −2x','f(x) = x\u00b2','f(x) = 5'],
+      ans:1,
+      explain:'f(x) = −2x est de la forme mx avec m = −2 et b = 0 : c\'est une fonction linéaire.'
+    }
+  ];
+  return pick(variants);
+}
+
+/* ===== GÉNÉRATEUR : LECTURE GRAPHIQUE MAX/MIN (QCM) ===== */
+function genLectureGraphique(){
+  var variants=[
+    {
+      type:'qcm',cat:'variations',sig:'lgr0',
+      text:'Sur un graphique, f atteint sa valeur la plus haute en x = 2 avec f(2) = 8. Que peut-on dire ?',
+      opts:['f a un minimum de 8 en x = 2','f a un maximum de 8 en x = 2','f est croissante en x = 2','f(2) est un antécédent'],
+      ans:1,
+      explain:'La valeur la plus haute d\'une courbe est un maximum. Ici f admet un maximum de 8, atteint en x = 2.'
+    },
+    {
+      type:'qcm',cat:'variations',sig:'lgr1',
+      text:'Une courbe passe par le point le plus bas en x = −1 avec f(−1) = −3. Que peut-on dire ?',
+      opts:['f a un maximum de −3','f a un minimum de −3 en x = −1','f est décroissante en x = −1','L\'image de −3 est −1'],
+      ans:1,
+      explain:'Le point le plus bas d\'une courbe correspond au minimum. Ici f a un minimum de −3 atteint en x = −1.'
+    },
+    {
+      type:'qcm',cat:'variations',sig:'lgr2',
+      text:'On lit sur un graphique : f(0) = 3, f(2) = 3, et f(1) = 5. Que peut-on dire de f sur [0 ; 2] ?',
+      opts:['f est croissante sur [0 ; 2]','f est décroissante sur [0 ; 2]','f admet un maximum de 5 en x = 1','f est constante sur [0 ; 2]'],
+      ans:2,
+      explain:'f monte de 3 à 5 puis redescend à 3. La valeur maximale est 5, atteinte en x = 1.'
+    },
+    {
+      type:'qcm',cat:'variations',sig:'lgr3',
+      text:'Sur [−3 ; 3], f est décroissante. Où se trouve le minimum de f ?',
+      opts:['En x = −3','En x = 0','En x = 3','On ne peut pas savoir'],
+      ans:2,
+      explain:'Si f est décroissante sur [−3 ; 3], elle prend sa plus petite valeur au bout droit : x = 3.'
+    },
+    {
+      type:'qcm',cat:'variations',sig:'lgr4',
+      text:'Sur [0 ; 4], f est croissante. Où se trouve le maximum de f ?',
+      opts:['En x = 0','En x = 2','En x = 4','En x = −4'],
+      ans:2,
+      explain:'f croissante sur [0 ; 4] atteint sa valeur maximale à l\'extrémité droite x = 4.'
+    }
+  ];
+  return pick(variants);
+}
+
+var GEN={notation:genNotation,image:genImage,antecedent:genAntecedent,variations:genVariations,tableauval:genTableauval,domaine:genDomaine,affinelineaire:genAffineLineaire,lecturegraphique:genLectureGraphique};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

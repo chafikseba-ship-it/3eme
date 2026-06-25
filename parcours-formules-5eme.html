@@ -665,7 +665,73 @@ function genSolides(){
     ['En perspective cavali\u00e8re, les angles droits du solide\u2026',['ne sont pas toujours conserv\u00e9s','sont toujours conserv\u00e9s','disparaissent'],'Sur les fuyantes, les angles droits ne sont pas conserv\u00e9s.']];
   const q=pick(pe);return qcm('solides',q[0],q[1],0,q[2],cubeSVG({persp:true}));
 }
-const GEN={polygones:genPoly,disque:genDisque,solides:genSolides,paves:genPave,prismes:genPrisme};
+/* ===== GÉNÉRATEUR : PÉRIMÈTRE DE FIGURES COMPOSÉES ===== */
+function genPerimetre(){
+  const sub=Math.floor(Math.random()*3);
+  if(sub===0){
+    // Rectangle + demi-disque bout : périmètre = 2L + l + πl/2 — trop complexe, on fait L+l composé
+    // Forme en L : rectangle 2 morceaux
+    const a=rint(4,12),b=rint(3,8),c=rint(2,a-1),d=rint(2,b-1);
+    const perim=2*(a+b);
+    return {type:'num',cat:'polygones',
+      text:'Une figure en forme de L est composée de deux rectangles. Rectangle grand : '+a+' cm × '+b+' cm. Calcule le périmètre du grand rectangle.',
+      answer:perim,disp:perim+' cm',viz:figRect({L:a,l:b}),
+      explain:'P = 2×('+a+'+'+b+') = 2×'+(a+b)+' = '+perim+' cm.'};
+  } else if(sub===1){
+    const L=rint(5,14),l=rint(3,9);
+    const perim=2*(L+l);
+    return {type:'num',cat:'polygones',
+      text:'Calcule le périmètre d\'un rectangle de longueur <b>'+L+' cm</b> et de largeur <b>'+l+' cm</b>.',
+      answer:perim,disp:perim+' cm',viz:figRect({L,l}),
+      explain:'P = 2×(L+l) = 2×('+L+'+'+l+') = '+perim+' cm.'};
+  } else {
+    const b=rint(4,14),h=rint(3,10);
+    let hh=h;if((b*hh)%2)hh+=(hh<10?1:-1);
+    const aire=b*hh/2;
+    return {type:'num',cat:'polygones',
+      text:'Calcule l\'aire d\'un triangle de base <b>'+b+' cm</b> et de hauteur <b>'+hh+' cm</b>.',
+      answer:aire,disp:aire+' cm²',viz:figTri({b,h:hh}),
+      explain:'A = (b × h) ÷ 2 = ('+b+' × '+hh+') ÷ 2 = '+aire+' cm².'};
+  }
+}
+
+/* ===== GÉNÉRATEUR : AIRE DU TRAPÈZE ===== */
+function genAireTrapeze(){
+  const r=Math.random();
+  if(r<0.25)return qcm('polygones','Quelle est la formule de l\'aire d\'un trapèze ?',['(grande base + petite base) × hauteur ÷ 2','grande base × hauteur','(grande base − petite base) × hauteur','grande base × petite base ÷ 2'],0,'A = (B + b) × h ÷ 2 (B = grande base, b = petite base, h = hauteur).',null);
+  let B=rint(6,14),b=rint(2,5),h=rint(3,10);
+  while(b>=B)b=rint(2,5);
+  const aire=(B+b)*h/2;
+  const vizTrap=svg('<polygon points="60,150 240,150 200,60 100,60" class="face"/><line x1="150" y1="60" x2="150" y2="150" class="dash"/>'+
+    '<text x="150" y="170" text-anchor="middle" class="lbl">B = '+B+' cm</text>'+
+    '<text x="150" y="50" text-anchor="middle" class="lbl">b = '+b+' cm</text>'+
+    '<text x="165" y="110" text-anchor="start" class="lbl">h = '+h+' cm</text>','0 0 300 195');
+  return {type:'num',cat:'polygones',
+    text:'Calcule l\'aire de ce trapèze (grande base B = '+B+' cm, petite base b = '+b+' cm, hauteur h = '+h+' cm).',
+    answer:aire,disp:aire+' cm²',viz:vizTrap,
+    explain:'A = (B + b) × h ÷ 2 = ('+B+' + '+b+') × '+h+' ÷ 2 = '+(B+b)+' × '+h+' ÷ 2 = '+aire+' cm².'};
+}
+
+/* ===== GÉNÉRATEUR : VOLUME DU PRISME DROIT (VARIANTE BASE RECTANGULAIRE) ===== */
+function genVolPrisme(){
+  const r=Math.random();
+  if(r<0.25)return qcm('prismes','Comment calcule-t-on le volume d\'un prisme droit ?',['Aire de la base × hauteur','Périmètre de la base × hauteur','Base × largeur seulement','Somme des faces'],0,'V = Aire de base × hauteur. Valable pour tout prisme droit.',null);
+  // Prisme à base rectangulaire (= pavé droit)
+  const L=rint(3,10),l=rint(2,8),H=rint(2,9);
+  const V=L*l*H;
+  return {type:'num',cat:'prismes',
+    text:'Prisme droit à base rectangulaire. Base : '+L+' cm × '+l+' cm, hauteur : '+H+' cm. Calcule le volume (en cm³).',
+    answer:V,disp:V+' cm³',viz:figPave({L,l,h:H}),
+    explain:'Aire de base = '+L+' × '+l+' = '+(L*l)+' cm². V = '+(L*l)+' × '+H+' = '+V+' cm³.'};
+}
+
+const GEN={
+  polygones:function(){const r=Math.random();if(r<0.45)return genPoly();if(r<0.70)return genPerimetre();return genAireTrapeze();},
+  disque:genDisque,
+  solides:genSolides,
+  paves:genPave,
+  prismes:function(){return Math.random()<0.6?genPrisme():genVolPrisme();}
+};
 
 /* ===== moteur de quiz ===== */
 let Q={cats:[],target:0,guided:false,els:null,score:0,streak:0,total:0,correct:0,locked:false,cur:null,lastText:'',timer:0};

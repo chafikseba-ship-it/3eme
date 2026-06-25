@@ -1252,6 +1252,295 @@ function genEchellePlan2(){
   };
 }
 
+/* --- Nouvelle situation 13 : Conversions d'unités composées --- */
+function genConversionsComposees(){
+  var scenarios=[
+    {
+      ctx:'Une piscine contient un volume d\'eau de <b>375 m³</b>.',
+      valDep:375, unitDep:'m³', unitArr:'L',
+      facteur:1000, rep:375000,
+      q1:'Combien y a-t-il de litres dans 1 m³ ?',
+      q2:'Convertis 375 m³ en litres.',
+      rep1:1000, sol1:'1 m³ = 1 000 L',
+      aide2:'375 × 1 000 = 375 000 L',
+      sol2:'375 m³ = 375 000 L'
+    },
+    {
+      ctx:'Un carreleur dispose d\'une surface de <b>4,5 m²</b>.',
+      valDep:4.5, unitDep:'m²', unitArr:'cm²',
+      facteur:10000, rep:45000,
+      q1:'Combien de cm² y a-t-il dans 1 m² ?',
+      q2:'Convertis 4,5 m² en cm².',
+      rep1:10000, sol1:'1 m² = 10 000 cm²',
+      aide2:'4,5 × 10 000 = 45 000 cm²',
+      sol2:'4,5 m² = 45 000 cm²'
+    },
+    {
+      ctx:'Un cube d\'arête <b>0,3 m</b> a un volume de <b>0,027 m³</b>.',
+      valDep:0.027, unitDep:'m³', unitArr:'dm³',
+      facteur:1000, rep:27,
+      q1:'Combien de dm³ y a-t-il dans 1 m³ ?',
+      q2:'Convertis 0,027 m³ en dm³.',
+      rep1:1000, sol1:'1 m³ = 1 000 dm³',
+      aide2:'0,027 × 1 000 = 27 dm³',
+      sol2:'0,027 m³ = 27 dm³'
+    }
+  ];
+  var sc=choix(scenarios);
+  var enonceHTML=sc.ctx
+    +'<br><b>1.</b> '+sc.q1
+    +'<br><b>2.</b> '+sc.q2
+    +'<br><b>3.</b> Le résultat est-il cohérent (plus grand ou plus petit que la valeur de départ) ? Explique.';
+  var valDep=sc.valDep, rep=sc.rep, facteur=sc.facteur;
+  var plusGrand=rep>valDep;
+  var etapes=[
+    {
+      question:'Question 1 — Facteur de conversion',
+      role:'Rappeler le facteur entre les deux unités',
+      q:sc.q1,
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-sc.rep1)<0.5;});},
+      aide:sc.sol1,
+      solutionHTML:sc.sol1,
+      clavier:['×','000','=']
+    },
+    {
+      question:'Question 2 — Convertir',
+      role:'Appliquer le facteur',
+      q:sc.q2,
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rep)<0.5;});},
+      aide:sc.aide2,
+      solutionHTML:sc.sol2,
+      clavier:['×','=']
+    },
+    {
+      question:'Question 3 — Cohérence',
+      role:'Interpréter le résultat',
+      q:'La valeur convertie ('+fr(rep)+' '+sc.unitArr+') est-elle plus grande ou plus petite que '+fr(valDep)+' '+sc.unitDep+' ? Est-ce logique ?',
+      verif:function(inp){
+        var t=norm(inp);
+        return plusGrand?(t.includes('plus grand')||t.includes('superieur')||t.includes('plus ele')):(t.includes('plus petit')||t.includes('inferieur'));
+      },
+      aide:plusGrand?'Plus on prend une petite unité, plus le nombre est grand : '+fr(rep)+' > '+fr(valDep)+'.':'Plus on prend une grande unité, plus le nombre est petit.',
+      solutionHTML:plusGrand?'Oui, '+fr(rep)+' '+sc.unitArr+' > '+fr(valDep)+' '+sc.unitDep+' car '+sc.unitArr+' est plus petite.':'Oui, '+fr(rep)+' '+sc.unitArr+' < '+fr(valDep)+' '+sc.unitDep+' car '+sc.unitArr+' est plus grande.'
+    }
+  ];
+  return {
+    titre:'Conversions d\u2019unit\u00e9s compos\u00e9es',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){dessinerTableauConversions(id,{
+      unites:[sc.unitDep,sc.unitArr],
+      valeurs:[fr(valDep),fr(rep)],
+      idxOrange:1,
+      titre:'Conversion '+sc.unitDep+' \u2192 '+sc.unitArr
+    });},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 14 : Vitesse, distance, durée (v = d/t) --- */
+function genVDT(){
+  var configs=[
+    {ctx:'Un train',dist:420,v:140,unite_dist:'km',unite_v:'km/h'},
+    {ctx:'Un coureur cycliste',dist:90,v:30,unite_dist:'km',unite_v:'km/h'},
+    {ctx:'Un avion',dist:1800,v:900,unite_dist:'km',unite_v:'km/h'},
+    {ctx:'Un marcheur',dist:15,v:5,unite_dist:'km',unite_v:'km/h'}
+  ];
+  var cfg=choix(configs);
+  var dist=cfg.dist,v=cfg.v;
+  var t_h=dist/v; // durée en heures
+  var t_h_entier=Math.floor(t_h);
+  var t_min=Math.round((t_h-t_h_entier)*60);
+  var dureeLabel=t_min>0?(t_h_entier+'h '+t_min+'min'):(t_h_entier+'h');
+  // Distance inconnue : avec une autre durée
+  var t2_h=choix([1.5,2,2.5,3]);
+  var dist2=Math.round(v*t2_h*10)/10;
+  var enonceHTML=cfg.ctx+' roule à une vitesse de <b>v = '+v+' km/h</b>.'
+    +'<br><b>1.</b> Il doit parcourir <b>'+dist+' km</b>. Calcule la durée du trajet en heures puis en heures et minutes.'
+    +'<br><b>2.</b> En roulant à la même vitesse pendant <b>'+fr(t2_h)+' h</b>, quelle distance parcourt-il ?'
+    +'<br><b>3.</b> Convertis la vitesse de '+v+' km/h en m/s.';
+  var v_ms=Math.round(v/3.6*100)/100;
+  var etapes=[
+    {
+      question:'Question 1 — Durée du trajet',
+      role:'Appliquer t = d ÷ v',
+      q:'Formule : t = d ÷ v. Calcule t = '+dist+' ÷ '+v+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-t_h)<0.01;});},
+      aide:dist+' ÷ '+v+' = '+fr(t_h)+' h',
+      solutionHTML:'t = '+fr(t_h)+' h = '+dureeLabel,
+      clavier:['÷','=']
+    },
+    {
+      role:'Convertir en heures et minutes',
+      q:''+fr(t_h)+' h = ? heures et ? minutes. (La partie décimale × 60 donne les minutes.)',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-t_h_entier)<0.5;})&&(t_min===0||ns.some(function(x){return Math.abs(x-t_min)<1;}));
+      },
+      aide:fr(t_h)+' h = '+t_h_entier+' h '+(t_min>0?t_min+' min':'0 min'),
+      solutionHTML:'t = '+dureeLabel,
+      clavier:['×','=']
+    },
+    {
+      question:'Question 2 — Distance parcourue',
+      role:'Appliquer d = v × t',
+      q:'Formule : d = v × t. Calcule d = '+v+' × '+fr(t2_h)+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-dist2)<0.5;});},
+      aide:v+' × '+fr(t2_h)+' = '+fr(dist2)+' km',
+      solutionHTML:'d = '+v+' × '+fr(t2_h)+' = '+fr(dist2)+' km',
+      clavier:['×','=']
+    },
+    {
+      question:'Question 3 — Conversion km/h en m/s',
+      role:'Diviser par 3,6',
+      q:'Pour convertir km/h en m/s, divise par 3,6. Calcule '+v+' ÷ 3,6.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-v_ms)<0.1;});},
+      aide:v+' ÷ 3,6 ≈ '+fr(v_ms)+' m/s',
+      solutionHTML:v+' ÷ 3,6 ≈ '+fr(v_ms)+' m/s',
+      clavier:['÷','=']
+    }
+  ];
+  return {
+    titre:'Vitesse, distance, dur\u00e9e',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){dessinerRoute(id,{distLabel:dist+' km',vitLabel:'v = '+v+' km/h',dureeLabel:dureeLabel});},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 15 : Proportionnalité avec mesures --- */
+function genProportionMesures(){
+  var configs=[
+    {ctx:'Une recette de gâteau',ing:'farine',q1:250,q2:6,q3:10,unite:'g',cible:'gâteaux'},
+    {ctx:'Une voiture consomme du carburant',ing:'essence',q1:7,q2:100,q3:350,unite:'L',cible:'km'},
+    {ctx:'Un carreleur pose des carreaux',ing:'carreaux',q1:15,q2:3,q3:7,unite:'carreaux',cible:'m²'},
+    {ctx:'Une fontaine débite de l\'eau',ing:'eau',q1:120,q2:5,q3:8,unite:'L',cible:'min'}
+  ];
+  var cfg=choix(configs);
+  var q1=cfg.q1,q2=cfg.q2,q3=cfg.q3;
+  var rep=Math.round(q1/q2*q3*100)/100;
+  var coef=Math.round(q1/q2*100)/100;
+  var enonceHTML=cfg.ctx+' : <b>'+q1+' '+cfg.unite+'</b> pour <b>'+q2+' '+cfg.cible+'</b>.'
+    +'<br><b>1.</b> Calcule le coefficient de proportionnalité (quantité par '+cfg.cible.slice(0,-1)+').'
+    +'<br><b>2.</b> Calcule la quantité nécessaire pour <b>'+q3+' '+cfg.cible+'</b>.'
+    +'<br><b>3.</b> Avec seulement <b>'+Math.round(q1*0.6)+' '+cfg.unite+'</b> disponibles, pour combien de '+cfg.cible+' peut-on préparer ?';
+  var qDispo=Math.round(q1*0.6);
+  var repDispo=Math.round(qDispo/coef*100)/100;
+  var etapes=[
+    {
+      question:'Question 1 — Coefficient de proportionnalité',
+      role:'Calculer la quantité par unité',
+      q:'Calcule : '+q1+' '+cfg.unite+' ÷ '+q2+' '+cfg.cible+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-coef)<0.01;});},
+      aide:''+q1+' ÷ '+q2+' = '+fr(coef)+' '+cfg.unite+' par '+cfg.cible.slice(0,-1)+'.',
+      solutionHTML:'Coefficient = '+fr(coef)+' '+cfg.unite+'/'+cfg.cible.slice(0,-1),
+      clavier:['÷','=']
+    },
+    {
+      question:'Question 2 — Calculer la quantité pour '+q3+' '+cfg.cible,
+      role:'Appliquer la proportionnalité',
+      q:'Quantité = coefficient × '+q3+' = '+fr(coef)+' × '+q3+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-rep)<0.1;});},
+      aide:fr(coef)+' × '+q3+' = '+fr(rep)+' '+cfg.unite+'.',
+      solutionHTML:''+fr(coef)+' × '+q3+' = '+fr(rep)+' '+cfg.unite,
+      clavier:['×','=']
+    },
+    {
+      question:'Question 3 — Quantité maximale avec ressources limitées',
+      role:'Diviser la quantité disponible par le coefficient',
+      q:'Avec '+qDispo+' '+cfg.unite+', calcule : '+qDispo+' ÷ '+fr(coef)+' = ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-repDispo)<0.5;});},
+      aide:''+qDispo+' ÷ '+fr(coef)+' ≈ '+fr(repDispo)+' '+cfg.cible+'.',
+      solutionHTML:qDispo+' ÷ '+fr(coef)+' ≈ '+fr(repDispo)+' '+cfg.cible,
+      clavier:['÷','=']
+    }
+  ];
+  return {
+    titre:'Proportionnalit\u00e9 avec mesures',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Nouvelle situation 16 : Calcul de durées --- */
+function genDurees(){
+  var configs=[
+    {
+      ctx:'Un film commence à <b>20h35</b> et se termine à <b>22h52</b>.',
+      hDeb:20,mDeb:35,hFin:22,mFin:52
+    },
+    {
+      ctx:'Un trajet en train part à <b>14h18</b> et arrive à <b>17h07</b>.',
+      hDeb:14,mDeb:18,hFin:17,mFin:7
+    },
+    {
+      ctx:'Un cours commence à <b>8h45</b> et se termine à <b>11h30</b>.',
+      hDeb:8,mDeb:45,hFin:11,mFin:30
+    },
+    {
+      ctx:'Un spectacle commence à <b>19h20</b> et finit à <b>21h05</b>.',
+      hDeb:19,mDeb:20,hFin:21,mFin:5
+    }
+  ];
+  var cfg=choix(configs);
+  var hDeb=cfg.hDeb,mDeb=cfg.mDeb,hFin=cfg.hFin,mFin=cfg.mFin;
+  var totalMinDeb=hDeb*60+mDeb;
+  var totalMinFin=hFin*60+mFin;
+  var dureeMin=totalMinFin-totalMinDeb;
+  var dureeH=Math.floor(dureeMin/60);
+  var dureeM=dureeMin%60;
+  // Ajouter une durée supplémentaire
+  var ajout=choix([30,45,20,15]);
+  var totalAvecAjout=dureeMin+ajout;
+  var finAvecAjoutH=Math.floor((totalMinDeb+totalAvecAjout)/60);
+  var finAvecAjoutM=(totalMinDeb+totalAvecAjout)%60;
+  var enonceHTML=cfg.ctx
+    +'<br><b>1.</b> Calcule la durée totale en minutes.'
+    +'<br><b>2.</b> Exprime cette durée en heures et minutes.'
+    +'<br><b>3.</b> Si la durée était prolongée de <b>'+ajout+' minutes</b>, à quelle heure se terminerait l\'événement ?';
+  var etapes=[
+    {
+      question:'Question 1 — Durée en minutes',
+      role:'Convertir les heures en minutes et soustraire',
+      q:'Convertis les deux horaires en minutes depuis minuit, puis calcule la différence.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-dureeMin)<0.5;});},
+      aide:'Début : '+hDeb+'h'+('0'+mDeb).slice(-2)+' = '+totalMinDeb+' min. Fin : '+hFin+'h'+('0'+mFin).slice(-2)+' = '+totalMinFin+' min. Durée : '+totalMinFin+' − '+totalMinDeb+' = '+dureeMin+' min.',
+      solutionHTML:'Durée = '+totalMinFin+' − '+totalMinDeb+' = '+dureeMin+' min',
+      clavier:['-','×','=']
+    },
+    {
+      question:'Question 2 — En heures et minutes',
+      role:'Convertir les minutes en heures et minutes',
+      q:'Combien fait '+dureeMin+' ÷ 60 ? La partie entière donne les heures, le reste donne les minutes.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-dureeH)<0.5;})&&(dureeM===0||ns.some(function(x){return Math.abs(x-dureeM)<0.5;}));
+      },
+      aide:''+dureeMin+' = '+dureeH+' × 60 + '+dureeM+'. Donc '+dureeH+' h '+('0'+dureeM).slice(-2)+' min.',
+      solutionHTML:''+dureeH+' h '+('0'+dureeM).slice(-2)+' min',
+      clavier:['÷','×','-','=']
+    },
+    {
+      question:'Question 3 — Heure de fin avec prolongation',
+      role:'Ajouter des minutes à l\'heure de début',
+      q:'Durée totale avec prolongation : '+dureeMin+' + '+ajout+' = '+totalAvecAjout+' min après '+hDeb+'h'+('0'+mDeb).slice(-2)+'. Quelle est l\'heure de fin ?',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-finAvecAjoutH)<0.5;})&&ns.some(function(x){return Math.abs(x-finAvecAjoutM)<0.5;});
+      },
+      aide:''+totalMinDeb+' + '+totalAvecAjout+' = '+(totalMinDeb+totalAvecAjout)+' min → '+finAvecAjoutH+'h'+('0'+finAvecAjoutM).slice(-2)+'.',
+      solutionHTML:'Fin à '+finAvecAjoutH+'h'+('0'+finAvecAjoutM).slice(-2),
+      clavier:['+','-','÷','=']
+    }
+  ];
+  return {
+    titre:'Calcul de dur\u00e9es',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
 /* ===== BANQUE ===== */
 var BANQUE=[
   {notion:'cylindre',gen:genReservoirCylindre},
@@ -1265,7 +1554,11 @@ var BANQUE=[
   {notion:'vitesse2',gen:genVitesseTrajet},
   {notion:'massevol',gen:genMasseVol},
   {notion:'energie',gen:genEnergie},
-  {notion:'echelle2',gen:genEchellePlan2}
+  {notion:'echelle2',gen:genEchellePlan2},
+  {notion:'conversionsComposees',gen:genConversionsComposees},
+  {notion:'vdt',gen:genVDT},
+  {notion:'proportionMesures',gen:genProportionMesures},
+  {notion:'durees',gen:genDurees}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

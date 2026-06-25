@@ -549,7 +549,7 @@ var HELP={
 };
 var BRIQUE={priorite1:{serie:8,seuil:6},parentheses:{serie:8,seuil:6},chaine:{serie:8,seuil:6},ensemble:{serie:8,seuil:6},problemes:{serie:8,seuil:6}};
 var THEME_CATS={priorite1:['priorite1'],parentheses:['parentheses'],chaine:['chaine'],ensemble:['ensemble'],problemes:['problemes']};
-var CATNOM={priorite1:'× et ÷ avant + et −',parentheses:'Parenthèses',chaine:'Chaîne d\'opérations',ensemble:'Tout ensemble',problemes:'Problèmes'};
+var CATNOM={priorite1:'× et ÷ avant + et −',parentheses:'Parenthèses',chaine:'Chaîne d\'opérations',ensemble:'Tout ensemble',problemes:'Problèmes',imbriquees:'Parenthèses imbriquées',prioritex:'Priorité × (niveau 2)',mixdiv:'Expressions avec divisions'};
 var ORDER=['priorite1','parentheses','chaine','ensemble','problemes'];
 var unlocked={priorite1:true,parentheses:false,chaine:false,ensemble:false,problemes:false,arene:false};
 var themeDone={priorite1:false,parentheses:false,chaine:false,ensemble:false,problemes:false};
@@ -883,7 +883,177 @@ function genProblemes(){
 }
 
 
-var GEN={priorite1:genPriorite1,parentheses:genParentheses,chaine:genChaine,ensemble:genEnsemble,problemes:genProblemes};
+/* ===== GÉNÉRATEUR THÈME 6 : PARENTHÈSES IMBRIQUÉES ===== */
+function genImbriquees(){
+  var sub=rnd(2);
+  if(sub===0){
+    // Type A : a × (b + (c − d))  avec c > d
+    var a=rint(2,6),b=rint(2,8),c=rint(5,12),d=rint(2,c-1);
+    var cd=c-d,inner=b+cd,res=a*inner;
+    return {type:'casc',cat:'imbriquees',sig:'im0'+a+b+c+d,
+      text:'Calcule en respectant les priorités :<br><b>'+a+' × ('+b+' + ('+c+' − '+d+'))</b>',viz:'',
+      steps:[
+        {prompt:'<b>① Parenthèses intérieures d\'abord.</b> Calcule '+c+' − '+d+' et réécris la ligne :',
+         parts:['= '+a+' × ('+b+' + ',{kind:'num',ans:cd,w:70},')'],
+         aide:c+' − '+d+' = '+cd},
+        {prompt:'<b>② Parenthèses extérieures.</b> Calcule '+b+' + '+cd+' et réécris la ligne :',
+         parts:['= '+a+' × ',{kind:'num',ans:inner,w:70},''],
+         aide:b+' + '+cd+' = '+inner},
+        {prompt:'<b>③ Calcule la multiplication :</b>',
+         parts:['= ',{kind:'num',ans:res,w:70},''],
+         aide:a+' × '+inner+' = '+res}
+      ]};
+  } else {
+    // Type B : (a + b × c) − (d + e)
+    var a2=rint(5,15),b2=rint(2,6),c2=rint(2,5),d2=rint(2,8),e2=rint(2,6);
+    var bc2=b2*c2,lft=a2+bc2,rgt=d2+e2,res2=lft-rgt;
+    if(res2<0){a2+=Math.abs(res2)+1;lft=a2+bc2;res2=lft-rgt;}
+    return {type:'casc',cat:'imbriquees',sig:'im1'+a2+b2+c2+d2+e2,
+      text:'Calcule en respectant les priorités :<br><b>('+a2+' + '+b2+' × '+c2+') − ('+d2+' + '+e2+')</b>',viz:'',
+      steps:[
+        {prompt:'<b>① Dans la 1ère parenthèse, × prioritaire.</b> Calcule '+b2+' × '+c2+' et réécris :',
+         parts:['= ('+a2+' + ',{kind:'num',ans:bc2,w:70},') − ('+d2+' + '+e2+')'],
+         aide:b2+' × '+c2+' = '+bc2},
+        {prompt:'<b>② Termine la 1ère parenthèse.</b> Calcule '+a2+' + '+bc2+' :',
+         parts:['= ',{kind:'num',ans:lft,w:70},' − ('+d2+' + '+e2+')'],
+         aide:a2+' + '+bc2+' = '+lft},
+        {prompt:'<b>③ Calcule la 2ème parenthèse.</b> Calcule '+d2+' + '+e2+' et réécris :',
+         parts:['= '+lft+' − ',{kind:'num',ans:rgt,w:70},''],
+         aide:d2+' + '+e2+' = '+rgt},
+        {prompt:'<b>④ Calcule la soustraction :</b>',
+         parts:['= ',{kind:'num',ans:res2,w:70},''],
+         aide:lft+' − '+rgt+' = '+res2}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR THÈME 7 : PRIORITÉ × AVANT + (NIVEAU 2) ===== */
+function genPrioriteX(){
+  var sub=rnd(3);
+  if(sub===0){
+    // Type A : a × b + c × d − e
+    var a=rint(2,7),b=rint(2,6),c=rint(2,5),d=rint(2,7),e=rint(1,10);
+    var ab=a*b,cd=c*d,res=ab+cd-e;
+    if(res<0){e=1;res=ab+cd-e;}
+    return {type:'casc',cat:'prioritex',sig:'px0'+a+b+c+d+e,
+      text:'Pose la rédaction en colonne :<br><b>'+a+' × '+b+' + '+c+' × '+d+' − '+e+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>① Deux multiplications prioritaires.</b> Calcule '+a+' × '+b+' et réécris la ligne :',
+         parts:['= ',{kind:'num',ans:ab,w:70},' + '+c+' × '+d+' − '+e],
+         aide:a+' × '+b+' = '+ab},
+        {prompt:'<b>② Calcule '+c+' × '+d+' et réécris la ligne :',
+         parts:['= '+ab+' + ',{kind:'num',ans:cd,w:70},' − '+e],
+         aide:c+' × '+d+' = '+cd},
+        {prompt:'<b>③ Calcule l\'addition :</b>',
+         parts:['= ',{kind:'num',ans:ab+cd,w:70},' − '+e],
+         aide:ab+' + '+cd+' = '+(ab+cd)},
+        {prompt:'<b>④ Calcule la soustraction :</b>',
+         parts:['= ',{kind:'num',ans:res,w:70},''],
+         aide:(ab+cd)+' − '+e+' = '+res}
+      ]};
+  } else if(sub===1){
+    // Type B : a + b × c + d × e
+    var a2=rint(2,12),b2=rint(2,6),c2=rint(2,5),d2=rint(2,5),e2=rint(2,6);
+    var bc2=b2*c2,de2=d2*e2,res2=a2+bc2+de2;
+    return {type:'casc',cat:'prioritex',sig:'px1'+a2+b2+c2+d2+e2,
+      text:'Pose la rédaction en colonne :<br><b>'+a2+' + '+b2+' × '+c2+' + '+d2+' × '+e2+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>① Deux multiplications prioritaires.</b> Calcule '+b2+' × '+c2+' :',
+         parts:['= '+a2+' + ',{kind:'num',ans:bc2,w:70},' + '+d2+' × '+e2],
+         aide:b2+' × '+c2+' = '+bc2},
+        {prompt:'<b>② Calcule '+d2+' × '+e2+' :</b>',
+         parts:['= '+a2+' + '+bc2+' + ',{kind:'num',ans:de2,w:70},''],
+         aide:d2+' × '+e2+' = '+de2},
+        {prompt:'<b>③ Calcule les additions de gauche à droite :</b>',
+         parts:['= ',{kind:'num',ans:res2,w:70},''],
+         aide:a2+' + '+bc2+' + '+de2+' = '+res2}
+      ]};
+  } else {
+    // Type C : a − b × c + d
+    var b3=rint(2,5),c3=rint(2,6),d3=rint(2,10);
+    var bc3=b3*c3,a3=bc3+rint(1,8);
+    var res3=a3-bc3+d3;
+    return {type:'casc',cat:'prioritex',sig:'px2'+a3+b3+c3+d3,
+      text:'Pose la rédaction en colonne :<br><b>'+a3+' − '+b3+' × '+c3+' + '+d3+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>× prioritaire sur − et +.</b> Calcule '+b3+' × '+c3+' et réécris la ligne :',
+         parts:['= '+a3+' − ',{kind:'num',ans:bc3,w:70},' + '+d3],
+         aide:b3+' × '+c3+' = '+bc3},
+        {prompt:'<b>② Calcule la soustraction (gauche à droite) :</b>',
+         parts:['= ',{kind:'num',ans:a3-bc3,w:70},' + '+d3],
+         aide:a3+' − '+bc3+' = '+(a3-bc3)},
+        {prompt:'<b>③ Calcule l\'addition :</b>',
+         parts:['= ',{kind:'num',ans:res3,w:70},''],
+         aide:(a3-bc3)+' + '+d3+' = '+res3}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR THÈME 8 : EXPRESSIONS MIXTES AVEC DIVISIONS ===== */
+function genMixDiv(){
+  var sub=rnd(3);
+  if(sub===0){
+    // Type A : a ÷ b + c × d  (a divisible par b)
+    var b=pick([2,3,4,5,6]);
+    var a=b*rint(2,8),c=rint(2,6),d=rint(2,7);
+    var ab=a/b,cd=c*d,res=ab+cd;
+    return {type:'casc',cat:'mixdiv',sig:'md0'+a+b+c+d,
+      text:'Pose la rédaction en colonne :<br><b>'+a+' ÷ '+b+' + '+c+' × '+d+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>÷ et × sont prioritaires sur +.</b> Calcule '+a+' ÷ '+b+' et réécris la ligne :',
+         parts:['= ',{kind:'num',ans:ab,w:70},' + '+c+' × '+d],
+         aide:a+' ÷ '+b+' = '+ab},
+        {prompt:'<b>② Calcule '+c+' × '+d+' et réécris la ligne :',
+         parts:['= '+ab+' + ',{kind:'num',ans:cd,w:70},''],
+         aide:c+' × '+d+' = '+cd},
+        {prompt:'<b>③ Calcule l\'addition :</b>',
+         parts:['= ',{kind:'num',ans:res,w:70},''],
+         aide:ab+' + '+cd+' = '+res}
+      ]};
+  } else if(sub===1){
+    // Type B : (a + b) ÷ c × d  (a+b divisible par c)
+    var c2=pick([2,3,4,5]);
+    var sum=c2*rint(3,7),d2=rint(2,6);
+    var a2=rint(2,sum-1),b2=sum-a2;
+    var sc=sum/c2,res2=sc*d2;
+    return {type:'casc',cat:'mixdiv',sig:'md1'+a2+b2+c2+d2,
+      text:'Pose la rédaction en colonne :<br><b>('+a2+' + '+b2+') ÷ '+c2+' × '+d2+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>① Parenthèses d\'abord.</b> Calcule '+a2+' + '+b2+' et réécris la ligne :',
+         parts:['= ',{kind:'num',ans:sum,w:70},' ÷ '+c2+' × '+d2],
+         aide:a2+' + '+b2+' = '+sum},
+        {prompt:'<b>② De gauche à droite : calcule '+sum+' ÷ '+c2+' :</b>',
+         parts:['= ',{kind:'num',ans:sc,w:70},' × '+d2],
+         aide:sum+' ÷ '+c2+' = '+sc},
+        {prompt:'<b>③ Calcule la multiplication :</b>',
+         parts:['= ',{kind:'num',ans:res2,w:70},''],
+         aide:sc+' × '+d2+' = '+res2}
+      ]};
+  } else {
+    // Type C : a × b − c ÷ d  (c divisible par d, result positive)
+    var d3=pick([2,3,4,5]);
+    var c3=d3*rint(2,6);
+    var a3=rint(2,7),b3=rint(2,7);
+    var ab3=a3*b3,cd3=c3/d3;
+    var res3=ab3-cd3;
+    if(res3<0){a3=rint(4,7);b3=rint(3,6);ab3=a3*b3;res3=ab3-cd3;}
+    return {type:'casc',cat:'mixdiv',sig:'md2'+a3+b3+c3+d3,
+      text:'Pose la rédaction en colonne :<br><b>'+a3+' × '+b3+' − '+c3+' ÷ '+d3+'</b>',viz:'',
+      steps:[
+        {prompt:'<b>× et ÷ prioritaires sur −.</b> Calcule '+a3+' × '+b3+' et réécris la ligne :',
+         parts:['= ',{kind:'num',ans:ab3,w:70},' − '+c3+' ÷ '+d3],
+         aide:a3+' × '+b3+' = '+ab3},
+        {prompt:'<b>② Calcule '+c3+' ÷ '+d3+' et réécris la ligne :',
+         parts:['= '+ab3+' − ',{kind:'num',ans:cd3,w:70},''],
+         aide:c3+' ÷ '+d3+' = '+cd3},
+        {prompt:'<b>③ Calcule la soustraction :</b>',
+         parts:['= ',{kind:'num',ans:res3,w:70},''],
+         aide:ab3+' − '+cd3+' = '+res3}
+      ]};
+  }
+}
+
+var GEN={priorite1:genPriorite1,parentheses:genParentheses,chaine:genChaine,ensemble:genEnsemble,problemes:genProblemes,imbriquees:genImbriquees,prioritex:genPrioriteX,mixdiv:genMixDiv};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};
@@ -1040,7 +1210,7 @@ function startTrain(t){
   } else {resumeClear(t);quizStart(THEME_CATS[t],true,els);}
 }
 function trainDone(){var t=currentTheme;themeDone[t]=true;try{suiviSousSection(TITLE[t]);}catch(_){}var idx=ORDER.indexOf(t);if(idx<ORDER.length-1){var nx=ORDER[idx+1];unlocked[nx]=true;updateMap();openTheme(nx);}else{unlocked.arene=true;updateMap();go('arene');}}
-function startArene(cat){gid('areneMenu').style.display='none';gid('areneJeu').style.display='block';var cats=cat==='mix'?ORDER.slice():[cat];quizStart(cats,false,elsArene());}
+function startArene(cat){gid('areneMenu').style.display='none';gid('areneJeu').style.display='block';var allCats=ORDER.concat(['imbriquees','prioritex','mixdiv']);var cats=cat==='mix'?allCats:[cat];quizStart(cats,false,elsArene());}
 function finArene(){gid('areneMenu').style.display='block';gid('areneJeu').style.display='none';}
 
 /* ===== NAVIGATION LEÇONS ===== */

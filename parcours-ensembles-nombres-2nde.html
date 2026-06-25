@@ -750,7 +750,181 @@ function genInclusion(){
     opts:item.opts,ans:item.ans,explain:item.explain};
 }
 
-var GEN={ensembles:genEnsembles,appartenance:genAppartenance,intervalles:genIntervalles,absolu:genAbsolu,inclusion:genInclusion};
+/* ===== GÉNÉRATEUR : APPARTENANCE DÉTAILLÉE ℕ/ℤ/ℚ/ℝ (QCM + CASCADE) ===== */
+function genAppartenanceEnsembles(){
+  var type=pick(['qcm_direct','qcm_chaine','casc']);
+  if(type==='qcm_direct'){
+    var items=[
+      {num:'−√9',correct:'\u2124',opts:['\u2115','\u2124 mais pas \u2115','\u211a mais pas \u2124','\u211d mais pas \u211a'],ans:1,
+       explain:'−√9 = −3, qui est un entier négatif. Il est dans \u2124 mais pas dans \u2115.'},
+      {num:'√7',correct:'\u211d\\ℚ',opts:['\u2115','\u2124','\u211a','\u211d mais pas \u211a'],ans:3,
+       explain:'√7 est irrationnel : il ne s\'écrit pas comme fraction. Il est dans \u211d mais pas dans \u211a.'},
+      {num:'−9/3',correct:'\u2124',opts:['\u2115','\u2124 mais pas \u2115','\u211a mais pas \u2124','\u211d mais pas \u211a'],ans:1,
+       explain:'−9/3 = −3, un entier négatif. Il est dans \u2124 mais pas \u2115.'},
+      {num:'0,1',correct:'\u211a',opts:['\u2115','\u2124','\u211a mais pas \u2124','\u211d mais pas \u211a'],ans:2,
+       explain:'0,1 = 1/10, c\'est un rationnel non entier. Il est dans \u211a mais pas \u2124.'},
+      {num:'100',correct:'\u2115',opts:['\u2115 (et \u2124, \u211a, \u211d)','\u2124 mais pas \u2115','\u211a mais pas \u2124','\u211d mais pas \u211a'],ans:0,
+       explain:'100 est un entier naturel. Il appartient à \u2115, \u2124, \u211a et \u211d.'},
+      {num:'−3/5',correct:'\u211a',opts:['\u2115','\u2124 mais pas \u2115','\u211a mais pas \u2124','\u211d mais pas \u211a'],ans:2,
+       explain:'−3/5 est une fraction non entière. Rationnel, donc dans \u211a mais pas \u2124.'}
+    ];
+    var item=pick(items);
+    return {type:'qcm',cat:'appartenance',sig:'apd_'+item.num,
+      text:'Dans quel ensemble se trouve le plus précisément <b>'+item.num+'</b> ?',
+      opts:item.opts,ans:item.ans,explain:item.explain};
+  } else if(type==='qcm_chaine'){
+    var items=[
+      {q:'Vrai ou faux : \u2115 \u2282 \u2124 \u2282 \u211a \u2282 \u211d',ans:0,explain:'\u2115 \u2282 \u2124 \u2282 \u211a \u2282 \u211d est la chaîne d\'inclusions classique : chaque ensemble contient le précédent.'},
+      {q:'Vrai ou faux : tout entier négatif est dans \u2115',ans:1,explain:'\u2115 ne contient que les entiers positifs ou nuls. Les négatifs sont dans \u2124 mais pas \u2115.'},
+      {q:'Vrai ou faux : tout rationnel est aussi un réel',ans:0,explain:'\u211a \u2282 \u211d, donc tout rationnel est bien un réel.'},
+      {q:'Vrai ou faux : √3 est dans \u211a',ans:1,explain:'√3 est irrationnel : il ne s\'écrit pas comme fraction. √3 ∉ \u211a.'},
+      {q:'Vrai ou faux : 0 ∈ \u2124',ans:0,explain:'0 est un entier (positif ou nul). 0 ∈ \u2115 \u2282 \u2124.'},
+      {q:'Vrai ou faux : toute fraction est dans \u2115',ans:1,explain:'Une fraction comme 1/2 n\'est pas entière. Elle est dans \u211a mais pas \u2115.'}
+    ];
+    var item=pick(items);
+    return {type:'qcm',cat:'appartenance',sig:'apc_'+rnd(400),
+      text:item.q,opts:['Vrai','Faux'],ans:item.ans,explain:item.explain};
+  } else {
+    // CASCADE : classer un nombre inconnu
+    var num=pick(['−√25','4/2','−6/3','√16','0,0']);
+    var map={'−√25':{v:−5,ens:'\u2124',expl:'−√25 = −5, entier négatif → \u2124 mais pas \u2115.'},
+             '4/2':{v:2,ens:'\u2115',expl:'4/2 = 2, entier naturel → \u2115 ⊂ \u2124 ⊂ \u211a ⊂ \u211d.'},
+             '−6/3':{v:−2,ens:'\u2124',expl:'−6/3 = −2, entier négatif → \u2124 mais pas \u2115.'},
+             '√16':{v:4,ens:'\u2115',expl:'√16 = 4, entier naturel → \u2115.'},
+             '0,0':{v:0,ens:'\u2115',expl:'0,0 = 0, entier naturel → \u2115.'}};
+    var info=map[num];
+    var isNat=(info.ens==='\u2115');
+    return {type:'casc',cat:'appartenance',sig:'apcasc_'+num,
+      text:'Simplifie d\'abord <b>'+num+'</b>, puis détermine son ensemble.',
+      viz:'',
+      steps:[
+        {prompt:'Calcule ou simplifie '+num+' :',
+         parts:['Résultat = ',{kind:'num',ans:info.v,w:70},''],
+         aide:num+' = '+info.v},
+        {prompt:'Ce nombre est-il dans \u2115 ? (entier naturel ≥ 0)',
+         parts:['Dans \u2115 : ',{kind:'num',ans:isNat?1:0,w:55},' (1 = oui, 0 = non)'],
+         aide:info.expl}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : ENCADREMENT D'UN RÉEL (QCM + CASCADE) ===== */
+function genEncadrement(){
+  var type=pick(['qcm','casc_entiers','casc_dixiemes']);
+  if(type==='qcm'){
+    var items=[
+      {num:'√2',approx:1.414,inf:1,sup:2,
+       explain:'1 < √2 < 2 car 1² = 1 < 2 et 2² = 4 > 2. Encadrement entier de √2 : 1 < √2 < 2.'},
+      {num:'√5',approx:2.236,inf:2,sup:3,
+       explain:'2² = 4 < 5 < 9 = 3². Donc 2 < √5 < 3.'},
+      {num:'√10',approx:3.162,inf:3,sup:4,
+       explain:'3² = 9 < 10 < 16 = 4². Donc 3 < √10 < 4.'},
+      {num:'√15',approx:3.873,inf:3,sup:4,
+       explain:'3² = 9 < 15 < 16 = 4². Donc 3 < √15 < 4.'},
+      {num:'√20',approx:4.472,inf:4,sup:5,
+       explain:'4² = 16 < 20 < 25 = 5². Donc 4 < √20 < 5.'}
+    ];
+    var item=pick(items);
+    var w=item.inf, x=item.sup;
+    return {type:'qcm',cat:'ensembles',sig:'enc_qcm_'+item.num,
+      text:'Quel est l\'encadrement entier de <b>'+item.num+'</b> ?',
+      opts:[w+' < '+item.num+' < '+x,
+            (w-1)+' < '+item.num+' < '+(x-1),
+            (w+1)+' < '+item.num+' < '+(x+1),
+            w+' \u2264 '+item.num+' \u2264 '+x],
+      ans:0,
+      explain:item.explain};
+  } else if(type==='casc_entiers'){
+    // Encadrement entre deux entiers consécutifs d'un réel décimal
+    var vals=[[2.7,2,3],[3.1,3,4],[1.8,1,2],[4.5,4,5],[0.3,0,1],[5.9,5,6]];
+    var v=pick(vals);
+    var x=v[0],inf=v[1],sup=v[2];
+    return {type:'casc',cat:'ensembles',sig:'enc_casc_'+x,
+      text:'Encadre <b>'+x+'</b> entre deux entiers consécutifs.',
+      viz:'',
+      steps:[
+        {prompt:'Quel est l\'entier juste en-dessous de '+x+' ?',
+         parts:[{kind:'num',ans:inf,w:60},''],
+         aide:'La partie entière de '+x+' est '+inf+'.'},
+        {prompt:'Quel est l\'entier juste au-dessus de '+x+' ?',
+         parts:[{kind:'num',ans:sup,w:60},''],
+         aide:inf+' + 1 = '+sup},
+        {prompt:'Complète l\'encadrement : ? < '+x+' < ?',
+         parts:[{kind:'num',ans:inf,w:55},' < '+x+' < ',{kind:'num',ans:sup,w:55},''],
+         aide:inf+' < '+x+' < '+sup}
+      ]};
+  } else {
+    // Encadrement au dixième
+    var vals=[[1.414,1.4,1.5,'√2'],[2.236,2.2,2.3,'√5'],[3.162,3.1,3.2,'√10']];
+    var v=pick(vals);
+    var inf=v[1],sup=v[2],label=v[3];
+    return {type:'casc',cat:'ensembles',sig:'enc_dixieme_'+label,
+      text:'Encadre <b>'+label+'</b> au dixième près. (Rappel : '+label+' \u2248 '+v[0]+')',
+      viz:'',
+      steps:[
+        {prompt:'Quelle est la valeur au dixième juste en-dessous de '+v[0]+' ?',
+         parts:[{kind:'num',ans:Math.round(inf*10)/10,w:60},''],
+         aide:'On garde un chiffre après la virgule : '+inf+'.'},
+        {prompt:'Quelle est la valeur au dixième juste au-dessus ?',
+         parts:[{kind:'num',ans:Math.round(sup*10)/10,w:60},''],
+         aide:'Le dixième suivant : '+sup+'.'},
+        {prompt:'Encadrement au dixième :',
+         parts:[{kind:'num',ans:Math.round(inf*10)/10,w:55},' < '+label+' < ',{kind:'num',ans:Math.round(sup*10)/10,w:55},''],
+         aide:inf+' < '+label+' < '+sup}
+      ]};
+  }
+}
+
+/* ===== GÉNÉRATEUR : ÉCRITURE DÉCIMALE vs FRACTION (QCM + NUM) ===== */
+function genDecimalFraction(){
+  var type=pick(['qcm_frac_to_dec','qcm_dec_to_frac','num_frac','qcm_rationnel']);
+  if(type==='qcm_frac_to_dec'){
+    var items=[
+      {frac:'1/4',dec:0.25,opts:['0,25','0,14','0,4','0,5'],ans:0,explain:'1/4 : on divise 1 par 4. 1 ÷ 4 = 0,25.'},
+      {frac:'3/4',dec:0.75,opts:['0,75','0,34','0,7','0,3'],ans:0,explain:'3/4 : 3 ÷ 4 = 0,75.'},
+      {frac:'1/5',dec:0.2,opts:['0,2','0,15','0,5','0,12'],ans:0,explain:'1/5 : 1 ÷ 5 = 0,2.'},
+      {frac:'2/5',dec:0.4,opts:['0,4','0,25','0,52','0,45'],ans:0,explain:'2/5 : 2 ÷ 5 = 0,4.'},
+      {frac:'1/8',dec:0.125,opts:['0,125','0,18','0,8','0,5'],ans:0,explain:'1/8 : 1 ÷ 8 = 0,125.'},
+      {frac:'3/8',dec:0.375,opts:['0,375','0,38','0,3','0,25'],ans:0,explain:'3/8 : 3 ÷ 8 = 0,375.'}
+    ];
+    var item=pick(items);
+    return {type:'qcm',cat:'ensembles',sig:'dfd_ftod_'+item.frac,
+      text:'Quelle est l\'écriture décimale de <b>'+item.frac+'</b> ?',
+      opts:item.opts,ans:item.ans,explain:item.explain};
+  } else if(type==='qcm_dec_to_frac'){
+    var items=[
+      {dec:'0,5',frac:'1/2',opts:['1/2','1/5','2/5','5/10'],ans:0,explain:'0,5 = 5/10 = 1/2 (on simplifie par 5).'},
+      {dec:'0,25',frac:'1/4',opts:['1/4','2/5','25/10','1/25'],ans:0,explain:'0,25 = 25/100 = 1/4.'},
+      {dec:'0,75',frac:'3/4',opts:['3/4','7/5','75/10','3/40'],ans:0,explain:'0,75 = 75/100 = 3/4.'},
+      {dec:'0,1',frac:'1/10',opts:['1/10','1/100','1/1','1/0'],ans:0,explain:'0,1 = 1/10 par définition.'},
+      {dec:'0,2',frac:'1/5',opts:['1/5','2/10','1/2','1/20'],ans:0,explain:'0,2 = 2/10 = 1/5 (simplifié par 2).'}
+    ];
+    var item=pick(items);
+    return {type:'qcm',cat:'ensembles',sig:'dfd_dtof_'+item.dec,
+      text:'Quelle fraction correspond à <b>'+item.dec+'</b> (forme simplifiée) ?',
+      opts:item.opts,ans:item.ans,explain:item.explain};
+  } else if(type==='num_frac'){
+    var pairs=[[1,4,0.25],[3,4,0.75],[1,5,0.2],[2,5,0.4],[1,10,0.1],[3,10,0.3],[7,10,0.7]];
+    var p=pick(pairs);
+    return {type:'num',cat:'ensembles',sig:'dfd_num_'+p[0]+p[1],
+      text:'Calcule la valeur décimale de '+p[0]+'/'+p[1],
+      answer:p[2],disp:String(p[2]),
+      explain:p[0]+'/'+p[1]+' = '+p[2]+' ('+p[0]+' \u00f7 '+p[1]+').'};
+  } else {
+    var items=[
+      {q:'0,333… est-il un rationnel ?',ans:0,explain:'0,333… = 1/3, c\'est une fraction. C\'est bien un rationnel.'},
+      {q:'√2 est-il un rationnel ?',ans:1,explain:'√2 ne peut pas s\'écrire comme fraction p/q. C\'est un irrationnel.'},
+      {q:'0,142857142857… est-il un rationnel ?',ans:0,explain:'Ce décimal périodique vaut 1/7. Tout décimal périodique est rationnel.'},
+      {q:'π est-il un rationnel ?',ans:1,explain:'π est irrationnel (non périodique, non fini). Il est dans ℝ mais pas ℚ.'},
+      {q:'7/11 est-il un décimal ?',ans:1,explain:'7/11 = 0,636363… : c\'est un décimal périodique, pas un décimal fini.'}
+    ];
+    var item=pick(items);
+    return {type:'qcm',cat:'ensembles',sig:'dfd_rat_'+rnd(300),
+      text:item.q,opts:['Vrai','Faux'],ans:item.ans,explain:item.explain};
+  }
+}
+
+var GEN={ensembles:genEnsembles,appartenance:genAppartenance,intervalles:genIntervalles,absolu:genAbsolu,inclusion:genInclusion,appartenanceensembles:genAppartenanceEnsembles,encadrement:genEncadrement,decimalfraction:genDecimalFraction};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

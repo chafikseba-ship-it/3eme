@@ -630,8 +630,8 @@ var SERIE=8,SEUIL=6;
 function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
 function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
 
-var CATNOM={bases:'Bases',puissances10:'Puissances de 10',regles:'Règles de calcul',negatif:'Puissances négatives',racines:'Racines carrées',scientifique:'Notation scientifique'};
-var THEME_CATS={bases:['bases'],puissances10:['puissances10'],regles:['regles'],negatif:['negatif'],racines:['racines'],scientifique:['scientifique']};
+var CATNOM={bases:'Bases',puissances10:'Puissances de 10',regles:'Règles de calcul',negatif:'Puissances négatives',racines:'Racines carrées',scientifique:'Notation scientifique',negatif2:'Puissances négatives',scientifique2:'Notation scientifique',regles2:'Règles de calcul'};
+var THEME_CATS={bases:['bases'],puissances10:['puissances10'],regles:['regles','regles2'],negatif:['negatif','negatif2'],racines:['racines'],scientifique:['scientifique','scientifique2']};
 var HELP={
   bases:'💡 Rappel : a<sup>n</sup> = a×a×…×a (n fois). a<sup>0</sup> = 1 toujours ! Utilise la calculatrice 🧮',
   puissances10:'💡 10<sup>n</sup> = 1 suivi de n zéros. Compte les zéros ! Utilise la calculatrice 🧮',
@@ -825,7 +825,72 @@ function genScientifique(){
   return {type:'cascade',cat:'scientifique',sig:'S'+cfg.exp+'m'+String(cfg.mant).replace('.',''),text:contextTxt,steps:steps};
 }
 
-var GEN={bases:genBases,puissances10:genPuissances10,regles:genRegles,negatif:genNegatif,racines:genRacines,scientifique:genScientifique};
+/* ===== GÉNÉRATEUR PUISSANCES NÉGATIVES 2 (QCM) ===== */
+function genNegatif2(){
+  var pools=[
+    {t:'10<sup>−1</sup> = ?',o:['0,1','−10','1','10'],c:0,e:'10<sup>−1</sup> = 1÷10 = 0,1. Un exposant négatif = l\'inverse !'},
+    {t:'2<sup>−3</sup> = ?',o:['1/8','−8','−6','1/2'],c:0,e:'2<sup>−3</sup> = 1÷2³ = 1÷8 = 0,125 ≈ 1/8.'},
+    {t:'5<sup>−2</sup> = ?',o:['1/25','−25','−10','1/5'],c:0,e:'5<sup>−2</sup> = 1÷5² = 1÷25.'},
+    {t:'10<sup>−2</sup> = ?',o:['0,01','−100','−20','0,1'],c:0,e:'10<sup>−2</sup> = 1÷100 = 0,01.'},
+    {t:'Que vaut 4<sup>−1</sup> ?',o:['1/4','−4','4','1/2'],c:0,e:'4<sup>−1</sup> = 1÷4 = 0,25 = 1/4.'},
+    {t:'a<sup>−n</sup> =  ?',o:['1 ÷ aⁿ','−aⁿ','aⁿ','n ÷ a'],c:0,e:'Règle fondamentale : a<sup>−n</sup> = 1 ÷ aⁿ.'},
+    {t:'10<sup>−3</sup> correspond à…',o:['un millième (0,001)','moins mille (−1000)','dix au cube (1000)','un dixième (0,1)'],c:0,e:'10<sup>−3</sup> = 1÷10³ = 1÷1000 = 0,001 = un millième.'},
+    {t:'Quel est le signe du résultat de 3<sup>−4</sup> ?',o:['Positif','Négatif','Nul','Cela dépend'],c:0,e:'3<sup>−4</sup> = 1÷81 > 0 : une puissance négative donne toujours un résultat positif (si la base est positive).'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'negatif',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR NOTATION SCIENTIFIQUE 2 (QCM + cascade) ===== */
+function genScientifique2(){
+  var type=pick(['lire','comparer']);
+  if(type==='lire'){
+    var configs=[
+      {sci:'5,2 × 10<sup>4</sup>',ans:52000,ans2:'52 000'},
+      {sci:'3 × 10<sup>6</sup>',ans:3000000,ans2:'3 000 000'},
+      {sci:'1,8 × 10<sup>3</sup>',ans:1800,ans2:'1 800'},
+      {sci:'7,5 × 10<sup>5</sup>',ans:750000,ans2:'750 000'},
+      {sci:'9 × 10<sup>2</sup>',ans:900,ans2:'900'},
+      {sci:'2,4 × 10<sup>4</sup>',ans:24000,ans2:'24 000'}
+    ];
+    var cfg=pick(configs);
+    var wrong=[cfg.ans+1000,cfg.ans/10,cfg.ans*10].map(function(v){return String(Math.round(v));});
+    var opts=shuffle([cfg.ans2].concat(wrong.slice(0,3)));
+    return {type:'qcm',cat:'scientifique',
+      text:'Que vaut '+cfg.sci+' en notation décimale ordinaire ?',
+      options:opts,correct:opts.indexOf(cfg.ans2),
+      explain:cfg.sci+' = '+cfg.ans2+'. On décale la virgule de autant de rangs que l\'exposant.'};
+  }
+  var pairs=[
+    {a:'2,5 × 10<sup>4</sup>',b:'1,8 × 10<sup>5</sup>',gt:'b',expl:'10⁵ > 10⁴, donc 1,8×10⁵ (=180 000) > 2,5×10⁴ (=25 000).'},
+    {a:'3 × 10<sup>3</sup>',b:'9 × 10<sup>2</sup>',gt:'a',expl:'10³ > 10², donc 3×10³ (=3 000) > 9×10² (=900).'},
+    {a:'6,1 × 10<sup>5</sup>',b:'6,1 × 10<sup>6</sup>',gt:'b',expl:'Même mantisse, 10⁶ > 10⁵, donc 6,1×10⁶ > 6,1×10⁵.'}
+  ];
+  var p=pick(pairs);
+  var opts2=[p.a,p.b];var opts2s=shuffle(opts2.slice());
+  var correct=opts2s.indexOf(p.gt==='a'?p.a:p.b);
+  return {type:'qcm',cat:'scientifique',
+    text:'Lequel est le plus grand : '+p.a+' ou '+p.b+' ?',
+    options:opts2s,correct:correct,explain:p.expl};
+}
+
+/* ===== GÉNÉRATEUR RÈGLES 2 (QCM : corriger une erreur) ===== */
+function genRegles2(){
+  var pool=[
+    {t:'2<sup>3</sup> × 2<sup>4</sup> = 2<sup>?</sup>',o:['7','12','3','1'],c:0,e:'On additionne les exposants : 3 + 4 = 7. Donc 2<sup>3</sup> × 2<sup>4</sup> = 2<sup>7</sup>.'},
+    {t:'3<sup>6</sup> ÷ 3<sup>2</sup> = 3<sup>?</sup>',o:['4','3','8','12'],c:0,e:'On soustrait les exposants : 6 − 2 = 4. Donc 3<sup>6</sup> ÷ 3<sup>2</sup> = 3<sup>4</sup>.'},
+    {t:'(5<sup>2</sup>)<sup>3</sup> = 5<sup>?</sup>',o:['6','5','9','2'],c:0,e:'Puissance de puissance : 2 × 3 = 6. Donc (5<sup>2</sup>)<sup>3</sup> = 5<sup>6</sup>.'},
+    {t:'2<sup>4</sup> × 2<sup>5</sup> = 2<sup>?</sup>',o:['9','20','8','1'],c:0,e:'3 + 4 = 9. Donc 2<sup>4</sup> × 2<sup>5</sup> = 2<sup>9</sup>.'},
+    {t:'5<sup>5</sup> ÷ 5<sup>3</sup> = 5<sup>?</sup>',o:['2','15','8','1'],c:0,e:'5 − 3 = 2. Donc 5<sup>5</sup> ÷ 5<sup>3</sup> = 5<sup>2</sup>.'},
+    {t:'(2<sup>3</sup>)<sup>2</sup> = 2<sup>?</sup>',o:['6','5','8','9'],c:0,e:'3 × 2 = 6. Donc (2<sup>3</sup>)<sup>2</sup> = 2<sup>6</sup>.'},
+    {t:'a<sup>n</sup> × a<sup>m</sup> = a<sup>?</sup>',o:['n+m','n×m','n−m','n÷m'],c:0,e:'Règle du produit : même base → on additionne les exposants. a<sup>n</sup>×a<sup>m</sup> = a<sup>n+m</sup>.'},
+    {t:'a<sup>n</sup> ÷ a<sup>m</sup> = a<sup>?</sup>',o:['n−m','n+m','n×m','m−n'],c:0,e:'Règle du quotient : même base → on soustrait les exposants. a<sup>n</sup>÷a<sup>m</sup> = a<sup>n−m</sup>.'}
+  ];
+  var q=pick(pool);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'regles',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+var GEN={bases:genBases,puissances10:genPuissances10,regles:genRegles,negatif:genNegatif,racines:genRacines,scientifique:genScientifique,negatif2:genNegatif2,scientifique2:genScientifique2,regles2:genRegles2};
 
 /* ===== MOTEUR ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});(function(el){setTimeout(function(){el.remove();},fall);})(d);}}

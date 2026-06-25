@@ -521,7 +521,7 @@ var HELP={
 };
 var BRIQUE={variables:{serie:8,seuil:6},boucles:{serie:8,seuil:6},condis:{serie:8,seuil:6},tableur:{serie:8,seuil:6},algos:{serie:8,seuil:6}};
 var THEME_CATS={variables:['variables'],boucles:['boucles'],condis:['condis'],tableur:['tableur'],algos:['algos']};
-var CATNOM={variables:'Variables',boucles:'Boucles',condis:'Conditions',tableur:'Tableur',algos:'Algorithmes'};
+var CATNOM={variables:'Variables',boucles:'Boucles',condis:'Conditions',tableur:'Tableur',algos:'Algorithmes',tantque:'Boucle tant que',ifelse:'Conditions imbriquées',ecrire:'Écrire un algorithme'};
 var unlocked={variables:true,boucles:true,condis:true,tableur:true,algos:true,arene:true};
 var themeDone={variables:false,boucles:false,condis:false,tableur:false,algos:false};
 var currentTheme='variables';
@@ -752,8 +752,134 @@ function genAlgo4(){
 }
 function genAlgos(){return [genAlgo1,genAlgo2,genAlgo3,genAlgo4][rnd(4)]();}
 
+/* ===== GÉNÉRATEURS — BOUCLE TANT QUE (while) ===== */
+function genWhile1(){
+  // n ← start ; répéter tant que n < seuil : n ← n + step
+  var step=rint(2,5),seuil=pick([10,12,15,18,20,24,30]);
+  var start=rint(1,seuil-step-1);
+  var n=start;
+  var tours=0;
+  while(n<seuil){n+=step;tours++;}
+  return {type:'num',cat:'tantque',sig:'tw1_'+start+'_'+step+'_'+seuil,
+    text:'Quelle valeur affiche n à la fin ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'n à '+start},{si:'tant que n < '+seuil,body:[{va:'n à n + '+step}]},{out:'n'}]),
+    answer:n,disp:''+n,explain:'n part de '+start+', on ajoute '+step+' à chaque tour. Après '+tours+' tour(s), n = '+n+' ≥ '+seuil+'.'};
+}
+function genWhile2(){
+  // n ← start ; répéter tant que n > 0 : n ← n − step (compte à rebours)
+  var step=pick([2,3,4,5]);
+  var k=rint(3,6);
+  var start=step*k+rint(1,step-1<1?1:step-1);
+  var n=start,tours=0;
+  while(n>0){n-=step;tours++;}
+  return {type:'num',cat:'tantque',sig:'tw2_'+start+'_'+step,
+    text:'Quelle valeur affiche n à la fin ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'n à '+start},{si:'tant que n > 0',body:[{va:'n à n − '+step}]},{out:'n'}]),
+    answer:n,disp:''+n,explain:'n part de '+start+', on soustrait '+step+' à chaque tour. Après '+tours+' tour(s), n = '+n+' ≤ 0.'};
+}
+function genWhile3(){
+  // Compter combien de fois on peut doubler avant de dépasser seuil
+  var start=pick([1,2,3]),seuil=pick([10,16,20,32,50,100]);
+  var n=start,cpt=0;
+  while(n<=seuil){n*=2;cpt++;}
+  return {type:'num',cat:'tantque',sig:'tw3_'+start+'_'+seuil,
+    text:'Combien de fois a-t-on exécuté l\'instruction "n ← n × 2" ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'n à '+start},{va:'compteur à 0'},{si:'tant que n ≤ '+seuil,body:[{va:'n à n × 2'},{va:'compteur à compteur + 1'}]},{out:'compteur'}]),
+    answer:cpt,disp:''+cpt,explain:'n = '+start+' → doublement '+cpt+' fois avant de dépasser '+seuil+'. Compteur = '+cpt+'.'};
+}
+function genTantQue(){return [genWhile1,genWhile2,genWhile3][rnd(3)]();}
+
+/* ===== GÉNÉRATEURS — CONDITIONS IMBRIQUÉES (if/else) ===== */
+function genIfElse1(){
+  var a=rint(2,15),b=rint(2,15),c=rint(2,15);
+  while(a===b||b===c||a===c){b=rint(2,15);c=rint(2,15);}
+  var max=Math.max(a,b,c);
+  var opts=['a','b','c'];
+  var correct=opts[[a,b,c].indexOf(max)];
+  var labels=[a,b,c].map(function(v,i){return ['a','b','c'][i]+' = '+v;});
+  var correctLabel=correct+' = '+max;
+  var optsQcm=shuffle(labels);
+  var repIdx=optsQcm.indexOf(correctLabel);
+  return {type:'qcm',cat:'ifelse',sig:'ie1_'+a+'_'+b+'_'+c,
+    text:'Quel est le maximum affiché par ce programme ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'a à '+a},{va:'b à '+b},{va:'c à '+c},
+      {si:'a > b',body:[{si:'a > c',body:[{out:'"a = '+a+'"'}],sinon:[{out:'"c = '+c+'"'}]}],sinon:[{si:'b > c',body:[{out:'"b = '+b+'"'}],sinon:[{out:'"c = '+c+'"'}]}]}]),
+    options:optsQcm,correct:repIdx,
+    explain:'a='+a+', b='+b+', c='+c+' → le maximum est '+correct+'='+max};
+}
+function genIfElse2(){
+  var n=pick([-10,-8,-6,-4,-3,-1,0,1,2,5,7,9,12,15]);
+  var opts=['positif','négatif','nul'];
+  var correct=n>0?0:n<0?1:2;
+  return {type:'qcm',cat:'ifelse',sig:'ie2_'+n,
+    text:'n = '+n+'. Que fait afficher ce programme ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'n à '+n},
+      {si:'n > 0',body:[{out:'"positif"'}],sinon:[{si:'n < 0',body:[{out:'"négatif"'}],sinon:[{out:'"nul"'}]}]}]),
+    options:opts.map(function(s){return '💬 "'+s+'"';}),correct:correct,
+    explain:n+(n>0?' > 0 → "positif"':n<0?' < 0 → "négatif"':' = 0 → "nul"')};
+}
+function genIfElse3(){
+  var a=rint(5,20),b=rint(5,20);
+  while(a===b)b=rint(5,20);
+  var r=Math.min(a,b);
+  return {type:'num',cat:'ifelse',sig:'ie3_'+a+'_'+b,
+    text:'Quelle valeur affiche min ?',
+    viz:sp([{ev:'Quand le drapeau est cliqué'},{va:'a à '+a},{va:'b à '+b},
+      {si:'a < b',body:[{va:'min à a'}],sinon:[{va:'min à b'}]},{out:'min'}]),
+    answer:r,disp:''+r,explain:(a<b?'a='+a+' < b='+b+' → min=a='+a:'b='+b+' < a='+a+' → min=b='+b)};
+}
+function genIfElseAll(){return [genIfElse1,genIfElse2,genIfElse3][rnd(3)]();}
+
+/* ===== GÉNÉRATEURS — ÉCRIRE UN ALGORITHME (pseudo-code) ===== */
+function genEcrire1(){
+  // Reconnaître la bonne instruction pour calculer une moyenne
+  var n1=rint(5,15),n2=rint(5,15),n3=rint(5,15);
+  var moy=(n1+n2+n3)/3;
+  var correct='moy ← ('+n1+' + '+n2+' + '+n3+') ÷ 3';
+  var f1='moy ← '+n1+' + '+n2+' + '+n3+' ÷ 3';
+  var f2='moy ← ('+n1+' × '+n2+' × '+n3+') ÷ 3';
+  var f3='moy ← '+n1+' + '+n2+' + '+n3;
+  var opts=shuffle([correct,f1,f2,f3]);
+  var rep=opts.indexOf(correct);
+  return {type:'qcm',cat:'ecrire',sig:'ec1_'+n1+'_'+n2+'_'+n3,
+    text:'Quelle instruction calcule correctement la moyenne de '+n1+', '+n2+' et '+n3+' ?',
+    viz:'',options:opts,correct:rep,
+    explain:'Il faut les parenthèses pour additionner avant de diviser.\nRésultat correct : moy = ('+(n1+n2+n3)+') ÷ 3 = '+moy};
+}
+function genEcrire2(){
+  // Reconnaître l'instruction d'un échange de valeurs (swap)
+  var a=rint(2,9),b=rint(2,9);
+  while(a===b)b=rint(2,9);
+  var correct='tmp ← a\na ← b\nb ← tmp';
+  var f1='a ← b\nb ← a';
+  var f2='tmp ← a\nb ← a\na ← tmp';
+  var f3='a ← tmp\ntmp ← b\nb ← a';
+  var opts=shuffle([correct,f1,f2,f3]);
+  var rep=opts.indexOf(correct);
+  return {type:'qcm',cat:'ecrire',sig:'ec2_'+a+'_'+b,
+    text:'On veut échanger les valeurs de a (='+a+') et b (='+b+').\nQuelle suite d\'instructions est correcte ?',
+    viz:'',options:opts,correct:rep,
+    explain:'Il faut une variable temporaire pour ne pas perdre de valeur.\ntmp←a, a←b, b←tmp → a='+b+' et b='+a};
+}
+function genEcrire3(){
+  // Reconnaître la bonne traduction en pseudo-code d'une description
+  var step=rint(2,4),K=rint(3,5);
+  var r=step*K;
+  var correct='n ← 0\nrépéter '+K+' fois\n  n ← n + '+step;
+  var f1='n ← '+step+'\nrépéter '+K+' fois\n  n ← n + '+step;
+  var f2='n ← 0\nrépéter '+K+' fois\n  n ← n × '+step;
+  var f3='n ← 0\nrépéter '+(K+1)+' fois\n  n ← n + '+step;
+  var opts=shuffle([correct,f1,f2,f3]);
+  var rep=opts.indexOf(correct);
+  return {type:'qcm',cat:'ecrire',sig:'ec3_'+step+'_'+K,
+    text:'On veut calculer '+step+' × '+K+' en partant de 0 et en ajoutant '+step+' à chaque tour ('+K+' fois).\nQuel algorithme correspond ?',
+    viz:'',options:opts,correct:rep,
+    explain:'On part de 0 et on ajoute '+step+' exactement '+K+' fois → n = '+step+' × '+K+' = '+r};
+}
+function genEcrireAlgo(){return [genEcrire1,genEcrire2,genEcrire3][rnd(3)]();}
+
 /* ===== GEN MAP ===== */
-var GEN={variables:genVariables,boucles:genBoucles,condis:genCondis,tableur:genTableur,algos:genAlgos};
+var GEN={variables:genVariables,boucles:genBoucles,condis:genCondis,tableur:genTableur,algos:genAlgos,tantque:genTantQue,ifelse:genIfElseAll,ecrire:genEcrireAlgo};
 
 /* ===== NAVIGATION ===== */
 function go(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});gid(id).classList.add('active');window.scrollTo(0,0);if(id==='arene')finArene();if(id!=='accueil'){try{history.pushState({screen:id},'','');}catch(_){}}}
@@ -850,7 +976,8 @@ function quizResult(){var e=Q.els;if(!e.result)return;e.card.style.display='none
 function finArene(){gid('areneMenu').style.display='block';gid('areneJeu').style.display='none';}
 function startArene(cat){
   gid('areneMenu').style.display='none';gid('areneJeu').style.display='block';
-  var cats=cat==='mix'?ORDER:THEME_CATS[cat]||[cat];
+  var allCats=ORDER.concat(['tantque','ifelse','ecrire']);
+  var cats=cat==='mix'?allCats:THEME_CATS[cat]||[cat];
   quizStart(cats,false,elsArene());
 }
 

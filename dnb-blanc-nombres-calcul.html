@@ -1028,6 +1028,281 @@ function genPuissancesNew(){
   };
 }
 
+/* --- Situation 13 : Fractions — addition et multiplication --- */
+function genFractionsOp(){
+  var configs=[
+    {a1:2,b1:3,a2:1,b2:4},
+    {a1:3,b1:5,a2:1,b2:3},
+    {a1:1,b1:2,a2:2,b2:7},
+    {a1:5,b1:6,a2:1,b2:4},
+    {a1:2,b1:9,a2:1,b2:3}
+  ];
+  var cfg=choix(configs);
+  var a1=cfg.a1,b1=cfg.b1,a2=cfg.a2,b2=cfg.b2;
+  // Addition : a1/b1 + a2/b2 = (a1*b2 + a2*b1) / (b1*b2)
+  var numAdd=a1*b2+a2*b1;
+  var denAdd=b1*b2;
+  function pgcd(a,b){return b===0?a:pgcd(b,a%b);}
+  var g=pgcd(numAdd,denAdd);
+  var numS=numAdd/g, denS=denAdd/g;
+  // Multiplication : a1/b1 × a2/b2 = (a1*a2)/(b1*b2)
+  var numMul=a1*a2, denMul=b1*b2;
+  var gm=pgcd(numMul,denMul);
+  var numMS=numMul/gm, denMS=denMul/gm;
+  var enonceHTML='Calcule les opérations suivantes sur les fractions.'
+    +'<br><b>1.</b> Calcule '+a1+'/'+b1+' + '+a2+'/'+b2+'. Donne le résultat sous forme irréductible.'
+    +'<br><b>2.</b> Calcule '+a1+'/'+b1+' × '+a2+'/'+b2+'. Donne le résultat sous forme irréductible.'
+    +'<br><b>3.</b> Lequel de ces deux résultats est le plus grand ? Justifie.';
+  var resAdd=numS/denS;
+  var resMul=numMS/denMS;
+  var plusGrand=resAdd>=resMul?'addition':'multiplication';
+  var etapes=[
+    {
+      question:'Question 1 — Addition de fractions',
+      role:'Trouver le dénominateur commun',
+      q:'Pour ajouter '+a1+'/'+b1+' et '+a2+'/'+b2+', trouve un dénominateur commun ('+b1+' × '+b2+' = '+denAdd+').',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-denAdd)<0.5;});},
+      aide:'Le dénominateur commun est '+b1+' × '+b2+' = '+denAdd+'.',
+      solutionHTML:'Dénominateur commun : '+denAdd,
+      clavier:['×','=']
+    },
+    {
+      role:'Calculer la somme',
+      q:'Écris la somme : ('+a1+'×'+b2+' + '+a2+'×'+b1+') / '+denAdd+' = ?/'+denAdd+'. Simplifie ensuite.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return (ns.some(function(x){return Math.abs(x-numS)<0.5;})&&ns.some(function(x){return Math.abs(x-denS)<0.5;}))
+          ||ns.some(function(x){return Math.abs(x-resAdd)<0.01;});
+      },
+      aide:'('+a1+'×'+b2+' + '+a2+'×'+b1+') / '+denAdd+' = '+numAdd+'/'+denAdd+' = '+numS+'/'+denS+'.',
+      solutionHTML:a1+'/'+b1+' + '+a2+'/'+b2+' = '+numAdd+'/'+denAdd+' = '+numS+'/'+denS,
+      clavier:['×','+','/','=']
+    },
+    {
+      question:'Question 2 — Multiplication de fractions',
+      role:'Multiplier numérateurs et dénominateurs',
+      q:'Multiplie numérateur par numérateur et dénominateur par dénominateur : ('+a1+'×'+a2+') / ('+b1+'×'+b2+'). Simplifie.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return (ns.some(function(x){return Math.abs(x-numMS)<0.5;})&&ns.some(function(x){return Math.abs(x-denMS)<0.5;}))
+          ||ns.some(function(x){return Math.abs(x-resMul)<0.01;});
+      },
+      aide:''+a1+'×'+a2+' = '+numMul+' et '+b1+'×'+b2+' = '+denMul+'. Fraction : '+numMul+'/'+denMul+' = '+numMS+'/'+denMS+'.',
+      solutionHTML:a1+'/'+b1+' × '+a2+'/'+b2+' = '+numMul+'/'+denMul+' = '+numMS+'/'+denMS,
+      clavier:['×','/','=']
+    },
+    {
+      question:'Question 3 — Comparer les deux résultats',
+      role:'Comparer les deux fractions',
+      q:'Compare '+numS+'/'+denS+' et '+numMS+'/'+denMS+'. Lequel est le plus grand ? Justifie.',
+      verif:function(inp){
+        var t=norm(inp);
+        return t.includes(plusGrand==='addition'?'addition':'multiplic')
+          ||nbs(inp).some(function(x){return Math.abs(x-Math.max(resAdd,resMul))<0.01;});
+      },
+      aide:''+numS+'/'+denS+' = '+fr(Math.round(resAdd*100)/100)+' et '+numMS+'/'+denMS+' = '+fr(Math.round(resMul*100)/100)+'. Le plus grand est le résultat de l\''+plusGrand+'.',
+      solutionHTML:numS+'/'+denS+' > '+numMS+'/'+denMS+' : le résultat de l\''+plusGrand+' est le plus grand.',
+      clavier:['>','<','=']
+    }
+  ];
+  return {
+    titre:'Fractions \u2014 addition et multiplication',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 14 : Puissances entières — calculs et règles --- */
+function genPuissancesEntières(){
+  var configs=[
+    {base:2,exp1:4,exp2:3},
+    {base:3,exp1:3,exp2:2},
+    {base:5,exp1:2,exp2:3},
+    {base:2,exp1:5,exp2:2},
+    {base:4,exp1:2,exp2:3}
+  ];
+  var cfg=choix(configs);
+  var b=cfg.base,e1=cfg.exp1,e2=cfg.exp2;
+  var val1=Math.pow(b,e1);
+  var val2=Math.pow(b,e2);
+  var valProd=Math.pow(b,e1+e2);
+  var valQuo=Math.pow(b,e1-e2);
+  var enonceHTML='Soit <b>a = '+b+'</b>.'
+    +'<br><b>1.</b> Calcule a<sup>'+e1+'</sup> et a<sup>'+e2+'</sup>.'
+    +'<br><b>2.</b> Calcule a<sup>'+e1+'</sup> × a<sup>'+e2+'</sup> en utilisant la règle a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup>.'
+    +'<br><b>3.</b> Calcule a<sup>'+e1+'</sup> ÷ a<sup>'+e2+'</sup> en utilisant la règle a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup>.';
+  var etapes=[
+    {
+      question:'Question 1 — Calculs directs',
+      role:'Calculer '+b+'^'+e1+' et '+b+'^'+e2,
+      q:'Calcule '+b+'<sup>'+e1+'</sup> = '+b+' × '+b+' × ... ('+e1+' fois) et '+b+'<sup>'+e2+'</sup>.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-val1)<0.5;})&&ns.some(function(x){return Math.abs(x-val2)<0.5;});
+      },
+      aide:b+'^'+e1+' = '+val1+' et '+b+'^'+e2+' = '+val2+'.',
+      solutionHTML:b+'<sup>'+e1+'</sup> = '+val1+' ; '+b+'<sup>'+e2+'</sup> = '+val2,
+      clavier:['×','=']
+    },
+    {
+      question:'Question 2 — Règle du produit',
+      role:'Additionner les exposants',
+      q:'a<sup>'+e1+'</sup> × a<sup>'+e2+'</sup> = a<sup>'+e1+'+'+e2+'</sup> = a<sup>?</sup>. Calcule la valeur.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-(e1+e2))<0.5;})&&ns.some(function(x){return Math.abs(x-valProd)<0.5;});
+      },
+      aide:''+b+'^'+e1+' × '+b+'^'+e2+' = '+b+'^'+(e1+e2)+' = '+valProd+'.',
+      solutionHTML:b+'<sup>'+e1+'</sup> × '+b+'<sup>'+e2+'</sup> = '+b+'<sup>'+(e1+e2)+'</sup> = '+valProd,
+      clavier:['+','×','=']
+    },
+    {
+      question:'Question 3 — Règle du quotient',
+      role:'Soustraire les exposants',
+      q:'a<sup>'+e1+'</sup> ÷ a<sup>'+e2+'</sup> = a<sup>'+e1+'−'+e2+'</sup> = a<sup>?</sup>. Calcule la valeur.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-(e1-e2))<0.5;})&&ns.some(function(x){return Math.abs(x-valQuo)<0.5;});
+      },
+      aide:''+b+'^'+e1+' ÷ '+b+'^'+e2+' = '+b+'^'+(e1-e2)+' = '+valQuo+'.',
+      solutionHTML:b+'<sup>'+e1+'</sup> ÷ '+b+'<sup>'+e2+'</sup> = '+b+'<sup>'+(e1-e2)+'</sup> = '+valQuo,
+      clavier:['-','÷','=']
+    }
+  ];
+  return {
+    titre:'Puissances enti\u00e8res \u2014 r\u00e8gles de calcul',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 15 : Racines carrées — simplification et calculs --- */
+function genRacinesCarrees(){
+  var configs=[
+    {n:144,a:12},{n:225,a:15},{n:196,a:14},{n:169,a:13},{n:256,a:16}
+  ];
+  var cfg=choix(configs);
+  var n=cfg.n, a=cfg.a;
+  // Choisir deux racines dont le produit est n
+  var paires=[];
+  for(var i=2;i<a;i++){if(n%(i*i)===0){paires.push({k:i,q:n/(i*i)});}}
+  var paire=paires.length>0?paires[0]:{k:1,q:n};
+  var k=paire.k, q=paire.q;
+  // Exemple : √(k²×q) = k√q mais on veut garder entier
+  // Cas simple : on calcule √n directement
+  // Deuxieme exercice : √(a²) = a
+  var b=choix([2,3,4,5]);
+  var c=b+choix([1,2,3]);
+  var somme=Math.round((Math.sqrt(b*b)+Math.sqrt(c*c))*100)/100; // = b + c
+  var enonceHTML='<b>1.</b> Calcule √'+n+' (un nombre entier est attendu).'
+    +'<br><b>2.</b> Simplifie √'+b+' × √'+b+' et √'+c+' × √'+c+'.'
+    +'<br><b>3.</b> Sans calculatrice, trouve l\'entier entre lequel se situe √'+( (a-1)*(a-1)+1 )+'. Justifie.'
+    +'<br><i>Rappel : √(a²) = a pour tout a ≥ 0</i>';
+  var cibleN=(a-1)*(a-1)+1;
+  var etapes=[
+    {
+      question:'Question 1 — Racine carrée exacte',
+      role:'Calculer √'+n,
+      q:'Trouve l\'entier a tel que a² = '+n+'. Calcule √'+n+'.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-a)<0.5;});},
+      aide:''+Math.floor(a/2)+'² = '+(Math.floor(a/2)*Math.floor(a/2))+' et '+a+'² = '+n+'. Donc √'+n+' = '+a+'.',
+      solutionHTML:'√'+n+' = '+a,
+      clavier:['²','√','=']
+    },
+    {
+      question:'Question 2 — Simplification √a × √a = a',
+      role:'Appliquer √a × √a = a',
+      q:'Calcule √'+b+' × √'+b+' et √'+c+' × √'+c+'.',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-b)<0.5;})&&ns.some(function(x){return Math.abs(x-c)<0.5;});
+      },
+      aide:'√'+b+' × √'+b+' = '+b+' et √'+c+' × √'+c+' = '+c+'.',
+      solutionHTML:'√'+b+' × √'+b+' = '+b+' ; √'+c+' × √'+c+' = '+c,
+      clavier:['×','√','=']
+    },
+    {
+      question:'Question 3 — Encadrement par des entiers',
+      role:'Encadrer √'+cibleN+' entre deux entiers consécutifs',
+      q:(a-1)+'² = '+(a-1)*(a-1)+' et '+a+'² = '+a*a+'. Que peut-on dire de √'+cibleN+' ?',
+      verif:function(inp){
+        var ns=nbs(inp);
+        return ns.some(function(x){return Math.abs(x-(a-1))<0.5;})&&ns.some(function(x){return Math.abs(x-a)<0.5;});
+      },
+      aide:'Comme '+(a-1)*(a-1)+' < '+cibleN+' < '+a*a+', on a '+(a-1)+' < √'+cibleN+' < '+a+'.',
+      solutionHTML:(a-1)+' < √'+cibleN+' < '+a,
+      clavier:['<','>','=','√']
+    }
+  ];
+  return {
+    titre:'Racines carr\u00e9es \u2014 calculs et encadrement',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
+/* --- Situation 16 : Priorités opératoires --- */
+function genPriorites(){
+  var configs=[
+    {expr:'3 + 4 × 5',res:23,distracteur:35,expl:'On effectue 4 × 5 = 20 en premier, puis 3 + 20 = 23.'},
+    {expr:'12 − 2 × 4',res:4,distracteur:40,expl:'On effectue 2 × 4 = 8 en premier, puis 12 − 8 = 4.'},
+    {expr:'18 ÷ 3 + 7',res:13,distracteur:6,expl:'On effectue 18 ÷ 3 = 6 en premier, puis 6 + 7 = 13.'},
+    {expr:'5 × (3 + 2)',res:25,distracteur:17,expl:'Les parenthèses d\'abord : 3 + 2 = 5, puis 5 × 5 = 25.'},
+    {expr:'20 − (4 + 2) × 2',res:8,distracteur:32,expl:'Parenthèses : 4 + 2 = 6. Multiplication : 6 × 2 = 12. Soustraction : 20 − 12 = 8.'}
+  ];
+  var cfg=choix(configs);
+  var expr=cfg.expr,res=cfg.res,distracteur=cfg.distracteur,expl=cfg.expl;
+  // Deuxième expression avec fractions et priorités
+  var num=choix([12,18,24,30]);
+  var denom=choix([3,4,6]);
+  var add=choix([2,3,5]);
+  var res2=num/denom+add;
+  var enonceHTML='Calcule les expressions suivantes en respectant les priorités opératoires.'
+    +'<br><b>1.</b> A = '+expr
+    +'<br><b>2.</b> Explique pourquoi A ≠ '+distracteur+'.'
+    +'<br><b>3.</b> Calcule B = '+num+' ÷ '+denom+' + '+add+' en respectant l\'ordre des opérations.';
+  var etapes=[
+    {
+      question:'Question 1 — Calculer l\'expression A',
+      role:'Appliquer les priorités opératoires',
+      q:'Calcule A = '+expr+' en respectant les règles de priorité.',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-res)<0.5;});},
+      aide:expl,
+      solutionHTML:'A = '+res,
+      clavier:['×','÷','+','-','(',')',' ','=']
+    },
+    {
+      question:'Question 2 — Justifier',
+      role:'Expliquer l\'erreur courante',
+      q:'Un élève a trouvé '+distracteur+'. Explique son erreur.',
+      verif:function(inp){
+        var t=norm(inp);
+        return t.includes('priorit')||t.includes('multiplic')||t.includes('divis')||t.includes('ordre')||t.includes('parent');
+      },
+      aide:expl,
+      solutionHTML:expl
+    },
+    {
+      question:'Question 3 — Expression B',
+      role:'Calculer '+num+' ÷ '+denom+' + '+add,
+      q:'Calcule B = '+num+' ÷ '+denom+' + '+add+'. Quelle opération doit-on effectuer en premier ?',
+      verif:function(inp){return nbs(inp).some(function(x){return Math.abs(x-res2)<0.05;});},
+      aide:num+' ÷ '+denom+' = '+fr(num/denom)+' (division d\'abord), puis '+fr(num/denom)+' + '+add+' = '+fr(res2)+'.',
+      solutionHTML:'B = '+fr(num/denom)+' + '+add+' = '+fr(res2),
+      clavier:['÷','+','=']
+    }
+  ];
+  return {
+    titre:'Priorit\u00e9s op\u00e9ratoires',
+    enonceHTML:enonceHTML,
+    dessiner:function(id){},
+    etapes:etapes
+  };
+}
+
 /* --- Situation 11 : PGCD et fractions irréductibles --- */
 function genPGCD(){
   // paires dont le pgcd est non trivial et les nombres entre 12-120
@@ -1160,7 +1435,11 @@ var BANQUE=[
   {notion:'pourcentages',gen:genPourcentages},
   {notion:'puissances2', gen:genPuissancesNew},
   {notion:'pgcd',        gen:genPGCD},
-  {notion:'relatifs2',   gen:genRelatifsFinance}
+  {notion:'relatifs2',   gen:genRelatifsFinance},
+  {notion:'fractionsOp',   gen:genFractionsOp},
+  {notion:'puissancesEnt', gen:genPuissancesEntières},
+  {notion:'racinesCarrees',gen:genRacinesCarrees},
+  {notion:'priorites',     gen:genPriorites}
 ];
 
 var SUJET=[],ecrans=[],ecranActuel=0;

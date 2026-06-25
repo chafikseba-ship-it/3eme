@@ -828,8 +828,147 @@ function genConcentration(){
   return {type:'qcm',cat:'Concentration',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : DISSOLUTION ===== */
+function genDissolution(){
+  var mode=pick(['qcm_dissolution','cascade_dissolution','qcm_solubilite']);
+  if(mode==='qcm_dissolution'){
+    var pools=[
+      {t:'Lors de la dissolution du sel dans l\'eau, le sel…',o:['se disperse en ions invisibles — il n\'a pas disparu','disparaît définitivement','réagit avec l\'eau pour former un nouveau corps','se dépose au fond'],c:0,e:'Le sel se dissout → ses ions se dispersent dans l\'eau mais restent présents. La masse est conservée !'},
+      {t:'Comment accélérer la dissolution du sucre dans l\'eau ?',o:['Remuer, chauffer l\'eau, ou broyer le sucre en poudre','Ajouter de l\'huile','Refroidir l\'eau','Augmenter la quantité de sucre'],c:0,e:'Agiter disperse les molécules ; chauffer augmente le mouvement des particules ; broyer augmente la surface de contact.'},
+      {t:'À quelle limite appelle-t-on la solution "saturée" ?',o:['Quand on ne peut plus dissoudre de soluté (la solution est à sa solubilité maximale)','Quand la solution a une concentration de 100 g/L','Quand la solution change de couleur','Quand la solution devient trouble'],c:0,e:'Solution saturée = au maximum de soluté dissous. Si on en ajoute encore, il reste solide au fond.'},
+      {t:'Un solide qui ne se dissout pas dans l\'eau est dit…',o:['insoluble','soluble','peu soluble','précipité'],c:0,e:'Insoluble = ne se dissout pas. Soluble = se dissout. Le sable est insoluble ; le sel est soluble dans l\'eau.'},
+      {t:'Qu\'observe-t-on si on évapore une solution d\'eau salée ?',o:['Le sel se dépose (cristaux blancs)','L\'eau reste, le sel disparaît','La solution devient gazeuse avec le sel','Un précipité rouge se forme'],c:0,e:'En évaporant l\'eau, le sel reprend sa forme solide (cristaux). Le sel était bien toujours là, dissous dans l\'eau !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Dissolution',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_dissolution'){
+    var mSoluteVals=[5,10,15,20,25,30];
+    var mSolvant=pick([100,150,200,250]);
+    var mSolute=pick(mSoluteVals);
+    var mSol=mSolute+mSolvant;
+    return {
+      type:'cascade',cat:'Dissolution',
+      sig:'DISS'+mSolute+'S'+mSolvant,
+      text:'On dissout <b>'+mSolute+' g</b> de sel dans <b>'+mSolvant+' g</b> d\'eau.<br>La solution paraît uniforme et le sel a disparu.',
+      steps:[
+        {prompt:'La masse de la solution est-elle égale à, inférieure ou supérieure à m_sel + m_eau ?',
+         aide:'La masse se conserve : m_solution = m_sel + m_eau. Rien ne disparaît vraiment !',
+         parts:['m_solution = ',{b:1,kind:'num',ans:mSolute,show:''+mSolute,w:70},' + ',{b:1,kind:'num',ans:mSolvant,show:''+mSolvant,w:80}]},
+        {prompt:'Calcule la masse totale de la solution.',
+         aide:'m_solution = '+mSolute+' + '+mSolvant+' = '+mSol+' g',
+         parts:['m_solution = ',{b:1,kind:'num',ans:mSol,show:''+mSol,w:90,tol:0},' g']},
+        {prompt:'Le sel a-t-il vraiment disparu ?',
+         aide:'Non ! Le sel est dispersé en ions invisibles dans l\'eau mais il est toujours là. La masse est conservée.',
+         parts:['Le sel a-t-il disparu ? ',{b:1,kind:'txt',accept:['non','Non','no'],show:'non',w:80}]}
+      ],
+      finalMsg:'Le sel est dissous mais toujours présent ! m_solution = <b>'+mSol+' g</b> ✅'
+    };
+  }
+  /* qcm_solubilite */
+  var pools2=[
+    {t:'À 20 °C, la solubilité du sel dans l\'eau est d\'environ 360 g/L. Que signifie cette valeur ?',o:['On peut dissoudre au maximum 360 g de sel dans 1 L d\'eau à 20 °C','Le sel a une concentration de 360 g/L','Le sel pèse 360 g dans 1 L','La solution de sel fait 360 g/L de masse'],c:0,e:'La solubilité indique la QUANTITÉ MAXIMALE de soluté dissous dans 1 L de solvant à une température donnée.'},
+    {t:'En général, augmenter la température d\'une solution…',o:['augmente la solubilité du soluté solide','diminue la solubilité','ne change rien','fait précipiter le soluté'],c:0,e:'La chaleur agite davantage les molécules d\'eau → elles peuvent "accueillir" plus de soluté. La solubilité augmente avec la température pour les solides.'},
+    {t:'Une solution contient 400 g de sel dans 1 L d\'eau (solubilité max = 360 g/L). Que se passe-t-il ?',o:['Le sel en excès reste au fond — la solution est saturée','Tout le sel se dissout quand même','Le sel réagit avec l\'eau','La solution explose'],c:0,e:'On dépasse la solubilité : 40 g de sel reste solide au fond. La solution est saturée (360 g/L dissous).'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Dissolution',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 6 : MÉLANGES HOMOGÈNES ET HÉTÉROGÈNES ===== */
+function genTypeMelanges(){
+  var mode=pick(['qcm_separation','cascade_identif','qcm_application']);
+  if(mode==='qcm_separation'){
+    var pools=[
+      {t:'Pour séparer un mélange hétérogène solide/liquide (ex : sable + eau), on utilise…',o:['la filtration','l\'évaporation','la distillation','la décantation'],c:0,e:'Filtration : le liquide passe à travers le filtre, le solide est retenu. Idéale pour un mélange hétérogène.'},
+      {t:'Pour obtenir de l\'eau pure à partir d\'eau salée, on peut utiliser…',o:['l\'évaporation puis condensation (distillation)','la filtration','la décantation','l\'aimantation'],c:0,e:'Distillation : on chauffe → eau s\'évapore (le sel reste) → on condense la vapeur → eau pure. C\'est le principe du dessalement.'},
+      {t:'La décantation permet de séparer…',o:['deux liquides non miscibles (ex : huile + eau) ou un solide lourd d\'un liquide','deux liquides miscibles','un gaz d\'un solide','un sel dissous de l\'eau'],c:0,e:'Décantation = attendre que la phase plus lourde se dépose au fond. Utile pour l\'huile + eau ou la vase + eau.'},
+      {t:'On veut récupérer le fer mélangé à du sable. Quelle technique utilise-t-on ?',o:['L\'aimantation (le fer est attirée par un aimant, pas le sable)','La filtration','La distillation','La centrifugation'],c:0,e:'L\'aimant attire le fer mais pas le sable → séparation par aimantation ! C\'est une méthode physique simple.'},
+      {t:'Chromatographie : cette technique sépare les composants d\'un mélange en utilisant…',o:['Leurs différentes vitesses de migration dans un solvant','Leur masse','Leur température d\'ébullition','Leur couleur uniquement'],c:0,e:'La chromatographie exploite les interactions différentes de chaque composant avec le solvant et le support → on les sépare.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Corps pur & mélanges',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_identif'){
+    var exemples=[
+      {sub:'sable dans l\'eau',type:'hétérogène',sep:'filtration',expl:'Le sable ne se dissout pas → deux phases visibles → hétérogène'},
+      {sub:'eau sucrée',type:'homogène',sep:'évaporation',expl:'Le sucre est dissous → une seule phase → homogène'},
+      {sub:'vinaigre + huile',type:'hétérogène',sep:'décantation',expl:'Deux liquides non miscibles → deux couches → hétérogène'},
+      {sub:'eau salée',type:'homogène',sep:'évaporation',expl:'Le sel est dissous → une seule phase → homogène'}
+    ];
+    var ex=pick(exemples);
+    return {
+      type:'cascade',cat:'Corps pur & mélanges',sig:'TYP'+ex.sub.slice(0,6),
+      text:'On mélange <b>'+ex.sub+'</b>.',
+      steps:[
+        {prompt:'Ce mélange est-il homogène ou hétérogène ?',
+         aide:ex.expl+'.',
+         parts:['Type : ',{b:1,kind:'txt',accept:[ex.type,ex.type.slice(0,4)],show:ex.type,w:160}]},
+        {prompt:'Quelle technique permettrait de séparer les composants de ce mélange ?',
+         aide:'Pour ce type de mélange, on peut utiliser la '+ex.sep+'.',
+         parts:['Technique : ',{b:1,kind:'txt',accept:[ex.sep,ex.sep.slice(0,4)],show:ex.sep,w:180}]}
+      ]
+    };
+  }
+  /* qcm_application */
+  var pools2=[
+    {t:'L\'eau que nous buvons est traitée en station d\'épuration. Quelle étape utilise la filtration ?',o:['Le passage de l\'eau à travers des couches de sable et graviers','L\'ajout de chlore','Le chauffage de l\'eau','L\'ajout de sel'],c:0,e:'La filtration sur couches de sable retient les particules solides. C\'est l\'une des premières étapes du traitement.'},
+    {t:'Dans un café express, le café est préparé par…',o:['filtration (l\'eau filtre à travers le café moulu — mélange hétérogène)','distillation','décantation','dissolution'],c:0,e:'L\'eau chaude passe à travers le café moulu (filtration) → les arômes se dissolvent dans l\'eau, la poudre reste → café.'},
+    {t:'Pourquoi le jus d\'orange "sans pulpe" est un mélange homogène alors qu\'avec pulpe c\'est hétérogène ?',o:['La pulpe est visible et forme une phase séparée — sans pulpe, tout est dissous','La pulpe change la couleur','Le sucre est plus concentré sans pulpe','La pulpe est un corps pur'],c:0,e:'Avec pulpe = morceaux visibles → hétérogène. Sans pulpe = uniforme → homogène. Le filtrage élimine les morceaux.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Corps pur & mélanges',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 7 : CONCENTRATION AVANCÉE ===== */
+function genConcentrationAvancee(){
+  var mode=pick(['calc_dilution','qcm_dilution','cascade_complet']);
+  if(mode==='calc_dilution'){
+    var t0=pick([20,40,50,60,80,100]);
+    var facteur=pick([2,4,5,10]);
+    var t1=t0/facteur;
+    var t1Str=String(t1).replace('.',',');
+    return {
+      type:'num',cat:'Concentration',
+      answer:t1,tol:0.01,
+      text:'Une solution a une concentration de <b>'+t0+' g/L</b>.<br>On la dilue en multipliant son volume par <b>'+facteur+'</b> (en ajoutant de l\'eau, sans changer la masse de soluté).<br>Quelle est la nouvelle concentration (en g/L) ?',
+      explain:'La masse de soluté ne change pas, le volume est × '+facteur+' → t = '+t0+' ÷ '+facteur+' = <b>'+t1Str+' g/L</b>.'
+    };
+  }
+  if(mode==='qcm_dilution'){
+    var pools=[
+      {t:'On prend 200 mL d\'une solution à 50 g/L et on ajoute 200 mL d\'eau. La nouvelle concentration est…',o:['25 g/L','50 g/L','100 g/L','12,5 g/L'],c:0,e:'m_soluté = 50 × 0,2 = 10 g. Nouveau V = 400 mL = 0,4 L. t = 10 / 0,4 = 25 g/L.'},
+      {t:'Diluer une solution signifie…',o:['ajouter du solvant pour diminuer la concentration','ajouter plus de soluté','chauffer la solution','filtrer la solution'],c:0,e:'Diluer = ajouter du solvant (eau) → le volume augmente → la concentration diminue.'},
+      {t:'Quand on dilue une solution par 2, sa concentration…',o:['est divisée par 2','est multipliée par 2','reste identique','devient nulle'],c:0,e:'t = m/V. Si V×2 et m constant → t÷2. La concentration est divisée par 2.'},
+      {t:'Dans une solution diluée de sirop, si on ajoute encore de l\'eau, que se passe-t-il ?',o:['Le sirop devient moins concentré (la solution est plus diluée)','Le sirop devient plus concentré','Le sirop précipite','La masse de sirop augmente'],c:0,e:'On augmente V sans changer m_soluté → t = m/V diminue. La solution est de plus en plus diluée.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Concentration',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* cascade_complet */
+  var t=pick([10,20,30,40,50]);
+  var V=pick([0.5,1,1.5,2]);
+  var m=t*V;
+  var VStr=String(V).replace('.',',');
+  var mStr=Number.isInteger(m)?String(m):String(Math.round(m*10)/10);
+  return {
+    type:'cascade',cat:'Concentration',
+    sig:'CA'+t+'V'+V,
+    text:'On veut préparer <b>'+VStr+' L</b> d\'une solution de concentration <b>t = '+t+' g/L</b>.<br>Quelle masse de soluté faut-il peser ?',
+    steps:[
+      {prompt:'Quelle formule permet de trouver la masse à partir de t et V ?',
+       lines:[{pre:'m =',blank:true,ans:'t × V',accept:['t×V','t × V','t*V','t x V'],unit:'',hint:'t = m/V donc m = t × V'}]},
+      {prompt:'Substitue les valeurs (t = '+t+' g/L, V = '+VStr+' L) :',
+       lines:[{pre:'m =',blank:true,ans:t+' × '+VStr,accept:[t+'×'+VStr,t+' × '+VStr,t+'*'+VStr,t+' x '+VStr],unit:'',hint:'Remplace t par '+t+' et V par '+VStr}]},
+      {prompt:'Calcule la masse de soluté :',
+       lines:[{pre:'m =',blank:true,ans:mStr,accept:[mStr],unit:'g',hint:t+' × '+VStr+' = ?'}]}
+    ],
+    finalMsg:'Il faut peser <b>'+mStr+' g</b> de soluté ✅'
+  };
+}
+
 /* ===== DISPATCH GEN ===== */
-var GEN={melanges:genMelanges,solution:genSolution,masse:genMasse,concentration:genConcentration};
+var GEN={melanges:genMelanges,solution:genSolution,masse:genMasse,concentration:genConcentration,dissolution:genDissolution,typemelanges:genTypeMelanges,concentrationAvancee:genConcentrationAvancee};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

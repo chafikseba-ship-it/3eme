@@ -1351,6 +1351,52 @@ const BANQUE=[
     }
   },
 
+  /* ── Ajouts : carrés, cubes, racines, fractions décimales, valeur absolue ── */
+
+  {
+    id:'nc-23',theme:'Nombres et calculs',
+    gen:()=>{
+      // Calcul rapide de carré ou cube d'entier entre 1 et 15
+      const type=choix(['carré','cube']);
+      if(type==='carré'){
+        const n=rnd(14)+2; // 2..15
+        return {q:`Calcule ${n}² sans calculatrice.`,type:'num',rep:n*n,
+          explication:`${n}² = ${n} × ${n} = ${n*n}`};
+      } else {
+        const n=choix([2,3,4,5,6,7,8,9,10]);
+        const r=n*n*n;
+        return {q:`Calcule ${n}³ sans calculatrice.`,type:'num',rep:r,
+          explication:`${n}³ = ${n} × ${n} × ${n} = ${n*n} × ${n} = ${r}`};
+      }
+    }
+  },
+
+  {
+    id:'nc-24',theme:'Nombres et calculs',
+    gen:()=>{
+      // Racine carrée d'un entier parfait étendu (jusqu'à 225)
+      const pairs=[[4,2],[9,3],[16,4],[25,5],[36,6],[49,7],[64,8],[81,9],[100,10],[121,11],[144,12],[169,13],[196,14],[225,15]];
+      const [n,r]=choix(pairs);
+      const f1=r+1, f2=r-1, f3=r+2;
+      const opts=melange([String(r),String(f1),String(f2>0?f2:r+3),String(f3)]);
+      const rep=opts.indexOf(String(r));
+      return {q:`Quelle est la valeur exacte de √${n} ?`,
+        type:'qcm',opts,rep,_bon:String(r),
+        explication:`√${n} = ${r} car ${r}² = ${r*r} = ${n}`};
+    }
+  },
+
+  {
+    id:'nc-25',theme:'Nombres et calculs',
+    gen:()=>{
+      // Valeur absolue de nombres entiers relatifs
+      const val=choix([-15,-12,-9,-7,-5,-3,-2,-1,0,1,2,4,6,8,11,13]);
+      return {q:`Quelle est la valeur absolue de ${val} ?\n(Rappel : |x| = la distance de x à 0)`,
+        type:'num',rep:Math.abs(val),
+        explication:`|${val}| = ${Math.abs(val)} (la distance de ${val} à 0 sur la droite graduée est ${Math.abs(val)})`};
+    }
+  },
+
 ];
 
 /* =====================================================

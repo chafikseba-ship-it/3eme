@@ -749,8 +749,109 @@ function genOhm(){
   return {type:'qcm',cat:'Loi d\'Ohm',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : LOI D'OHM AVANCÉE ===== */
+function genOhmAvance(){
+  var mode=pick(['cascade_R_serie','qcm_ohm_avance','calc_puissance_R']);
+  if(mode==='cascade_R_serie'){
+    var R1=pick([10,20,50,100]);var R2=pick([10,20,30,50,100]);
+    var Rtot=R1+R2;
+    var U=pick([6,9,12,24]);
+    var I=round2(U/Rtot);var IStr=String(I).replace('.',',');
+    return {
+      type:'cascade',cat:'Loi d\'Ohm',sig:'RS'+R1+'R2'+R2+'U'+U,
+      text:'Deux résistances R₁ = <b>'+R1+' Ω</b> et R₂ = <b>'+R2+' Ω</b> sont branchées en <b>série</b>.<br>La tension du générateur est <b>U = '+U+' V</b>.',
+      steps:[
+        {prompt:'En série, comment calcule-t-on la résistance totale R ?',
+         lines:[{pre:'R =',blank:true,ans:'R1 + R2',accept:['R1+R2','R₁+R₂','R1 + R2','R₁ + R₂'],unit:'',hint:'En série, les résistances s\'additionnent : R = R₁ + R₂'}]},
+        {prompt:'Calcule la résistance totale R (en Ω) :',
+         lines:[{pre:'R =',blank:true,ans:String(Rtot),accept:[String(Rtot)],unit:'Ω',hint:R1+' + '+R2+' = ?'}]},
+        {prompt:'Calcule l\'intensité I dans le circuit grâce à la loi d\'Ohm (I = U/R) :',
+         lines:[{pre:'I =',blank:true,ans:IStr,accept:[IStr,String(I)],unit:'A',hint:'I = U / R = '+U+' / '+Rtot}]}
+      ],
+      finalMsg:'R = <b>'+Rtot+' Ω</b>, I = <b>'+IStr+' A</b> ✅'
+    };
+  }
+  if(mode==='qcm_ohm_avance'){
+    var pools=[
+      {t:'En série, la résistance totale est…',o:['R = R₁ + R₂ (les résistances s\'ajoutent)','R = R₁ × R₂','R = R₁ / R₂','R = 1/R₁ + 1/R₂'],c:0,e:'En série : R_tot = R₁ + R₂. Plus on ajoute des résistances en série, plus la résistance totale est grande.'},
+      {t:'Deux résistances de 100 Ω chacune branchées en série. Résistance totale ?',o:['200 Ω','100 Ω','50 Ω','10 000 Ω'],c:0,e:'En série : R = 100 + 100 = 200 Ω.'},
+      {t:'Un circuit série : R₁ = 30 Ω, R₂ = 20 Ω, U = 10 V. L\'intensité I vaut…',o:['0,2 A','10 A','50 A','0,5 A'],c:0,e:'R_tot = 30 + 20 = 50 Ω. I = U/R = 10/50 = 0,2 A.'},
+      {t:'Si la résistance d\'un circuit double (et que U reste constant), l\'intensité…',o:['est divisée par 2','double','reste la même','quadruple'],c:0,e:'I = U/R. Si R×2 et U constant → I÷2. Résistance et intensité sont inversement proportionnelles.'},
+      {t:'Un fil de cuivre a une résistance très faible. Un court-circuit se produit quand…',o:['Un fil de faible résistance court-circuite la résistance → I devient énorme','La résistance est trop élevée','La tension est trop basse','Le courant est nul'],c:0,e:'Court-circuit : R ≈ 0 → I = U/R → I très grand → danger d\'incendie ou fusion du fil.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Loi d\'Ohm',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* calc_puissance_R : P = U × I = R × I² */
+  var R=pick([10,20,50,100,200]);var I=pick([0.5,1,2]);
+  var U=round2(R*I);var P=round2(R*I*I);
+  var IStr=String(I).replace('.',',');var UStr=String(U).replace('.',',');var PStr=String(P).replace('.',',');
+  return {
+    type:'num',cat:'Loi d\'Ohm',answer:P,tol:0.05,
+    text:'Une résistance <b>R = '+R+' Ω</b> est traversée par <b>I = '+IStr+' A</b>.<br>Calcule la puissance dissipée par cette résistance (en W).<br><i>(U = R × I, puis P = U × I)</i>',
+    explain:'U = R × I = '+R+' × '+IStr+' = '+UStr+' V. P = U × I = '+UStr+' × '+IStr+' = <b>'+PStr+' W</b>.'
+  };
+}
+
+/* ===== GÉNÉRATEUR 6 : CIRCUIT SÉRIE VS DÉRIVATION ===== */
+function genCircuitCompare(){
+  var mode=pick(['qcm_serie_deriv','cascade_derive_i','calc_derive_u']);
+  if(mode==='qcm_serie_deriv'){
+    var pools=[
+      {t:'Dans un circuit en <b>série</b>, les tensions…',o:['s\'additionnent (U_tot = U₁ + U₂)','sont identiques sur chaque composant','sont nulles','se multiplient'],c:0,e:'Série : tensions s\'additionnent. U_tot = U₁ + U₂ + …'},
+      {t:'Dans un circuit en <b>dérivation</b>, les intensités…',o:['s\'additionnent (I_tot = I₁ + I₂)','sont identiques dans toutes les branches','s\'annulent','sont nulles dans les branches'],c:0,e:'Dérivation : intensités s\'additionnent. I_tot = I₁ + I₂ + …'},
+      {t:'Dans un circuit en <b>série</b>, les intensités…',o:['sont identiques partout (I₁ = I₂ = I_tot)','s\'additionnent','sont nulles','varient selon les résistances'],c:0,e:'Série : même courant partout. I₁ = I₂ = … = I_générateur.'},
+      {t:'Dans un circuit en <b>dérivation</b>, les tensions…',o:['sont identiques dans toutes les branches (= tension du générateur)','s\'additionnent','sont nulles','varient selon la résistance de chaque branche'],c:0,e:'Dérivation : même tension dans chaque branche = tension du générateur.'},
+      {t:'Les appareils électriques d\'une maison sont branchés en dérivation. Quel avantage ?',o:['Chaque appareil peut fonctionner indépendamment — si l\'un s\'éteint, les autres restent allumés','La tension est plus élevée','Tous les appareils ont la même intensité','Le courant est plus fort'],c:0,e:'En dérivation : branches indépendantes. Si une lampe grille, les autres restent allumées. C\'est le principe de l\'installation électrique domestique.'},
+      {t:'Dans un circuit série avec deux lampes, si l\'une grille (circuit ouvert), que se passe-t-il ?',o:['L\'autre lampe s\'éteint aussi (circuit interrompu)','L\'autre lampe reste allumée','L\'autre lampe brille plus fort','Rien ne change'],c:0,e:'Série = une seule voie pour le courant. Si l\'une est coupée → plus de courant → tout s\'éteint.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Circuit électrique',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_derive_i'){
+    var i1=pick([100,150,200,250,300]);var i2=pick([50,100,150,200]);
+    var itot=i1+i2;
+    return {
+      type:'cascade',cat:'Circuit électrique',sig:'DI'+i1+'I2'+i2,
+      text:'Circuit en <b>dérivation</b> : branche 1 → <b>I₁ = '+i1+' mA</b>, branche 2 → <b>I₂ = '+i2+' mA</b>.',
+      steps:[
+        {prompt:'Quelle est la loi des intensités en dérivation ?',
+         lines:[{pre:'I_tot =',blank:true,ans:'I1 + I2',accept:['I1+I2','I₁+I₂','I1 + I2','I₁ + I₂'],unit:'',hint:'En dérivation : les intensités s\'additionnent'}]},
+        {prompt:'Calcule l\'intensité totale I_tot (en mA) :',
+         lines:[{pre:'I_tot =',blank:true,ans:String(itot),accept:[String(itot)],unit:'mA',hint:i1+' + '+i2+' = ?'}]},
+        {prompt:'Quelle est la tension U aux bornes de la branche 1 par rapport à la tension U de la branche 2 (même ou différente) ?',
+         lines:[{pre:'U₁',blank:true,ans:'= U₂',accept:['= U2','= U₂','= u2','identique','même'],unit:'',hint:'En dérivation, les tensions sont identiques dans toutes les branches.'}]}
+      ],
+      finalMsg:'I_tot = <b>'+itot+' mA</b> ✅ Tensions identiques dans les branches.'
+    };
+  }
+  /* calc_derive_u */
+  var u1=pick([3,4,5,6,9,12]);var u2=u1;
+  var utot=u1;
+  return {
+    type:'num',cat:'Tension (V)',answer:utot,tol:0,
+    text:'Dans un circuit en <b>dérivation</b>, la branche 1 est sous une tension de <b>U₁ = '+u1+' V</b>.<br>Quelle est la tension U₂ aux bornes de la branche 2 (en V) ?',
+    explain:'En dérivation, toutes les branches ont la même tension. U₂ = U₁ = <b>'+utot+' V</b>.'
+  };
+}
+
+/* ===== GÉNÉRATEUR 7 : SÉCURITÉ ÉLECTRIQUE ===== */
+function genSecuriteElec(){
+  var pools=[
+    {t:'Un disjoncteur protège le circuit électrique en…',o:['coupant le courant quand l\'intensité est trop élevée','augmentant la tension','diminuant la résistance','alimentant le circuit en cas de panne'],c:0,e:'Le disjoncteur coupe le circuit quand I dépasse la valeur limite → protège les fils et appareils contre la surchauffe.'},
+    {t:'Pourquoi ne faut-il JAMAIS toucher un fil électrique dénudé sous tension (230 V) ?',o:['Le courant électrique traverse le corps humain et peut provoquer des brûlures ou un arrêt cardiaque','Le fil est trop chaud à toucher','On risque de le casser','Le fil donne des décharges statiques'],c:0,e:'Le corps humain est conducteur. À 230 V, le courant peut dépasser 100 mA → fibrilllation ventriculaire, brûlures.'},
+    {t:'La prise de terre dans une installation électrique sert à…',o:['Protéger contre l\'électrocution en déviant le courant vers la terre en cas de défaut','Augmenter la puissance des appareils','Réduire la consommation','Améliorer le signal Wi-Fi'],c:0,e:'Si un appareil est défectueux (carcasse sous tension), la prise de terre dévie le courant dangereux vers le sol → déclenche le disjoncteur.'},
+    {t:'La valeur minimale du courant électrique dangereux pour le corps humain est d\'environ…',o:['10 mA','1 A','100 A','0,001 mA'],c:0,e:'Dès 10 mA (0,01 A), le courant provoque des contractions musculaires incontrôlées. Au-delà de 30 mA, le risque est mortel.'},
+    {t:'Un fusible "fond" (grille) pour protéger le circuit. Que se passe-t-il ensuite ?',o:['Le circuit est ouvert — plus de courant ne passe','Le circuit est renforcé','La résistance augmente','La tension augmente'],c:0,e:'Le fusible est un fil qui fond au-delà d\'une certaine intensité → circuit ouvert → courant coupé. On le remplace ensuite.'},
+    {t:'La résistance du corps humain est d\'environ 1 000 Ω. Sous 230 V, l\'intensité qui le traverse est environ…',o:['0,23 A (230 mA) — très dangereux !','230 A','23 A','0,023 A'],c:0,e:'I = U/R = 230/1000 = 0,23 A = 230 mA. Largement au-delà du seuil fatal (30 mA) !'},
+    {t:'Quel câble est le plus sécurisé pour une installation électrique ?',o:['Un câble avec gaine isolante intacte','Un câble dénudé (sans gaine)','Un câble plus fin','Un câble en aluminium nu'],c:0,e:'La gaine isolante empêche tout contact accidentel avec le conducteur. Ne jamais utiliser un câble dont la gaine est abîmée !'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Circuit électrique',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== DISPATCH ===== */
-var GEN={circuit:genCircuit,tension:genTension,intensite:genIntensite,ohm:genOhm};
+var GEN={circuit:genCircuit,tension:genTension,intensite:genIntensite,ohm:genOhm,ohmAvance:genOhmAvance,circuitCompare:genCircuitCompare,securiteElec:genSecuriteElec};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};

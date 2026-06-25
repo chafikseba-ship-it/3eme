@@ -870,7 +870,138 @@ function genFlotte(){
   }
 }
 
-var GEN={intro:genIntro,calcul:genCalcul,conversion:genConversion,flotte:genFlotte};
+/* ===== GÉNÉRATEUR 5 : IDENTIFICATION DE MATÉRIAUX ===== */
+function genIdentification(){
+  var mode=pick(['qcm_ident','cascade_ident','qcm_densite']);
+  var MATERIAUX_ID=[
+    {nom:'or',rho:19.3},{nom:'plomb',rho:11.3},{nom:'cuivre',rho:8.9},
+    {nom:'fer',rho:7.9},{nom:'aluminium',rho:2.7},{nom:'verre',rho:2.5},
+    {nom:'béton',rho:2.3},{nom:'bois',rho:0.85},{nom:'liège',rho:0.25},
+    {nom:'eau',rho:1.0}
+  ];
+  if(mode==='qcm_ident'){
+    var pools=[
+      {t:'Un morceau de métal a ρ = 7,9 g/cm³. D\'après le tableau des masses volumiques, c\'est du…',o:['fer','aluminium','cuivre','plomb'],c:0,e:'ρ = 7,9 g/cm³ → c\'est le fer ! L\'aluminium est à 2,7, le cuivre à 8,9, le plomb à 11,3.'},
+      {t:'Un objet mystère a ρ = 2,7 g/cm³. Quel est ce matériau ?',o:['aluminium','béton','verre','fer'],c:0,e:'ρ = 2,7 g/cm³ correspond à l\'ALUMINIUM. C\'est pourquoi les canettes sont légères !'},
+      {t:'Un bijou a ρ = 19,3 g/cm³. C\'est probablement de l\'…',o:['or','plomb','cuivre','argent'],c:0,e:'ρ = 19,3 g/cm³ → or. Le plomb est à 11,3, le cuivre à 8,9. L\'or est très dense !'},
+      {t:'Un matériau a ρ = 8,9 g/cm³. C\'est probablement du…',o:['cuivre','fer','aluminium','plomb'],c:0,e:'ρ = 8,9 g/cm³ → cuivre. Caractéristique des fils électriques et tuyaux en cuivre.'},
+      {t:'La masse volumique est une propriété physique…',o:['caractéristique d\'un matériau — elle permet de l\'identifier','variable selon la forme de l\'objet','qui dépend de la masse uniquement','inutile pour identifier un matériau'],c:0,e:'ρ est caractéristique : tout morceau de fer a ρ = 7,9 g/cm³ quelle que soit sa forme !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'identification',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_ident'){
+    var mat=pick([
+      {nom:'fer',rho:7.9,m:158,V:20},
+      {nom:'aluminium',rho:2.7,m:54,V:20},
+      {nom:'cuivre',rho:8.9,m:178,V:20},
+      {nom:'plomb',rho:11.3,m:226,V:20}
+    ]);
+    var mS=fmtFR(mat.m,0);var rS=fmtFR(mat.rho,2);
+    return {
+      type:'cascade',cat:'identification',sig:'ID'+mat.nom,
+      text:'Un objet inconnu a une masse de <b>'+mS+' g</b> et un volume de <b>'+mat.V+' cm³</b>.<br>Identifie le matériau.',
+      steps:[
+        {prompt:'Calcule la masse volumique ρ = m ÷ V.',
+         aide:'ρ = '+mS+' ÷ '+mat.V+' = '+rS+' g/cm³',
+         parts:['ρ = ',{b:1,kind:'num',ans:mat.rho,show:rS,w:80,tol:0.05},' g/cm³']},
+        {prompt:'D\'après le tableau des masses volumiques, quel est ce matériau ?',
+         aide:rS+' g/cm³ correspond au '+mat.nom+'.',
+         parts:['Matériau : ',{b:1,kind:'txt',accept:[mat.nom,mat.nom.slice(0,3)],show:mat.nom,w:160}]}
+      ]
+    };
+  }
+  /* qcm_densite */
+  var pools2=[
+    {t:'Un métal inconnu a une masse volumique de 11,3 g/cm³. De quel métal s\'agit-il ?',o:['Plomb','Fer','Cuivre','Or'],c:0,e:'ρ = 11,3 g/cm³ = plomb. À comparer : fer = 7,9 ; cuivre = 8,9 ; or = 19,3.'},
+    {t:'Deux objets de même volume, l\'un en aluminium (ρ = 2,7 g/cm³), l\'autre en fer (ρ = 7,9 g/cm³). Lequel est le plus lourd ?',o:['Le fer — sa masse volumique est plus grande','L\'aluminium — il est plus léger','Ils ont la même masse — même volume','Impossible à dire'],c:0,e:'Même volume → la masse dépend de ρ. ρ_fer > ρ_alu → l\'objet en fer est plus lourd !'},
+    {t:'Pourquoi les avions sont-ils fabriqués en aluminium plutôt qu\'en acier ?',o:['L\'aluminium est moins dense (2,7 g/cm³) → l\'avion est plus léger','L\'aluminium est moins cher','L\'aluminium est plus solide que l\'acier','L\'acier rouille et l\'aluminium non'],c:0,e:'Aluminium : ρ = 2,7 g/cm³. Acier : ρ ≈ 7,8 g/cm³. L\'avion en aluminium est environ 3 fois plus léger !'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'identification',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 6 : FLOTTABILITÉ AVANCÉE ===== */
+function genFlottabilite2(){
+  var mode=pick(['qcm_principe','cascade_iceberg','qcm_applications']);
+  if(mode==='qcm_principe'){
+    var pools=[
+      {t:'Un objet flotte dans l\'eau si sa masse volumique est…',o:['inférieure à 1 g/cm³ (ρ eau)','supérieure à 1 g/cm³','égale à 1 g/cm³','nulle'],c:0,e:'ρ objet < ρ liquide → flotte. ρ objet > ρ liquide → coule. ρ objet = ρ liquide → reste en suspension.'},
+      {t:'Un sous-marin peut flotter ou couler selon…',o:['le remplissage de ses ballasts d\'eau (qui change sa masse volumique moyenne)','la puissance de ses moteurs','la profondeur de l\'eau','sa couleur'],c:0,e:'Les ballasts se remplissent d\'eau (ρ augmente → coule) ou d\'air (ρ diminue → monte). Brillant !'},
+      {t:'Un iceberg flotte car la glace a une masse volumique de 0,92 g/cm³ (< 1 g/cm³). Quelle fraction est immergée ?',o:['Environ 90 %','Environ 10 %','Environ 50 %','100 % — l\'iceberg est entièrement sous l\'eau'],c:0,e:'9/10 de l\'iceberg est sous l\'eau car ρ_glace = 0,92 ≈ 92 % de ρ_eau. D\'où l\'expression "la partie immergée de l\'iceberg" !'},
+      {t:'Un bateau en acier (ρ acier = 7,8 g/cm³) flotte. Comment est-ce possible ?',o:['Sa masse volumique MOYENNE (acier + air intérieur) est inférieure à 1 g/cm³','L\'acier est léger en mer','L\'eau de mer est plus dense','Le bateau brûle du carburant qui le soulève'],c:0,e:'Le bateau est creux : il contient surtout de l\'air. Sa ρ moyenne (acier + air) < 1 g/cm³ → il flotte !'},
+      {t:'Un objet de ρ = 1 g/cm³ plongé dans l\'eau…',o:['reste en suspension (ni ne monte, ni ne coule)','coule lentement','flotte en surface','s\'évapore'],c:0,e:'ρ objet = ρ eau → l\'objet reste en équilibre à n\'importe quelle profondeur. C\'est la densité neutre !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'flotte',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_iceberg'){
+    return {
+      type:'cascade',cat:'flotte',sig:'FLOT_SOUSM',
+      text:'La glace a une masse volumique de <b>0,92 g/cm³</b>. L\'eau a une masse volumique de <b>1 g/cm³</b>.<br>Réponds aux questions sur la flottabilité d\'un glaçon.',
+      steps:[
+        {prompt:'Compare ρ_glace = 0,92 g/cm³ à ρ_eau = 1 g/cm³. La glace flotte-t-elle ou coule-t-elle ?',
+         aide:'0,92 < 1 → la glace est moins dense que l\'eau → elle flotte.',
+         parts:['La glace ',{b:1,kind:'txt',accept:['flotte','flot'],show:'flotte',w:120},' dans l\'eau.']},
+        {prompt:'Quelle fraction approximative du glaçon est SOUS l\'eau ?',
+         aide:'ρ_glace / ρ_eau = 0,92 / 1 = 92 %. Environ 92 % du glaçon est immergé.',
+         parts:['Environ ',{b:1,kind:'num',ans:92,show:'92',w:70,tol:2},' % du glaçon est sous l\'eau.']}
+      ]
+    };
+  }
+  /* qcm_applications */
+  var pools2=[
+    {t:'L\'huile (ρ ≈ 0,9 g/cm³) flotte sur l\'eau car…',o:['ρ_huile < ρ_eau (0,9 < 1 g/cm³)','L\'huile est visqueuse','L\'eau repousse l\'huile','L\'huile est plus chaude'],c:0,e:'ρ_huile = 0,9 < 1 = ρ_eau → l\'huile flotte. C\'est pour ça que la vinaigrette se sépare en deux couches !'},
+    {t:'Le mercure (ρ = 13,6 g/cm³) est un métal liquide. Si on y pose un morceau de fer (ρ = 7,9 g/cm³)…',o:['Le fer flotte sur le mercure !','Le fer coule dans le mercure','Le fer se dissout dans le mercure','Le fer reste en suspension'],c:0,e:'ρ_fer (7,9) < ρ_mercure (13,6) → le fer flotte sur le mercure. Surprenant mais correct !'},
+    {t:'Pour qu\'un corps flotte dans l\'eau salée (ρ ≈ 1,03 g/cm³), sa masse volumique doit être…',o:['inférieure à 1,03 g/cm³','supérieure à 1,03 g/cm³','exactement 1 g/cm³','inférieure à 0,5 g/cm³'],c:0,e:'Même principe : ρ_objet < ρ_liquide → flotte. L\'eau salée est plus dense que l\'eau douce → plus d\'objets peuvent y flotter.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'flotte',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+/* ===== GÉNÉRATEUR 7 : COMPARAISON ET ORDRE DE GRANDEUR ===== */
+function genComparaison(){
+  var mode=pick(['cascade_comp','qcm_ordre','qcm_quotidien']);
+  var METAUX=[
+    {nom:'liège',rho:0.25},{nom:'bois',rho:0.85},{nom:'eau',rho:1.0},
+    {nom:'aluminium',rho:2.7},{nom:'fer',rho:7.9},{nom:'plomb',rho:11.3},{nom:'or',rho:19.3}
+  ];
+  if(mode==='cascade_comp'){
+    var idxA=rint(0,3);var idxB=idxA+rint(2,3);
+    var matA=METAUX[idxA];var matB=METAUX[Math.min(idxB,METAUX.length-1)];
+    return {
+      type:'cascade',cat:'comparaison',sig:'COMP'+matA.nom+matB.nom,
+      text:'Compare les masses volumiques du <b>'+matA.nom+'</b> (ρ = '+fmtFR(matA.rho,2)+' g/cm³) et du <b>'+matB.nom+'</b> (ρ = '+fmtFR(matB.rho,2)+' g/cm³).',
+      steps:[
+        {prompt:'Lequel des deux matériaux est le plus dense (masse volumique la plus grande) ?',
+         aide:matB.nom+' a une masse volumique de '+fmtFR(matB.rho,2)+' g/cm³ > '+fmtFR(matA.rho,2)+' g/cm³ ('+matA.nom+').',
+         parts:['Le plus dense : ',{b:1,kind:'txt',accept:[matB.nom,matB.nom.slice(0,3)],show:matB.nom,w:160}]},
+        {prompt:'Pour un même volume de 100 cm³, lequel pèse le plus lourd ?',
+         aide:'m = ρ × V. Plus ρ est grand, plus la masse est grande pour le même volume.',
+         parts:['Le plus lourd pour 100 cm³ : ',{b:1,kind:'txt',accept:[matB.nom,matB.nom.slice(0,3)],show:matB.nom,w:160}]}
+      ]
+    };
+  }
+  if(mode==='qcm_ordre'){
+    var pools=[
+      {t:'Classe ces matériaux du moins dense au plus dense : fer (7,9), liège (0,25), aluminium (2,7)',o:['Liège → aluminium → fer','Aluminium → liège → fer','Fer → aluminium → liège','Liège → fer → aluminium'],c:0,e:'0,25 < 2,7 < 7,9 → liège < aluminium < fer. Le liège est bien plus léger que le fer !'},
+      {t:'Laquelle de ces masses volumiques correspond au liège (qui flotte très bien) ?',o:['0,25 g/cm³','0,85 g/cm³','1,0 g/cm³','2,3 g/cm³'],c:0,e:'Le liège a ρ = 0,25 g/cm³ — c\'est l\'un des solides les moins denses ! D\'où son utilisation pour les bouchons et gilets de sauvetage.'},
+      {t:'Un même volume de plomb (ρ = 11,3) pèse combien de fois plus qu\'un même volume d\'aluminium (ρ = 2,7) ?',o:['Environ 4 fois plus lourd','Environ 2 fois plus lourd','Environ 10 fois plus lourd','La même masse'],c:0,e:'11,3 ÷ 2,7 ≈ 4,2. Un objet en plomb pèse environ 4 fois plus qu\'un objet identique en aluminium !'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'comparaison',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* qcm_quotidien */
+  var pools2=[
+    {t:'Pourquoi les raquettes de tennis sont-elles souvent fabriquées en aluminium plutôt qu\'en acier ?',o:['L\'aluminium est moins dense → raquette plus légère','L\'aluminium est plus solide','L\'aluminium coûte moins cher','L\'acier rouille trop vite'],c:0,e:'Aluminium (2,7 g/cm³) vs acier (≈ 7,8 g/cm³) → raquette en alu environ 3 fois plus légère pour le même volume.'},
+    {t:'Les bijoux en "plaqué or" sont des bijoux en métal ordinaire recouverts d\'une fine couche d\'or. Pourquoi ne peut-on pas les identifier uniquement par leur aspect ?',o:['Leur masse volumique moyenne est différente de l\'or pur (19,3 g/cm³)','L\'or est trop brillant','La couleur est différente','La forme est différente'],c:0,e:'Un bijou en plaqué or a une ρ bien inférieure à 19,3 g/cm³ (or pur). En mesurant ρ = m/V, on peut détecter une imitation !'},
+    {t:'On veut savoir si un lingot est de l\'or pur (ρ = 19,3 g/cm³) ou de l\'or plaqué. On mesure m = 386 g et V = 20 cm³. Est-ce de l\'or pur ?',o:['Oui : ρ = 386/20 = 19,3 g/cm³ = or pur','Non : ρ est trop faible','Oui, l\'aspect suffit à le confirmer','Non, mais la masse est correcte'],c:0,e:'ρ = 386 ÷ 20 = 19,3 g/cm³ → correspond exactement à l\'or pur ! Archimède utilisait déjà cette méthode.'}
+  ];
+  var q=pick(pools2);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'comparaison',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
+var GEN={intro:genIntro,calcul:genCalcul,conversion:genConversion,flotte:genFlotte,identification:genIdentification,flottabilite2:genFlottabilite2,comparaison:genComparaison};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,lastSig:'',timer:0,casc:null};

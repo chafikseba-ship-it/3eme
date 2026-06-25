@@ -872,7 +872,93 @@ function genHomothetie(){
     ]
   };
 }
-var GEN={symetrie:genSymetrie,symetricen:genSymetricen,translation:genTranslation,rotation:genRotation,homothetie:genHomothetie};
+/* ===== CASCADE : rotation d'un point ===== */
+function genRotationPoint(){
+  var angles=['90d','90i','180'];
+  var angle=pick(angles);
+  var ax=rint(-3,3),ay=rint(-3,3);
+  while(ax===0&&ay===0){ax=rint(-3,3);ay=rint(-3,3);}
+  var prx,pry,angleDesc,formule;
+  if(angle==='180'){prx=-ax;pry=-ay;angleDesc='180°';formule='A\'= (−x ; −y)';}
+  else if(angle==='90d'){prx=ay;pry=-ax;angleDesc='90° dans le sens horaire';formule='A\'= (y ; −x)';}
+  else{prx=-ay;pry=ax;angleDesc='90° dans le sens antihoraire';formule='A\'= (−y ; x)';}
+  var viz=svgGrille([{x:ax,y:ay,label:'A',color:'#4FA3D1'}],{centre:{x:0,y:0},W:260,H:220});
+  return {
+    type:'casc',sig:'rot'+angle+ax+ay,cat:'rotation',
+    viz:viz,
+    text:'Rotation de centre O(0 ; 0), angle '+angleDesc+'.<br>A('+ax+' ; '+ay+'). Quelles sont les coordonnées de A\' ?',
+    explain:'A\'('+prx+' ; '+pry+')',
+    steps:[
+      {prompt:'<b>Étape 1 :</b> Abscisse de A\' ? (Formule : '+formule+')',
+       parts:["A' = ( ",{kind:'num',ans:prx,w:50},' ; _____ )'],
+       aide:'Pour rotation '+angleDesc+' : '+formule+'. Abscisse de A\' = '+prx},
+      {prompt:'<b>Étape 2 :</b> Ordonnée de A\' ?',
+       parts:["A' = ( "+prx+" ; ",{kind:'num',ans:pry,w:50},' )'],
+       aide:'Ordonnée de A\' = '+pry}
+    ]
+  };
+}
+
+/* ===== CASCADE : symétrie centrale ===== */
+function genSymCentrale(){
+  var cx=pick([-2,-1,0,1,2]),cy=pick([-2,-1,0,1,2]);
+  var ax,ay;
+  do{ax=rint(-3,3);}while(ax===cx);
+  do{ay=rint(-3,3);}while(ay===cy);
+  var prx=2*cx-ax,pry=2*cy-ay;
+  var centreDesc='C('+cx+' ; '+cy+')';
+  var viz=svgGrille([{x:ax,y:ay,label:'A',color:'#4FA3D1'}],{centre:{x:cx,y:cy},W:260,H:220});
+  return {
+    type:'casc',sig:'sc2'+ax+ay+cx+cy,cat:'symetricen',
+    viz:viz,
+    text:'A('+ax+' ; '+ay+') est symétrique par rapport au point '+centreDesc+'.<br>Trouve les coordonnées de A\'.',
+    explain:'A\'('+prx+' ; '+pry+')',
+    steps:[
+      {prompt:'<b>Étape 1 :</b> Abscisse de A\' = 2 × xC − xA',
+       parts:["A' = ( ",{kind:'num',ans:prx,w:50},' ; _____ )'],
+       aide:'2 × '+cx+' − '+ax+' = '+prx},
+      {prompt:'<b>Étape 2 :</b> Ordonnée de A\' = 2 × yC − yA',
+       parts:["A' = ( "+prx+" ; ",{kind:'num',ans:pry,w:50},' )'],
+       aide:'2 × '+cy+' − '+ay+' = '+pry}
+    ]
+  };
+}
+
+/* ===== CASCADE : composition de deux translations ===== */
+function genCompositionTranslations(){
+  var dx1=pick([-3,-2,-1,1,2,3]),dy1=pick([-3,-2,-1,1,2,3]);
+  var dx2=pick([-3,-2,-1,1,2,3]),dy2=pick([-3,-2,-1,1,2,3]);
+  var ax=rint(-2,2),ay=rint(-2,2);
+  // A' après première translation
+  var bx=ax+dx1,by=ay+dy1;
+  // A'' après deuxième translation
+  var cx2=bx+dx2,cy2=by+dy2;
+  // Vecteur résultant
+  var drx=dx1+dx2,dry=dy1+dy2;
+  var sign1=dy1>=0?'+':'',sign2=dy2>=0?'+':'';
+  return {
+    type:'casc',sig:'ct'+ax+ay+dx1+dy1+dx2+dy2,cat:'translation',
+    viz:null,
+    text:'Translation t₁ de vecteur ('+dx1+' ; '+dy1+'), puis translation t₂ de vecteur ('+dx2+' ; '+dy2+').<br>Point A('+ax+' ; '+ay+'). Calcule A\' après t₁, puis A\'\' après t₂.',
+    explain:'A\'('+bx+' ; '+by+') puis A\'\'('+cx2+' ; '+cy2+')',
+    steps:[
+      {prompt:'<b>Étape 1 :</b> A\' après t₁ — abscisse de A\' ?',
+       parts:["A' = ( ",{kind:'num',ans:bx,w:50},' ; _____ )'],
+       aide:ax+' + '+dx1+' = '+bx},
+      {prompt:'<b>Étape 2 :</b> A\' après t₁ — ordonnée de A\' ?',
+       parts:["A' = ( "+bx+" ; ",{kind:'num',ans:by,w:50},' )'],
+       aide:ay+' + '+dy1+' = '+by},
+      {prompt:'<b>Étape 3 :</b> A\'\' après t₂ — abscisse de A\'\' ?',
+       parts:["A'' = ( ",{kind:'num',ans:cx2,w:50},' ; _____ )'],
+       aide:bx+' + '+dx2+' = '+cx2},
+      {prompt:'<b>Étape 4 :</b> A\'\' après t₂ — ordonnée de A\'\' ?',
+       parts:["A'' = ( "+cx2+" ; ",{kind:'num',ans:cy2,w:50},' )'],
+       aide:by+' + '+dy2+' = '+cy2}
+    ]
+  };
+}
+
+var GEN={symetrie:genSymetrie,symetricen:genSymetricen,translation:genTranslation,rotation:genRotation,homothetie:genHomothetie,rotationPoint:genRotationPoint,symCentrale:genSymCentrale,compositionTrans:genCompositionTranslations};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,casc:null,lastText:'',timer:0};

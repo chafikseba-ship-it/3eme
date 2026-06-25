@@ -380,8 +380,8 @@ const SERIE=10, SEUIL=8;
 const CASCADE_THEMES={longueur:true,angle:true};
 function serieLen(){return CASCADE_THEMES[currentTheme]?5:SERIE;}
 function seuilFor(){return CASCADE_THEMES[currentTheme]?4:SEUIL;}
-const CATNOM={cotes:'Les côtés',formule:'La relation',longueur:'Longueur',angle:'Angle'};
-const THEME_CATS={cotes:['cotes'],formule:['formule'],longueur:['longueur'],angle:['angle']};
+const CATNOM={cotes:'Les côtés',formule:'La relation',longueur:'Longueur',angle:'Angle',cotes2:'Les côtés',formule2:'La relation',angle2:'Angle'};
+const THEME_CATS={cotes:['cotes','cotes2'],formule:['formule','formule2'],longueur:['longueur'],angle:['angle','angle2']};
 const HELP={
   cotes:'Hypoténuse = côté opposé à l’angle droit (le plus long). Pour un angle : opposé = en face ; adjacent = à côté.',
   formule:'SOH-CAH-TOA : sin = Opposé/Hypoténuse, cos = Adjacent/Hypoténuse, tan = Opposé/Adjacent.',
@@ -553,7 +553,76 @@ function genAngle(){
               {b:1,kind:'text',accept:['°','degre','degres','deg'],show:'°',w:96,ph:'° ou degrés'},'.']}
     ]};
 }
-var GEN={cotes:genCotes,formule:genFormule,longueur:genLongueur,angle:genAngle};
+function genCotes2(){
+  var lay=triLayout();
+  var which=pick(['hyp','opp','adj']);
+  var pool=[
+    ['L'hypoténuse est toujours le côté le plus long. Vrai ou faux ?',['Vrai','Faux'],'Vrai : l'hypoténuse est opposée à l'angle droit, donc c'est le plus long des trois côtés.'],
+    ['Le côté adjacent à un angle touche cet angle. Vrai ou faux ?',['Vrai, il touche l'angle sans être l'hypoténuse','Faux, il est en face','Vrai, c'est toujours l'hypoténuse'],'Le côté adjacent touche l'angle aigu mais n'est pas l'hypoténuse.'],
+    ['Dans un triangle rectangle, le côté opposé à un angle aigu…',['ne touche pas cet angle','touche l'angle aigu','est l'hypoténuse'],'Le côté opposé est en face de l'angle aigu : il ne le touche pas.']
+  ];
+  var q=pick(pool);
+  var opts=shuffle(q[1]);
+  return {type:'qcm',cat:'cotes',text:q[0],options:opts,correct:opts.indexOf(q[1][0]),explain:q[2],viz:rtSVG({vert:true,ang:''})};
+}
+function genFormule2(){
+  var type=pick(['identify','apply']);
+  if(type==='identify'){
+    var cases=[
+      {known:'opp',unk:'hyp',rel:'sinus',expl:'Opposé et hypoténuse → sinus.'},
+      {known:'adj',unk:'hyp',rel:'cosinus',expl:'Adjacent et hypoténuse → cosinus.'},
+      {known:'opp',unk:'adj',rel:'tangente',expl:'Opposé et adjacent → tangente.'}
+    ];
+    var c=pick(cases),fig={ang:rint(25,65)+'°'};fig[c.known]=rint(4,18)+' cm';fig[c.unk]='?';
+    return qcm('formule','Quel rapport trigonométrique relie les deux côtés indiqués ?',['cosinus','sinus','tangente'],['cosinus','sinus','tangente'].indexOf(c.rel),c.expl,rtSVG(fig));
+  }
+  var ang=rint(20,70);
+  var sides=[
+    {opp:'?',hyp:rint(5,20)+' cm',rel:'sinus'},
+    {adj:'?',hyp:rint(5,20)+' cm',rel:'cosinus'},
+    {opp:'?',adj:rint(5,15)+' cm',rel:'tangente'}
+  ];
+  var s=pick(sides);var fig2={ang:ang+'°'};
+  if(s.opp)fig2.opp=s.opp;if(s.hyp)fig2.hyp=s.hyp;if(s.adj)fig2.adj=s.adj;
+  var expl2={sinus:'Opposé et hypoténuse → sinus.',cosinus:'Adjacent et hypoténuse → cosinus.',tangente:'Opposé et adjacent → tangente.'}[s.rel];
+  return qcm('formule','Pour calculer le « ? », quelle relation utilises-tu ?',['cosinus','sinus','tangente'],['cosinus','sinus','tangente'].indexOf(s.rel),expl2,rtSVG(fig2));
+}
+function genAngle2(){
+  var R=180/Math.PI,type=pick(['cos','sin','tan']),fig={ang:'?'},th,a3,b3;
+  if(type==='cos'){a3=rint(4,13);b3=a3+rint(3,9);th=Math.acos(a3/b3)*R;fig.adj=a3+' cm';fig.hyp=b3+' cm';}
+  else if(type==='sin'){a3=rint(4,13);b3=a3+rint(3,9);th=Math.asin(a3/b3)*R;fig.opp=a3+' cm';fig.hyp=b3+' cm';}
+  else{a3=rint(4,15);b3=rint(4,15);th=Math.atan(a3/b3)*R;fig.opp=a3+' cm';fig.adj=b3+' cm';}
+  var ans=Math.round(th);
+  var invShow={cos:'cos\u207b\u00b9',sin:'sin\u207b\u00b9',tan:'tan\u207b\u00b9'}[type];
+  var invAcc={cos:['cos-1','acos','arccos'],sin:['sin-1','asin','arcsin'],tan:['tan-1','atan','arctan']}[type];
+  var numShow={cos:'adjacent',sin:'opposé',tan:'opposé'}[type];
+  var denShow={cos:'hypoténuse',sin:'hypoténuse',tan:'adjacent'}[type];
+  var numWord={cos:['adjac'],sin:['oppos'],tan:['oppos']}[type];
+  var denWord={cos:['hypoten'],sin:['hypoten'],tan:['adjac']}[type];
+  var known=type==='cos'?'l'adjacent et l'hypoténuse':type==='sin'?'le côté opposé et l'hypoténuse':'le côté opposé et l'adjacent';
+  return {type:'cascade',cat:'angle',sig:'A2'+type+a3+b3,viz:rtSVG(fig),
+    text:'Calcule la mesure de l'angle « ? », en rédigeant comme au brevet.',
+    steps:[
+      {prompt:'Étape 1 — On connaît '+known+'. Écris la relation à utiliser.',
+       hint:'cos = adjacent÷hypoténuse · sin = opposé÷hypoténuse · tan = opposé÷adjacent.',
+       parts:[{b:1,kind:'text',accept:[type],mode:'contains',show:type,w:78,ph:'cos/sin/tan'},' = ',
+              {b:1,kind:'text',accept:numWord,mode:'contains',show:numShow,w:120,ph:'côté…'},' ÷ ',
+              {b:1,kind:'text',accept:denWord,mode:'contains',show:denShow,w:130,ph:'côté…'}]},
+      {prompt:'Étape 2 — Remplace par les nombres (x = l'angle cherché).',
+       parts:[type+'(x) = ',{b:1,kind:'num',ans:a3,show:''+a3,w:60},' ÷ ',{b:1,kind:'num',ans:b3,show:''+b3,w:60}]},
+      {prompt:'Étape 3 — Pour trouver l'angle, écris la fonction inverse.',
+       hint:'cos⁻¹, sin⁻¹ ou tan⁻¹ — tu peux écrire cos-1, sin-1 ou tan-1.',
+       parts:['x = ',{b:1,kind:'text',accept:invAcc,show:invShow,w:92,ph:'…-1'},'( ',
+              {b:1,kind:'num',ans:a3,show:''+a3,w:56},' ÷ ',{b:1,kind:'num',ans:b3,show:''+b3,w:56},' )']},
+      {prompt:'Étape 4 — Calcule (arrondis au degré).',
+       hint:'x = '+invShow+'('+a3+' ÷ '+b3+') ≈ ?   (touche '+invShow+' dans 🧮)',
+       parts:['x ≈ ',{b:1,kind:'num',ans:ans,tol:1.5,show:''+ans,w:80,ph:'…'},' °']},
+      {prompt:'Étape 5 — Rédige la phrase de conclusion.',
+       parts:['L'angle mesure environ ',{b:1,kind:'num',ans:ans,tol:1.5,show:''+ans,w:80,ph:'…'},' ',
+              {b:1,kind:'text',accept:['°','degre','degres','deg'],show:'°',w:96,ph:'° ou degrés'},'.']}
+    ]};
+}
+var GEN={cotes:genCotes,formule:genFormule,longueur:genLongueur,angle:genAngle,cotes2:genCotes2,formule2:genFormule2,angle2:genAngle2};
 
 /* ===== moteur de quiz (série notée) ===== */
 function confettis(){var cols=['#FFC93C','#8BC34A','#FF8A4C','#46BECB','#A78BC4','#EF5D60'];for(var i=0;i<22;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.background=pick(cols);d.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(d);var fall=2000+Math.random()*1200;d.animate([{top:'-20px',opacity:1},{top:'100vh',opacity:.9}],{duration:fall,easing:'ease-in'});setTimeout((function(el){return function(){el.remove();};})(d),fall);}}

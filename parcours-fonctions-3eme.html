@@ -582,8 +582,8 @@ var BRIQUE={
 };
 function serieLen(){return BRIQUE[currentTheme].serie;}
 function seuilFor(){return BRIQUE[currentTheme].seuil;}
-var CATNOM={vocabulaire:'Vocabulaire',antecedent:'Antécédent',representation:'Représentation',lecture:'Lecture graphique',lineaire:'Linéaire',affine:'Affine'};
-var THEME_CATS={vocabulaire:['vocabulaire'],antecedent:['antecedent'],representation:['representation'],lecture:['lecture'],lineaire:['lineaire'],affine:['affine']};
+var CATNOM={vocabulaire:'Vocabulaire',antecedent:'Antécédent',representation:'Représentation',lecture:'Lecture graphique',lineaire:'Linéaire',affine:'Affine',tableauValeurs:'Vocabulaire',variations:'Linéaire',antecedentCascade:'Antécédent'};
+var THEME_CATS={vocabulaire:['vocabulaire','tableauValeurs'],antecedent:['antecedent','antecedentCascade'],representation:['representation'],lecture:['lecture'],lineaire:['lineaire','variations'],affine:['affine']};
 var HELP={
   vocabulaire:'Image de x = f(x). Antécédent de y = valeur x telle que f(x) = y.',
   antecedent:'Pose l\'équation f(x) = valeur. Résous étape par étape.',
@@ -955,7 +955,81 @@ function genAffine(){
     viz:svgDroite(a,b,{xmin:-1,xmax:6,ymin:Math.min(-4,b-1),ymax:Math.max(12,a*5+b+2),pts:[{x:0,y:b,label:'(0;'+b+')'}]})};
 }
 
-var GEN={vocabulaire:genVocabulaire,antecedent:genAntecedent,representation:genRepresentation,lecture:genLecture,lineaire:genLineaire,affine:genAffine};
+/* ===== générateur : tableau de valeurs ===== */
+function genTableauValeurs(){
+  var a=rint(2,4),b=pick([-2,-1,0,1,2]);
+  var xs=[-2,-1,0,1,2,3];
+  var missing=pick([1,2,3,4]);
+  var xm=xs[missing],ym=a*xm+b;
+  var bStr=b>0?'+'+b:(b<0?''+b:'');
+  var tabHtml='<table class="stab" style="margin:10px auto"><tr><th>x</th>';
+  xs.forEach(function(x){tabHtml+='<th>'+x+'</th>';});
+  tabHtml+='</tr><tr><th>f(x)</th>';
+  xs.forEach(function(x,i){tabHtml+='<td>'+(i===missing?'<b style="color:var(--rouge)">?</b>':a*x+b)+'</td>';});
+  tabHtml+='</tr></table>';
+  var rawOpts=[String(ym),String(ym+a),String(ym-a),String(ym+b)].filter(function(v,i,arr){return arr.indexOf(v)===i;}).slice(0,4);
+  while(rawOpts.length<3)rawOpts.push(String(ym+rawOpts.length*2+1));
+  var opts=shuffle(rawOpts);
+  return {type:'qcm',cat:'vocabulaire',
+    text:'f(x) = '+a+'x'+bStr+'. Dans le tableau ci-dessous, quelle est la valeur manquante ?',
+    options:opts,correct:opts.indexOf(String(ym)),
+    explain:'f('+xm+') = '+a+'×'+xm+(b!==0?' + ('+b+')':'')+' = '+ym+'.',
+    viz:tabHtml};
+}
+/* ===== générateur : lecture graphique — variations ===== */
+function genVariations(){
+  var type=pick(['croissante','decroissante','parabole']);
+  if(type==='croissante'){
+    var a=pick([1,2,3]),b=pick([-1,0,1]);
+    var pool2=[
+      {text:'f(x) = '+a+'x'+(b!==0?(b>0?'+'+b:''+b):'')+'  est-elle croissante, décroissante ou constante ?',ans:'croissante',
+       exp:'Le coefficient directeur a = '+a+' > 0 : la fonction est croissante.'},
+      {text:'Une fonction affine f(x) = ax + b est croissante si…',ans:'a > 0',exp:'Le signe de a détermine les variations : a > 0 → croissante.'}
+    ];
+    var q=pick(pool2);
+    var opts=shuffle(['croissante','décroissante','constante']);
+    if(q.ans==='a > 0'){var opts2=shuffle(['a > 0','a < 0','b > 0','b = 0']).slice(0,4);if(opts2.indexOf('a > 0')<0)opts2[0]='a > 0';opts2=shuffle(opts2);return {type:'qcm',cat:'lineaire',text:q.text,options:opts2,correct:opts2.indexOf('a > 0'),explain:q.exp,viz:null};}
+    return {type:'qcm',cat:'lineaire',text:q.text,options:opts,correct:opts.indexOf('croissante'),explain:q.exp,viz:svgDroite(a,b,{xmin:-1,xmax:5,ymin:-4,ymax:14})};
+  } else if(type==='decroissante'){
+    var a2=pick([-1,-2,-3]),b2=pick([2,4,6]);
+    var opts3=shuffle(['décroissante','croissante','constante']);
+    return {type:'qcm',cat:'lineaire',
+      text:'f(x) = '+a2+'x + '+b2+'  est-elle croissante, décroissante ou constante ?',
+      options:opts3,correct:opts3.indexOf('décroissante'),
+      explain:'Le coefficient directeur a = '+a2+' < 0 : la fonction est décroissante.',
+      viz:svgDroite(a2,b2,{xmin:-1,xmax:5,ymin:-8,ymax:10})};
+  } else {
+    var opts4=shuffle(['constante','croissante','décroissante']);
+    return {type:'qcm',cat:'lineaire',
+      text:'f(x) = 5  (une constante). Quelle est la variation de f ?',
+      options:opts4,correct:opts4.indexOf('constante'),
+      explain:'f(x) = 5 est une fonction constante : elle ne varie pas.',
+      viz:null};
+  }
+}
+/* ===== générateur : antécédent par cascade ===== */
+function genAntecedentCascade(){
+  var a=pick([2,3,4,5]),b=pick([-3,-2,-1,0,1,2,3]);
+  var y0=rint(5,20);
+  var num=y0-b;
+  while(num%a!==0){y0=rint(5,20);num=y0-b;}
+  var x0=num/a;
+  var bStr=b>0?'+'+b:(b<0?''+b:'');
+  return {type:'cascade',cat:'antecedent',sig:'AC'+a+b+y0,viz:null,
+    text:'f(x) = '+a+'x'+bStr+'. Calcule l'antécédent de '+y0+' par f.',
+    steps:[
+      {prompt:'Étape 1 — Écris l'équation à résoudre.',
+       aide:'f(x) = '+y0+' signifie : '+a+'x'+bStr+' = '+y0+'.',
+       parts:[{b:1,kind:'num',ans:a,show:''+a,w:48},' x'+(b!==0?bStr:'')+(b>0?' = ':' = ')+y0]},
+      {prompt:'Étape 2 — Neutralise le terme constant'+(b!==0?' ('+bStr+')':''),
+       aide:(b!==0?'On '+(b>0?'soustrait '+b:'ajoute '+(-b))+' des deux côtés. À droite : '+y0+' '+(b>0?'−':'+')+' '+Math.abs(b)+' = '+num+'.':'b = 0, rien à faire.'),
+       parts:[{b:1,kind:'num',ans:a,show:''+a,w:48},' x = ',{b:1,kind:'num',ans:num,show:''+num,w:54}]},
+      {prompt:'Étape 3 — Divise par '+a+' et conclus.',
+       aide:'x = '+num+' ÷ '+a+' = '+x0+'.',
+       parts:['L'antécédent de '+y0+' est x = ',{b:1,kind:'num',ans:x0,show:''+x0,w:56},'.']}
+    ]};
+}
+var GEN={vocabulaire:genVocabulaire,antecedent:genAntecedent,representation:genRepresentation,lecture:genLecture,lineaire:genLineaire,affine:genAffine,tableauValeurs:genTableauValeurs,variations:genVariations,antecedentCascade:genAntecedentCascade};
 
 /* ===== MOTEUR QUIZ ===== */
 var Q={cats:[],guided:false,els:null,score:0,answered:0,correct:0,streak:0,locked:false,cur:null,lastText:'',timer:0};

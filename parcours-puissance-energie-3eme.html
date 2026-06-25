@@ -896,8 +896,113 @@ function genBilan(){
   return {type:'qcm',cat:'Bilan énergétique',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
 }
 
+/* ===== GÉNÉRATEUR 5 : RENDEMENT ===== */
+function genRendement(){
+  var mode=pick(['cascade_rendement','qcm_rendement','calc_rendement']);
+  if(mode==='cascade_rendement'){
+    var etotal=pick([100,200,500,1000,2000]);
+    var rendPct=pick([50,60,70,75,80,85,90]);
+    var eutile=round2(etotal*rendPct/100);
+    var eperdu=round2(etotal-eutile);
+    var rendStr=String(rendPct);
+    return {
+      type:'cascade',cat:'Bilan énergétique',
+      sig:'REND'+etotal+'P'+rendPct,
+      text:'Un appareil reçoit <b>E_totale = '+etotal+' J</b>. Son rendement est <b>η = '+rendStr+' %</b>.',
+      steps:[
+        {prompt:'Écris la formule du rendement (en %) :',
+         lines:[{pre:'η =',blank:true,ans:'E_utile / E_totale × 100',accept:['E_utile/E_totale×100','E utile/E totale×100','(E_utile/E_totale)*100','E_utile / E_totale × 100'],unit:'',hint:'η = énergie utile / énergie totale × 100 %'}]},
+        {prompt:'Calcule l\'énergie utile produite :',
+         lines:[{pre:'E_utile =',blank:true,ans:String(eutile),accept:[String(eutile)],unit:'J',hint:'E_utile = η × E_totale / 100 = '+rendStr+' × '+etotal+' / 100'}]},
+        {prompt:'Calcule l\'énergie perdue (chaleur, friction…) :',
+         lines:[{pre:'E_perdue =',blank:true,ans:String(eperdu),accept:[String(eperdu)],unit:'J',hint:'E_perdue = E_totale − E_utile = '+etotal+' − '+eutile}]}
+      ],
+      finalMsg:'E_utile = <b>'+eutile+' J</b>, E_perdue = <b>'+eperdu+' J</b> ✅'
+    };
+  }
+  if(mode==='qcm_rendement'){
+    var pools=[
+      {t:'Un moteur reçoit 500 J et fournit 400 J de travail utile. Son rendement est…',o:['80 %','400 %','20 %','125 %'],c:0,e:'η = 400/500 × 100 = 80 %. 20 % de l\'énergie est perdue (chaleur).'},
+      {t:'Un panneau solaire reçoit 1 000 W de rayonnement et produit 150 W d\'électricité. Son rendement est…',o:['15 %','85 %','150 %','1 %'],c:0,e:'η = 150/1000 × 100 = 15 %. Les panneaux classiques ont un rendement de 15 à 22 %.'},
+      {t:'Quel appareil a le meilleur rendement ?',o:['LED (η ≈ 80 %)','Ampoule classique (η ≈ 5 %)','Moteur à essence (η ≈ 30 %)','Chaudière ancienne (η ≈ 60 %)'],c:0,e:'La LED transforme ≈ 80 % de l\'électricité en lumière. L\'ampoule classique seulement 5 % — 95 % part en chaleur !'},
+      {t:'Un rendement de 100 % signifie que…',o:['Toute l\'énergie fournie est convertie en énergie utile (impossible en pratique)','La moitié de l\'énergie est perdue','L\'appareil ne consomme rien','L\'appareil est très puissant'],c:0,e:'100 % = conversion totale, sans perte. Impossible en pratique à cause des frottements, chaleur, etc. (1er et 2e principes de thermodynamique).'},
+      {t:'Si un moteur a un rendement de 25 %, cela signifie que…',o:['75 % de l\'énergie est perdue sous forme de chaleur','25 % de l\'énergie est perdue','Le moteur ne fonctionne que 25 % du temps','La puissance est de 25 W'],c:0,e:'η = 25 % → 25 % de l\'énergie devient utile, 75 % est dissipée (chaleur, friction). C\'est un moteur peu efficace.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Bilan énergétique',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  /* calc_rendement */
+  var etotal=pick([200,400,500,1000,2000]);
+  var rendPct=pick([40,50,60,70,80]);
+  var eutile=etotal*rendPct/100;
+  return {
+    type:'num',cat:'Bilan énergétique',answer:eutile,tol:0.1,
+    text:'Un moteur reçoit <b>E_totale = '+etotal+' J</b>.<br>Son rendement est <b>η = '+rendPct+' %</b>.<br>Quelle est l\'énergie utile fournie (en J) ?',
+    explain:'E_utile = η × E_totale / 100 = '+rendPct+' × '+etotal+' / 100 = <b>'+eutile+' J</b>.'
+  };
+}
+
+/* ===== GÉNÉRATEUR 6 : PUISSANCE ET ÉNERGIE AVANCÉES ===== */
+function genPuissanceEnergie(){
+  var mode=pick(['qcm_conversion_W_kW','cascade_P_U_I','calc_P_E_t']);
+  if(mode==='qcm_conversion_W_kW'){
+    var pools=[
+      {t:'Convertis 2 500 W en kW.',o:['2,5 kW','25 kW','250 kW','0,25 kW'],c:0,e:'1 kW = 1 000 W. 2 500 ÷ 1 000 = 2,5 kW.'},
+      {t:'Convertis 0,75 kW en W.',o:['750 W','75 W','7 500 W','7,5 W'],c:0,e:'0,75 kW × 1 000 = 750 W.'},
+      {t:'Un four consomme 2 kW. En W, c\'est…',o:['2 000 W','200 W','20 W','20 000 W'],c:0,e:'2 kW = 2 × 1 000 = 2 000 W.'},
+      {t:'1 MW (mégawatt) est égal à…',o:['1 000 000 W','1 000 W','100 W','10 000 W'],c:0,e:'Méga = 10⁶ = 1 000 000. 1 MW = 1 000 000 W = 1 000 kW.'},
+      {t:'Un chauffe-eau de 1 800 W fonctionne 2 heures. Son énergie consommée en kWh est…',o:['3,6 kWh','3 600 kWh','1,8 kWh','0,9 kWh'],c:0,e:'P = 1 800 W = 1,8 kW. E = 1,8 × 2 = 3,6 kWh.'}
+    ];
+    var q=pick(pools);var opts=shuffle(q.o);
+    return {type:'qcm',cat:'Puissance électrique',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+  }
+  if(mode==='cascade_P_U_I'){
+    var uVals=[100,110,220,230];
+    var pVals=[60,100,200,500,1000,1500,2000];
+    var U=pick(uVals);var P=pick(pVals);
+    var I=round2(P/U);var IStr=String(I).replace('.',',');
+    return {
+      type:'cascade',cat:'Puissance électrique',
+      sig:'PUI'+U+'P'+P,
+      text:'Un appareil de puissance <b>P = '+P+' W</b> est branché sous <b>U = '+U+' V</b>.',
+      steps:[
+        {prompt:'Quelle formule permet de calculer l\'intensité I à partir de P et U ?',
+         lines:[{pre:'I =',blank:true,ans:'P / U',accept:['P/U','P÷U','P / U'],unit:'',hint:'P = U × I → I = P ÷ U'}]},
+        {prompt:'Calcule l\'intensité I (en A) :',
+         lines:[{pre:'I =',blank:true,ans:IStr,accept:[IStr,String(I)],unit:'A',hint:P+' ÷ '+U+' = ?'}]},
+        {prompt:'Quel est le disjoncteur minimum conseillé : 6 A, 10 A, 16 A ou 20 A ?',
+         lines:[{pre:'Disjoncteur :',blank:true,ans:I<=6?'6 A':(I<=10?'10 A':(I<=16?'16 A':'20 A')),accept:I<=6?['6','6A','6 A']:I<=10?['10','10A','10 A']:i<=16?['16','16A','16 A']:['20','20A','20 A'],unit:'',hint:'Le disjoncteur doit être supérieur à I = '+IStr+' A'}]}
+      ],
+      finalMsg:'I = <b>'+IStr+' A</b> ✅'
+    };
+  }
+  /* calc_P_E_t */
+  var EkWh=pick([2,4,5,6,10]);var tH=pick([2,4,5,8,10]);
+  var P=round2(EkWh/tH);var PStr=String(P).replace('.',',');
+  return {
+    type:'num',cat:'Énergie électrique',answer:P,tol:0.01,
+    text:'Un appareil consomme <b>E = '+EkWh+' kWh</b> en <b>t = '+tH+' heures</b>.<br>Quelle est sa puissance P (en kW) ?',
+    explain:'P = E ÷ t = '+EkWh+' ÷ '+tH+' = <b>'+PStr+' kW</b>.'
+  };
+}
+
+/* ===== GÉNÉRATEUR 7 : ÉCONOMIES D'ÉNERGIE ===== */
+function genEconomies(){
+  var pools=[
+    {t:'Remplacer une ampoule de 100 W par une LED de 10 W pour 1 000 heures permet d\'économiser…',o:['90 kWh (= 90 × 0,25 = 22,50 € à 0,25 €/kWh)','10 kWh','900 kWh','9 kWh'],c:0,e:'Ampoule : 100 W × 1 000 h = 100 kWh. LED : 10 W × 1 000 h = 10 kWh. Économie = 90 kWh = 22,50 € à 0,25 €/kWh.'},
+    {t:'Un appareil en <b>veille</b> consomme 5 W en permanence. Sa consommation sur 1 an (8 760 h) est…',o:['43,8 kWh (= 10,95 € à 0,25 €/kWh)','5 kWh','8 760 kWh','0,5 kWh'],c:0,e:'P = 0,005 kW. E = 0,005 × 8 760 = 43,8 kWh. Penser à éteindre les appareils complètement !'},
+    {t:'Un chauffe-eau de 2 000 W chauffe 1 heure par jour. Sa consommation annuelle (365 jours) est…',o:['730 kWh','2 kWh','365 kWh','2 000 kWh'],c:0,e:'P = 2 kW. E/jour = 2 kWh. E/an = 2 × 365 = 730 kWh. Coût à 0,25 €/kWh = 182,50 €/an.'},
+    {t:'Pour réduire sa facture électrique, quelle action est la plus efficace ?',o:['Baisser le chauffage de 1 °C (économie d\'environ 7 % sur le chauffage)','Éteindre la lumière 5 minutes','Débrancher le chargeur de téléphone 1 h/j','Utiliser le micro-ondes au lieu du four'],c:0,e:'Le chauffage représente 60 à 70 % de la facture d\'énergie d\'un logement. Baisser de 1 °C ≈ −7 % sur le chauffage.'},
+    {t:'Un réfrigérateur de classe A consomme 100 kWh/an. Un réfrigérateur de classe D consomme 250 kWh/an. L\'écart de coût annuel (à 0,25 €/kWh) est…',o:['37,50 € (150 kWh × 0,25)','100 €','25 €','250 €'],c:0,e:'Différence = 250 − 100 = 150 kWh/an. Coût = 150 × 0,25 = 37,50 €/an. Sur 10 ans = 375 € !'},
+    {t:'L\'isolation d\'un bâtiment permet principalement de…',o:['Réduire les pertes de chaleur en hiver et garder la fraîcheur en été','Augmenter la puissance du chauffage','Produire de l\'électricité','Réduire la consommation d\'eau'],c:0,e:'L\'isolation limite les échanges thermiques avec l\'extérieur → moins d\'énergie pour chauffer ou refroidir.'},
+    {t:'Parmi ces actions, laquelle consomme le plus d\'énergie ?',o:['Faire tourner un four électrique à 200 °C pendant 1 h (≈ 2 kWh)','Regarder la TV pendant 1 h (≈ 0,15 kWh)','Charger un téléphone (≈ 0,01 kWh)','Allumer une LED pendant 1 h (≈ 0,01 kWh)'],c:0,e:'Le four est de loin le plus gourmand : 2 000 W × 1 h = 2 kWh, soit 0,50 € à chaque utilisation !'}
+  ];
+  var q=pick(pools);var opts=shuffle(q.o);
+  return {type:'qcm',cat:'Facture électricité',text:q.t,options:opts,correct:opts.indexOf(q.o[q.c]),explain:q.e};
+}
+
 /* ===== DISPATCH GEN ===== */
-var GEN={puissance:genPuissance,energie:genEnergie,facture:genFacture,bilan:genBilan};
+var GEN={puissance:genPuissance,energie:genEnergie,facture:genFacture,bilan:genBilan,rendement:genRendement,puissanceEnergie:genPuissanceEnergie,economies:genEconomies};
 
 /* ===== MOTEUR QUIZ ===== */
 var quizState={mode:'train',q:null,idx:0,score:0,total:0,tries:0,cascStep:0,cascTries:0};
